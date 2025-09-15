@@ -6,6 +6,7 @@ import DepartmentTable from './DepartmentTable';
 import ExpensePieChart from './ExpensePieChart';
 import PatientMetricsCard from './PatientMetricsCard';
 import CashFlowChart from './CashFlowChart';
+import LoadingSpinner from './LoadingSpinner';
 import {
   hospitals,
   availableYears,
@@ -66,15 +67,12 @@ const Dashboard: React.FC = () => {
         />
         
         <main className="p-4 sm:p-6">
-          <div className="flex items-center justify-center min-h-96">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-300 font-medium">Loading dashboard data...</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                {hospitals.find(h => h.id === selectedHospitalId)?.name} • {selectedYear}
-              </p>
-            </div>
-          </div>
+          <LoadingSpinner
+            size="md"
+            text="Loading dashboard data..."
+            subtext={`${hospitals.find(h => h.id === selectedHospitalId)?.name} • ${selectedYear}`}
+            className="min-h-96"
+          />
         </main>
       </div>
     );

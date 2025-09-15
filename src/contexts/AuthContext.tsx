@@ -17,8 +17,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const storedUser = localStorage.getItem('hospitalFinanceUser');
     if (storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        // Validate that the parsed object has the expected User structure
+        if (parsedUser && typeof parsedUser === 'object' && 'id' in parsedUser && 'email' in parsedUser) {
+          setUser(parsedUser as User);
+        } else {
+          console.warn('Invalid user data in localStorage, removing...');
+          localStorage.removeItem('hospitalFinanceUser');
+        }
       } catch (error) {
+        console.error('Failed to parse stored user data:', error);
         localStorage.removeItem('hospitalFinanceUser');
       }
     }
@@ -29,8 +37,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setIsLoading(true);
     try {
       const userData = await authService.signIn(email, password);
+      if (!userData || !userData.id || !userData.email) {
+        throw new Error('Invalid user data received from authentication service');
+      }
       setUser(userData);
       localStorage.setItem('hospitalFinanceUser', JSON.stringify(userData));
+    } catch (error) {
+      console.error('Sign in failed:', error);
+      throw error; // Re-throw to let the component handle the error
     } finally {
       setIsLoading(false);
     }
@@ -40,8 +54,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setIsLoading(true);
     try {
       const newUser = await authService.signUp(userData);
+      if (!newUser || !newUser.id || !newUser.email) {
+        throw new Error('Invalid user data received from registration service');
+      }
       setUser(newUser);
       localStorage.setItem('hospitalFinanceUser', JSON.stringify(newUser));
+    } catch (error) {
+      console.error('Sign up failed:', error);
+      throw error; // Re-throw to let the component handle the error
     } finally {
       setIsLoading(false);
     }

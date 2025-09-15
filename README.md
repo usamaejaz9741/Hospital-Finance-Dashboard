@@ -36,6 +36,12 @@ A comprehensive, modern hospital finance dashboard built with React, TypeScript,
 - **Real-time Updates**: Dynamic data refresh and updates
 - **Smooth Transitions**: Beautiful animations and transitions throughout
 
+### 🛡️ Error Handling & Reliability
+- **Error Boundaries**: Comprehensive error boundaries to catch and handle React errors gracefully
+- **Fallback UI**: User-friendly error messages with recovery options
+- **Development Debugging**: Detailed error information in development mode
+- **Graceful Degradation**: Application continues to function even when individual components fail
+
 ## Technology Stack
 
 - **Frontend**: React 18 with TypeScript
@@ -108,6 +114,10 @@ src/
 │   ├── ExpensePieChart.tsx # Expense breakdown pie chart
 │   ├── PatientMetricsCard.tsx # Patient statistics
 │   ├── CashFlowChart.tsx # Cash flow bar chart
+│   ├── ErrorBoundary.tsx # Error boundary for error handling
+│   ├── ThemeToggle.tsx  # Theme switching component
+│   ├── LoadingSpinner.tsx # Reusable loading spinner component
+│   ├── Button.tsx       # Reusable button component with variants
 │   └── Dropdown.tsx     # Reusable dropdown component
 ├── contexts/
 │   ├── AuthContext.tsx  # Authentication context
@@ -126,7 +136,8 @@ src/
 │   └── formatters.ts    # Data formatting utilities
 ├── App.tsx              # Main application component
 ├── main.tsx            # Application entry point
-└── index.css           # Global styles
+├── index.css           # Global styles
+└── vite-env.d.ts       # Vite environment type definitions
 ```
 
 ## Key Components
@@ -148,6 +159,12 @@ Grid layout showing patient-related metrics and hospital occupancy.
 
 ### CashFlowChart
 Bar chart displaying cash flow analysis across different categories.
+
+### ErrorBoundary
+React error boundary component that catches JavaScript errors anywhere in the child component tree, logs those errors, and displays a fallback UI instead of crashing the application.
+
+### ThemeToggle
+Toggle component for switching between light and dark themes with system preference detection.
 
 ## Data Structure
 

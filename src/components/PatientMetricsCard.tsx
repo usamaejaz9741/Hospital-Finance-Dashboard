@@ -50,19 +50,35 @@ const PatientMetricsCard: React.FC<PatientMetricsCardProps> = ({ metrics }) => {
     <div className="card">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Patient Metrics</h2>
-        <button className="btn-secondary text-sm">
+        <button 
+          className="btn-secondary text-sm"
+          aria-label="View detailed patient metrics report"
+        >
           View Report
         </button>
       </div>
       
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4" role="grid" aria-label="Patient metrics overview">
         {metricItems.map((item, index) => (
-          <div key={index} className="text-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-            <div className="text-2xl mb-2">{item.icon}</div>
-            <div className={`text-lg font-bold ${item.color}`}>
+          <div 
+            key={index} 
+            className="text-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+            role="gridcell"
+            aria-labelledby={`metric-label-${index}`}
+            aria-describedby={`metric-value-${index}`}
+          >
+            <div className="text-2xl mb-2" aria-hidden="true">{item.icon}</div>
+            <div 
+              id={`metric-value-${index}`}
+              className={`text-lg font-bold ${item.color}`}
+              aria-label={`${item.label}: ${item.value}`}
+            >
               {item.value}
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            <div 
+              id={`metric-label-${index}`}
+              className="text-sm text-gray-600 dark:text-gray-400 mt-1"
+            >
               {item.label}
             </div>
           </div>

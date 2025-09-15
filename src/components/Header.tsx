@@ -94,10 +94,16 @@ const Header: React.FC<HeaderProps> = ({
             {/* Action Buttons */}
             <div className="flex items-center space-x-3">
               <ThemeToggle />
-              <button className="btn-secondary text-sm">
+              <button 
+                className="btn-secondary text-sm"
+                aria-label="Export financial report"
+              >
                 Export Report
               </button>
-              <button className="btn-primary text-sm">
+              <button 
+                className="btn-primary text-sm"
+                aria-label="Generate financial analysis"
+              >
                 Generate Analysis
               </button>
             </div>
@@ -117,6 +123,7 @@ const Header: React.FC<HeaderProps> = ({
                 onClick={signOut}
                 className="ml-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
                 title="Sign out"
+                aria-label="Sign out of your account"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -196,13 +203,19 @@ const Header: React.FC<HeaderProps> = ({
 
             {/* Mobile Action Buttons */}
             <div className="space-y-2 pt-4 border-t border-gray-200 dark:border-gray-700">
-              <button className="w-full btn-secondary text-left justify-start">
+              <button 
+                className="w-full btn-secondary text-left justify-start"
+                aria-label="Export financial report"
+              >
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 Export Report
               </button>
-              <button className="w-full btn-primary text-left justify-start">
+              <button 
+                className="w-full btn-primary text-left justify-start"
+                aria-label="Generate financial analysis"
+              >
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
@@ -211,6 +224,7 @@ const Header: React.FC<HeaderProps> = ({
               <button
                 onClick={signOut}
                 className="w-full flex items-center px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
+                aria-label="Sign out of your account"
               >
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
