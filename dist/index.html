@@ -9,15 +9,47 @@
     <link rel="manifest" href="/favicon/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hospital Finance Dashboard</title>
-    <script type="module" crossorigin src="/assets/main-CgtPw02Q.js"></script>
+    <script type="module" crossorigin src="/assets/main-oQhiNPjE.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-react-Bx1teXYA.js">
-    <link rel="modulepreload" crossorigin href="/assets/auth-tSiJ80bN.js">
+    <link rel="modulepreload" crossorigin href="/assets/auth-D91GhDRI.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-charts-XgAeZzKm.js">
-    <link rel="modulepreload" crossorigin href="/assets/charts-DJdNeUhL.js">
-    <link rel="modulepreload" crossorigin href="/assets/dashboard-DD2DIP0U.js">
-    <link rel="stylesheet" crossorigin href="/assets/CsNIaLbG.css">
+    <link rel="modulepreload" crossorigin href="/assets/charts-qGsiu7dj.js">
+    <link rel="modulepreload" crossorigin href="/assets/dashboard-DKaJdJ2B.js">
+    <link rel="stylesheet" crossorigin href="/assets/royD-78z.css">
   </head>
   <body>
+    <!-- Theme initialization script to prevent FOUC -->
+    <script>
+      (function() {
+        try {
+          const stored = localStorage.getItem('hospitalFinanceTheme');
+          const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          
+          let shouldBeDark = false;
+          
+          if (stored === 'dark') {
+            shouldBeDark = true;
+          } else if (stored === 'light') {
+            shouldBeDark = false;
+          } else {
+            // Auto or no preference stored - use system
+            shouldBeDark = systemDark;
+          }
+          
+          if (shouldBeDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {
+          // Fallback to system preference if localStorage fails
+          if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+          }
+        }
+      })();
+    </script>
+    
     <div id="root"></div>
   </body>
 </html>

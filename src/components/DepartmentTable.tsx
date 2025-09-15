@@ -58,7 +58,7 @@ const DepartmentTable: React.FC<DepartmentTableProps> = ({ departments }) => {
 
       {/* Mobile Card View */}
       <div className="lg:hidden space-y-4">
-        {departments.map((dept, index) => (
+        {departments.map((dept) => (
           <div key={dept.department} className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
             <div className="font-medium text-gray-900 dark:text-white mb-3 text-lg">
               {dept.department}
