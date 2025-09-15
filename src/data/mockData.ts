@@ -214,6 +214,11 @@ hospitals.forEach(hospital => {
     const hospitalData: HospitalData = {
       hospitalId: hospital.id,
       year: year,
+      lastUpdated: new Date(year, 11, 31).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }),
       financialMetrics: [
         {
           id: 'total-revenue',

@@ -63,5 +63,6 @@ export interface HospitalData {
   patientMetrics: PatientMetrics;
   expenseBreakdown: ExpenseBreakdown[];
   cashFlowData: CashFlowData[];
+  lastUpdated: string;
 }
 

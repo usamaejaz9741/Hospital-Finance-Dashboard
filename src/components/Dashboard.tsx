@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Header from './Header';
 import MetricCard from './MetricCard';
 import RevenueChart from './RevenueChart';
@@ -19,7 +19,9 @@ import { useAuth } from '../hooks/useAuth';
 const Dashboard: React.FC = () => {
   const { getAccessibleHospitals, canAccessHospital } = useAuth();
   const accessibleHospitals = getAccessibleHospitals();
-  const filteredHospitals = hospitals.filter(h => accessibleHospitals.includes(h.id));
+  const filteredHospitals = useMemo(() => {
+    return hospitals.filter(h => accessibleHospitals.includes(h.id));
+  }, [accessibleHospitals]);
   
   const [selectedHospitalId, setSelectedHospitalId] = useState<string>(
     accessibleHospitals[0] || ''
@@ -60,7 +62,7 @@ const Dashboard: React.FC = () => {
     };
   }, [selectedHospitalId, selectedYear]);
 
-  const handleHospitalChange = (hospitalId: string) => {
+  const handleHospitalChange = useCallback((hospitalId: string) => {
     // Check if user has access to the selected hospital
     if (canAccessHospital(hospitalId)) {
       logger.info('Hospital selection changed', {
@@ -74,15 +76,15 @@ const Dashboard: React.FC = () => {
         data: { hospitalId }
       });
     }
-  };
+  }, [canAccessHospital]);
 
-  const handleYearChange = (year: number) => {
+  const handleYearChange = useCallback((year: number) => {
     logger.info('Year selection changed', {
       context: 'Dashboard',
       data: { year, previousYear: selectedYear }
     });
     setSelectedYear(year);
-  };
+  }, [selectedYear]);
 
   if (isLoading) {
     return (
@@ -141,7 +143,7 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="text-gray-900 dark:text-gray-100 relative">
+    <div className="text-gray-900 dark:text-dark-primary relative">
       <Header
         hospitals={filteredHospitals}
         selectedHospitalId={selectedHospitalId}
@@ -189,13 +191,7 @@ const Dashboard: React.FC = () => {
         {/* Footer */}
         <footer className="text-center text-sm text-gray-500 dark:text-gray-400 mt-12 py-6 border-t border-gray-200 dark:border-gray-700">
           <p>© 2024 Hospital Finance Dashboard. All rights reserved.</p>
-          <p className="mt-1">Last updated: {new Date().toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          })}</p>
+          <p className="mt-1">Last updated: {currentData.lastUpdated}</p>
         </footer>
       </main>
     </div>

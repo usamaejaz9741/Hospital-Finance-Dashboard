@@ -8,19 +8,13 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
-        <ErrorBoundary>
-          <AuthProvider>
-            <ErrorBoundary>
-              <div className="App min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-200 overflow-x-hidden">
-                <AuthWrapper>
-                  <ErrorBoundary>
-                    <Dashboard />
-                  </ErrorBoundary>
-                </AuthWrapper>
-              </div>
-            </ErrorBoundary>
-          </AuthProvider>
-        </ErrorBoundary>
+        <AuthProvider>
+          <div className="App min-h-screen bg-gray-50 dark:bg-dark-bg text-gray-900 dark:text-dark-primary transition-colors duration-200 overflow-x-hidden">
+            <AuthWrapper>
+              <Dashboard />
+            </AuthWrapper>
+          </div>
+        </AuthProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

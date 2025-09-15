@@ -38,7 +38,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
       
       <div className="mb-2">
         <p 
-          className="text-2xl font-bold text-gray-900 dark:text-white"
+          className="text-2xl font-bold"
           aria-label={`${metric.title} value: ${formatValue(metric.value, metric.format)}`}
         >
           {formatValue(metric.value, metric.format)}
@@ -54,7 +54,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
           <span className="mr-1" aria-hidden="true">{getChangeIcon(metric.changeType)}</span>
           {formatPercentage(metric.change)}
         </span>
-        <span className="text-gray-500 dark:text-gray-400">{metric.period}</span>
+        <span className="text-gray-500 dark:text-dark-muted">{metric.period}</span>
       </div>
     </div>
   );
