@@ -5,28 +5,42 @@ interface SignInPageProps {
   onSwitchToSignUp: () => void;
 }
 
-const SignInPage: React.FC<SignInPageProps> = ({ onSwitchToSignUp }) => {
+const SignInPage: React.FC<SignInPageProps> = ({ onSwitchToSignUp }: SignInPageProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const { signIn, isLoading } = useAuth();
 
+  // Validates password before submission
+  const validatePassword = (value: string): string | null => {
+    if (value.length === 0) return 'Password is required';
+    if (value.length < 6) return 'Password must be at least 6 characters long';
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    
+    setErrorMessage('');
+
+    // Validate password before submission
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      setErrorMessage(passwordError);
+      return;
+    }
+
     try {
       await signIn(email, password);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'An error occurred');
     }
   };
 
   const demoAccounts = [
-    { role: 'Admin', email: 'admin@hospitalfinance.com', password: 'admin123' },
-    { role: 'Hospital Owner', email: 'owner@metrogeneral.com', password: 'owner123' },
-    { role: 'Branch Manager', email: 'manager@metrogeneral.com', password: 'manager123' }
+    { role: 'Admin', email: 'admin@hospitalfinance.com', password: 'AdminHF2024!' },
+    { role: 'Hospital Owner', email: 'owner@metrogeneral.com', password: 'OwnerMG2024!' },
+    { role: 'Branch Manager', email: 'manager@metrogeneral.com', password: 'ManagerMG2024!' }
   ];
 
   const fillDemo = (email: string, password: string) => {
@@ -66,9 +80,9 @@ const SignInPage: React.FC<SignInPageProps> = ({ onSwitchToSignUp }) => {
 
         {/* Sign In Form */}
         <form className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
+          {errorMessage && (
             <div className="bg-danger-50 border border-danger-200 text-danger-700 px-4 py-3 rounded-lg text-sm">
-              {error}
+              {errorMessage}
             </div>
           )}
 

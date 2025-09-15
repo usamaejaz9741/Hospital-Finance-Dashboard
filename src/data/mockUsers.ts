@@ -71,20 +71,26 @@ export const authService = {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    const user = mockUsers.find(u => u.email === email);
-    
-    if (!user) {
-      throw new Error('Invalid email or password');
-    }
-    
-    // In a real app, you'd verify the password here
+    // Check password length first for better security
     if (password.length < 6) {
-      throw new Error('Invalid email or password');
+      throw new Error('Password must be at least 6 characters long');
     }
     
-    // Update last login
-    user.lastLogin = new Date().toISOString();
+    const user = mockUsers.find(u => u.email === email);
+    if (!user) {
+      throw new Error('No account found with this email address');
+    }
     
+    // For demo purposes, we'll simulate password verification
+    // In a real app, we would properly hash and verify the password
+    if (password !== 'AdminHF2024!' && 
+        password !== 'OwnerMG2024!' && 
+        password !== 'ManagerMG2024!') {
+      throw new Error('Incorrect password');
+    }
+    
+    // Update last login time
+    user.lastLogin = new Date().toISOString();
     return user;
   },
   
@@ -136,6 +142,7 @@ export const roleDescriptions = {
     description: 'Access to owned hospitals across multiple locations',
     permissions: ['Manage owned hospitals', 'View financial reports', 'Manage branch managers']
   },
+  // Internal role name is branch_owner but displayed as Branch Manager for consistency
   branch_owner: {
     title: 'Branch Manager',
     description: 'Access to specific hospital location data only',

@@ -77,7 +77,7 @@ A comprehensive, modern hospital finance dashboard built with React, TypeScript,
    ```
 
 4. **Open your browser**
-   Navigate to `http://localhost:3000` to view the dashboard
+   Navigate to `http://localhost:5173` to view the dashboard
 
 5. **Sign In with Demo Account**
    Use one of the demo accounts to test different user roles:
