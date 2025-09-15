@@ -1,0 +1,376 @@
+import { 
+  FinancialMetric, 
+  RevenueData, 
+  DepartmentFinance, 
+  PatientMetrics, 
+  ExpenseBreakdown, 
+  CashFlowData,
+  Hospital,
+  HospitalData
+} from '../types/finance';
+
+export const financialMetrics: FinancialMetric[] = [
+  {
+    id: 'total-revenue',
+    title: 'Total Revenue',
+    value: 12500000,
+    change: 8.5,
+    changeType: 'increase',
+    period: 'vs last month',
+    format: 'currency'
+  },
+  {
+    id: 'net-profit',
+    title: 'Net Profit',
+    value: 2100000,
+    change: 12.3,
+    changeType: 'increase',
+    period: 'vs last month',
+    format: 'currency'
+  },
+  {
+    id: 'profit-margin',
+    title: 'Profit Margin',
+    value: 16.8,
+    change: 2.1,
+    changeType: 'increase',
+    period: 'vs last month',
+    format: 'percentage'
+  },
+  {
+    id: 'operating-expenses',
+    title: 'Operating Expenses',
+    value: 9800000,
+    change: 3.2,
+    changeType: 'increase',
+    period: 'vs last month',
+    format: 'currency'
+  }
+];
+
+export const revenueData: RevenueData[] = [
+  { month: 'Jan', revenue: 11200000, expenses: 8900000, netIncome: 2300000 },
+  { month: 'Feb', revenue: 10800000, expenses: 8600000, netIncome: 2200000 },
+  { month: 'Mar', revenue: 12100000, expenses: 9200000, netIncome: 2900000 },
+  { month: 'Apr', revenue: 11800000, expenses: 9000000, netIncome: 2800000 },
+  { month: 'May', revenue: 12800000, expenses: 9600000, netIncome: 3200000 },
+  { month: 'Jun', revenue: 12500000, expenses: 9800000, netIncome: 2700000 },
+  { month: 'Jul', revenue: 13200000, expenses: 10100000, netIncome: 3100000 },
+  { month: 'Aug', revenue: 12900000, expenses: 9900000, netIncome: 3000000 },
+  { month: 'Sep', revenue: 13500000, expenses: 10300000, netIncome: 3200000 },
+  { month: 'Oct', revenue: 13100000, expenses: 10000000, netIncome: 3100000 },
+  { month: 'Nov', revenue: 12700000, expenses: 9700000, netIncome: 3000000 },
+  { month: 'Dec', revenue: 14200000, expenses: 10800000, netIncome: 3400000 }
+];
+
+export const departmentFinances: DepartmentFinance[] = [
+  {
+    department: 'Emergency',
+    revenue: 3200000,
+    expenses: 2400000,
+    profit: 800000,
+    profitMargin: 25.0
+  },
+  {
+    department: 'Surgery',
+    revenue: 4500000,
+    expenses: 3100000,
+    profit: 1400000,
+    profitMargin: 31.1
+  },
+  {
+    department: 'Cardiology',
+    revenue: 2800000,
+    expenses: 1900000,
+    profit: 900000,
+    profitMargin: 32.1
+  },
+  {
+    department: 'Oncology',
+    revenue: 1900000,
+    expenses: 1400000,
+    profit: 500000,
+    profitMargin: 26.3
+  },
+  {
+    department: 'Pediatrics',
+    revenue: 1100000,
+    expenses: 800000,
+    profit: 300000,
+    profitMargin: 27.3
+  }
+];
+
+export const patientMetrics: PatientMetrics = {
+  totalPatients: 15420,
+  inpatients: 2180,
+  outpatients: 11850,
+  emergencyVisits: 1390,
+  averageStayDuration: 4.2,
+  occupancyRate: 87.5
+};
+
+export const expenseBreakdown: ExpenseBreakdown[] = [
+  { category: 'Salaries & Benefits', amount: 5200000, percentage: 53.1, color: '#3b82f6' },
+  { category: 'Medical Supplies', amount: 1800000, percentage: 18.4, color: '#10b981' },
+  { category: 'Equipment', amount: 1200000, percentage: 12.2, color: '#f59e0b' },
+  { category: 'Utilities', amount: 600000, percentage: 6.1, color: '#ef4444' },
+  { category: 'Maintenance', amount: 500000, percentage: 5.1, color: '#8b5cf6' },
+  { category: 'Other', amount: 500000, percentage: 5.1, color: '#6b7280' }
+];
+
+export const cashFlowData: CashFlowData[] = [
+  {
+    date: '2024-01',
+    operatingCashFlow: 2100000,
+    investingCashFlow: -800000,
+    financingCashFlow: -300000,
+    netCashFlow: 1000000
+  },
+  {
+    date: '2024-02',
+    operatingCashFlow: 1950000,
+    investingCashFlow: -200000,
+    financingCashFlow: -400000,
+    netCashFlow: 1350000
+  },
+  {
+    date: '2024-03',
+    operatingCashFlow: 2300000,
+    investingCashFlow: -1200000,
+    financingCashFlow: -200000,
+    netCashFlow: 900000
+  },
+  {
+    date: '2024-04',
+    operatingCashFlow: 2200000,
+    investingCashFlow: -300000,
+    financingCashFlow: -350000,
+    netCashFlow: 1550000
+  },
+  {
+    date: '2024-05',
+    operatingCashFlow: 2500000,
+    investingCashFlow: -150000,
+    financingCashFlow: -300000,
+    netCashFlow: 2050000
+  },
+  {
+    date: '2024-06',
+    operatingCashFlow: 2350000,
+    investingCashFlow: -600000,
+    financingCashFlow: -250000,
+    netCashFlow: 1500000
+  }
+];
+
+export const hospitals: Hospital[] = [
+  {
+    id: 'general-1',
+    name: 'Metro General Hospital',
+    location: 'Downtown',
+    type: 'General'
+  },
+  {
+    id: 'cardio-1',
+    name: 'Heart & Vascular Institute',
+    location: 'Midtown',
+    type: 'Specialty'
+  },
+  {
+    id: 'pediatric-1',
+    name: 'Children\'s Medical Center',
+    location: 'Westside',
+    type: 'Pediatric'
+  },
+  {
+    id: 'trauma-1',
+    name: 'Regional Trauma Center',
+    location: 'Northside',
+    type: 'Trauma'
+  }
+];
+
+export const availableYears = [2021, 2022, 2023, 2024];
+
+// Helper function to generate variations in data
+const generateVariation = (baseValue: number, variationPercent: number = 15): number => {
+  const variation = baseValue * (variationPercent / 100);
+  return Math.round(baseValue + (Math.random() - 0.5) * 2 * variation);
+};
+
+// Generate hospital data for all combinations
+export const hospitalDataByYear: HospitalData[] = [];
+
+hospitals.forEach(hospital => {
+  availableYears.forEach(year => {
+    const yearMultiplier = year === 2024 ? 1 : year === 2023 ? 0.92 : year === 2022 ? 0.85 : 0.78;
+    const hospitalMultiplier = hospital.type === 'General' ? 1 : 
+                               hospital.type === 'Specialty' ? 0.7 : 
+                               hospital.type === 'Pediatric' ? 0.5 : 0.8;
+
+    const baseMultiplier = yearMultiplier * hospitalMultiplier;
+
+    const hospitalData: HospitalData = {
+      hospitalId: hospital.id,
+      year: year,
+      financialMetrics: [
+        {
+          id: 'total-revenue',
+          title: 'Total Revenue',
+          value: generateVariation(12500000 * baseMultiplier),
+          change: generateVariation(8.5, 50),
+          changeType: Math.random() > 0.3 ? 'increase' : 'decrease',
+          period: 'vs last month',
+          format: 'currency'
+        },
+        {
+          id: 'net-profit',
+          title: 'Net Profit',
+          value: generateVariation(2100000 * baseMultiplier),
+          change: generateVariation(12.3, 60),
+          changeType: Math.random() > 0.25 ? 'increase' : 'decrease',
+          period: 'vs last month',
+          format: 'currency'
+        },
+        {
+          id: 'profit-margin',
+          title: 'Profit Margin',
+          value: generateVariation(16.8, 25),
+          change: generateVariation(2.1, 80),
+          changeType: Math.random() > 0.4 ? 'increase' : 'decrease',
+          period: 'vs last month',
+          format: 'percentage'
+        },
+        {
+          id: 'operating-expenses',
+          title: 'Operating Expenses',
+          value: generateVariation(9800000 * baseMultiplier),
+          change: generateVariation(3.2, 40),
+          changeType: Math.random() > 0.6 ? 'increase' : 'decrease',
+          period: 'vs last month',
+          format: 'currency'
+        }
+      ],
+      revenueData: [
+        { month: 'Jan', revenue: generateVariation(11200000 * baseMultiplier), expenses: generateVariation(8900000 * baseMultiplier), netIncome: generateVariation(2300000 * baseMultiplier) },
+        { month: 'Feb', revenue: generateVariation(10800000 * baseMultiplier), expenses: generateVariation(8600000 * baseMultiplier), netIncome: generateVariation(2200000 * baseMultiplier) },
+        { month: 'Mar', revenue: generateVariation(12100000 * baseMultiplier), expenses: generateVariation(9200000 * baseMultiplier), netIncome: generateVariation(2900000 * baseMultiplier) },
+        { month: 'Apr', revenue: generateVariation(11800000 * baseMultiplier), expenses: generateVariation(9000000 * baseMultiplier), netIncome: generateVariation(2800000 * baseMultiplier) },
+        { month: 'May', revenue: generateVariation(12800000 * baseMultiplier), expenses: generateVariation(9600000 * baseMultiplier), netIncome: generateVariation(3200000 * baseMultiplier) },
+        { month: 'Jun', revenue: generateVariation(12500000 * baseMultiplier), expenses: generateVariation(9800000 * baseMultiplier), netIncome: generateVariation(2700000 * baseMultiplier) },
+        { month: 'Jul', revenue: generateVariation(13200000 * baseMultiplier), expenses: generateVariation(10100000 * baseMultiplier), netIncome: generateVariation(3100000 * baseMultiplier) },
+        { month: 'Aug', revenue: generateVariation(12900000 * baseMultiplier), expenses: generateVariation(9900000 * baseMultiplier), netIncome: generateVariation(3000000 * baseMultiplier) },
+        { month: 'Sep', revenue: generateVariation(13500000 * baseMultiplier), expenses: generateVariation(10300000 * baseMultiplier), netIncome: generateVariation(3200000 * baseMultiplier) },
+        { month: 'Oct', revenue: generateVariation(13100000 * baseMultiplier), expenses: generateVariation(10000000 * baseMultiplier), netIncome: generateVariation(3100000 * baseMultiplier) },
+        { month: 'Nov', revenue: generateVariation(12700000 * baseMultiplier), expenses: generateVariation(9700000 * baseMultiplier), netIncome: generateVariation(3000000 * baseMultiplier) },
+        { month: 'Dec', revenue: generateVariation(14200000 * baseMultiplier), expenses: generateVariation(10800000 * baseMultiplier), netIncome: generateVariation(3400000 * baseMultiplier) }
+      ],
+      departmentFinances: [
+        {
+          department: 'Emergency',
+          revenue: generateVariation(3200000 * baseMultiplier),
+          expenses: generateVariation(2400000 * baseMultiplier),
+          profit: generateVariation(800000 * baseMultiplier),
+          profitMargin: generateVariation(25.0, 30)
+        },
+        {
+          department: 'Surgery',
+          revenue: generateVariation(4500000 * baseMultiplier),
+          expenses: generateVariation(3100000 * baseMultiplier),
+          profit: generateVariation(1400000 * baseMultiplier),
+          profitMargin: generateVariation(31.1, 25)
+        },
+        {
+          department: 'Cardiology',
+          revenue: generateVariation(2800000 * baseMultiplier),
+          expenses: generateVariation(1900000 * baseMultiplier),
+          profit: generateVariation(900000 * baseMultiplier),
+          profitMargin: generateVariation(32.1, 20)
+        },
+        {
+          department: hospital.type === 'Pediatric' ? 'Pediatrics' : 'Oncology',
+          revenue: generateVariation(1900000 * baseMultiplier),
+          expenses: generateVariation(1400000 * baseMultiplier),
+          profit: generateVariation(500000 * baseMultiplier),
+          profitMargin: generateVariation(26.3, 35)
+        },
+        {
+          department: hospital.type === 'Trauma' ? 'Trauma' : 'Orthopedics',
+          revenue: generateVariation(1100000 * baseMultiplier),
+          expenses: generateVariation(800000 * baseMultiplier),
+          profit: generateVariation(300000 * baseMultiplier),
+          profitMargin: generateVariation(27.3, 40)
+        }
+      ],
+      patientMetrics: {
+        totalPatients: generateVariation(15420 * baseMultiplier, 20),
+        inpatients: generateVariation(2180 * baseMultiplier, 25),
+        outpatients: generateVariation(11850 * baseMultiplier, 20),
+        emergencyVisits: generateVariation(1390 * baseMultiplier, 30),
+        averageStayDuration: generateVariation(4.2 * 10, 15) / 10,
+        occupancyRate: generateVariation(87.5, 10)
+      },
+      expenseBreakdown: [
+        { category: 'Salaries & Benefits', amount: generateVariation(5200000 * baseMultiplier), percentage: generateVariation(53.1, 8), color: '#3b82f6' },
+        { category: 'Medical Supplies', amount: generateVariation(1800000 * baseMultiplier), percentage: generateVariation(18.4, 15), color: '#10b981' },
+        { category: 'Equipment', amount: generateVariation(1200000 * baseMultiplier), percentage: generateVariation(12.2, 20), color: '#f59e0b' },
+        { category: 'Utilities', amount: generateVariation(600000 * baseMultiplier), percentage: generateVariation(6.1, 25), color: '#ef4444' },
+        { category: 'Maintenance', amount: generateVariation(500000 * baseMultiplier), percentage: generateVariation(5.1, 30), color: '#8b5cf6' },
+        { category: 'Other', amount: generateVariation(500000 * baseMultiplier), percentage: generateVariation(5.1, 35), color: '#6b7280' }
+      ],
+      cashFlowData: [
+        {
+          date: `${year}-01`,
+          operatingCashFlow: generateVariation(2100000 * baseMultiplier),
+          investingCashFlow: generateVariation(-800000 * baseMultiplier),
+          financingCashFlow: generateVariation(-300000 * baseMultiplier),
+          netCashFlow: generateVariation(1000000 * baseMultiplier)
+        },
+        {
+          date: `${year}-02`,
+          operatingCashFlow: generateVariation(1950000 * baseMultiplier),
+          investingCashFlow: generateVariation(-200000 * baseMultiplier),
+          financingCashFlow: generateVariation(-400000 * baseMultiplier),
+          netCashFlow: generateVariation(1350000 * baseMultiplier)
+        },
+        {
+          date: `${year}-03`,
+          operatingCashFlow: generateVariation(2300000 * baseMultiplier),
+          investingCashFlow: generateVariation(-1200000 * baseMultiplier),
+          financingCashFlow: generateVariation(-200000 * baseMultiplier),
+          netCashFlow: generateVariation(900000 * baseMultiplier)
+        },
+        {
+          date: `${year}-04`,
+          operatingCashFlow: generateVariation(2200000 * baseMultiplier),
+          investingCashFlow: generateVariation(-300000 * baseMultiplier),
+          financingCashFlow: generateVariation(-350000 * baseMultiplier),
+          netCashFlow: generateVariation(1550000 * baseMultiplier)
+        },
+        {
+          date: `${year}-05`,
+          operatingCashFlow: generateVariation(2500000 * baseMultiplier),
+          investingCashFlow: generateVariation(-150000 * baseMultiplier),
+          financingCashFlow: generateVariation(-300000 * baseMultiplier),
+          netCashFlow: generateVariation(2050000 * baseMultiplier)
+        },
+        {
+          date: `${year}-06`,
+          operatingCashFlow: generateVariation(2350000 * baseMultiplier),
+          investingCashFlow: generateVariation(-600000 * baseMultiplier),
+          financingCashFlow: generateVariation(-250000 * baseMultiplier),
+          netCashFlow: generateVariation(1500000 * baseMultiplier)
+        }
+      ]
+    };
+
+    hospitalDataByYear.push(hospitalData);
+  });
+});
+
+// Helper function to get data for specific hospital and year
+export const getHospitalData = (hospitalId: string, year: number): HospitalData | undefined => {
+  return hospitalDataByYear.find(data => data.hospitalId === hospitalId && data.year === year);
+};
+

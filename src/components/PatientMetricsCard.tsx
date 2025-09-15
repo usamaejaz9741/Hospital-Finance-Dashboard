@@ -1,0 +1,76 @@
+import React from 'react';
+import { PatientMetrics } from '../types/finance';
+import { formatNumber, formatPercentage } from '../utils/formatters';
+
+interface PatientMetricsCardProps {
+  metrics: PatientMetrics;
+}
+
+const PatientMetricsCard: React.FC<PatientMetricsCardProps> = ({ metrics }) => {
+  const metricItems = [
+    {
+      label: 'Total Patients',
+      value: formatNumber(metrics.totalPatients),
+      icon: '👥',
+      color: 'text-primary-600'
+    },
+    {
+      label: 'Inpatients',
+      value: formatNumber(metrics.inpatients),
+      icon: '🏥',
+      color: 'text-success-600'
+    },
+    {
+      label: 'Outpatients',
+      value: formatNumber(metrics.outpatients),
+      icon: '🚶',
+      color: 'text-warning-600'
+    },
+    {
+      label: 'Emergency Visits',
+      value: formatNumber(metrics.emergencyVisits),
+      icon: '🚨',
+      color: 'text-danger-600'
+    },
+    {
+      label: 'Avg Stay Duration',
+      value: `${metrics.averageStayDuration} days`,
+      icon: '📅',
+      color: 'text-purple-600'
+    },
+    {
+      label: 'Occupancy Rate',
+      value: formatPercentage(metrics.occupancyRate),
+      icon: '📊',
+      color: 'text-indigo-600'
+    }
+  ];
+
+  return (
+    <div className="card">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Patient Metrics</h2>
+        <button className="btn-secondary text-sm">
+          View Report
+        </button>
+      </div>
+      
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {metricItems.map((item, index) => (
+          <div key={index} className="text-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div className="text-2xl mb-2">{item.icon}</div>
+            <div className={`text-lg font-bold ${item.color}`}>
+              {item.value}
+            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              {item.label}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default PatientMetricsCard;
+
