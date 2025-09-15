@@ -31,8 +31,7 @@ const Header: React.FC<HeaderProps> = ({
 
   const yearOptions = availableYears.map(year => ({
     value: year.toString(),
-    label: year.toString(),
-    subtitle: year === 2024 ? 'Current Year' : undefined
+    label: year.toString()
   }));
 
   const selectedHospital = hospitals.find(h => h.id === selectedHospitalId);

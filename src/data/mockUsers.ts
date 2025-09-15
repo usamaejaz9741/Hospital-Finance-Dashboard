@@ -83,7 +83,7 @@ export const authService = {
     
     // For demo purposes, we'll simulate password verification
     // In a real app, we would properly hash and verify the password
-    if (password !== 'AdminHF2024!' && 
+    if (password !== 'UsamaHF2024!' && 
         password !== 'OwnerMG2024!' && 
         password !== 'ManagerMG2024!') {
       throw new Error('Incorrect password');
@@ -111,16 +111,16 @@ export const authService = {
       throw new Error('User with this email already exists');
     }
     
-    // Create new user
+    // Create new user with proper handling of optional properties
     const newUser: User = {
       id: `user-${Date.now()}`,
       email: userData.email,
       name: userData.name,
       role: userData.role,
-      hospitalId: userData.hospitalId,
-      hospitalIds: userData.hospitalIds,
       createdAt: new Date().toISOString(),
-      lastLogin: new Date().toISOString()
+      lastLogin: new Date().toISOString(),
+      ...(userData.hospitalId && { hospitalId: userData.hospitalId }),
+      ...(userData.hospitalIds && { hospitalIds: userData.hospitalIds })
     };
     
     // Add to mock users (in real app, this would be API call)

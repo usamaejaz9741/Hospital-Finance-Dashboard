@@ -7,6 +7,7 @@ import ExpensePieChart from './ExpensePieChart';
 import PatientMetricsCard from './PatientMetricsCard';
 import CashFlowChart from './CashFlowChart';
 import LoadingSpinner from './LoadingSpinner';
+import { logger } from '../utils/logger';
 import {
   hospitals,
   availableYears,
@@ -29,28 +30,57 @@ const Dashboard: React.FC = () => {
 
   // Update data when hospital or year changes
   useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    
     if (selectedHospitalId && selectedYear) {
       setIsLoading(true);
+      logger.info('Loading dashboard data', {
+        context: 'Dashboard',
+        data: { hospitalId: selectedHospitalId, year: selectedYear }
+      });
       
       // Simulate loading delay for better UX
-      const timeout = setTimeout(() => {
+      timeout = setTimeout(() => {
         const data = getHospitalData(selectedHospitalId, selectedYear);
+        if (!data) {
+          logger.warn('No data available for hospital and year', {
+            context: 'Dashboard',
+            data: { hospitalId: selectedHospitalId, year: selectedYear }
+          });
+        }
         setCurrentData(data || null);
         setIsLoading(false);
       }, 500);
-
-      return () => clearTimeout(timeout);
     }
+
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
   }, [selectedHospitalId, selectedYear]);
 
   const handleHospitalChange = (hospitalId: string) => {
     // Check if user has access to the selected hospital
     if (canAccessHospital(hospitalId)) {
+      logger.info('Hospital selection changed', {
+        context: 'Dashboard',
+        data: { hospitalId }
+      });
       setSelectedHospitalId(hospitalId);
+    } else {
+      logger.warn('Unauthorized hospital access attempt', {
+        context: 'Dashboard',
+        data: { hospitalId }
+      });
     }
   };
 
   const handleYearChange = (year: number) => {
+    logger.info('Year selection changed', {
+      context: 'Dashboard',
+      data: { year, previousYear: selectedYear }
+    });
     setSelectedYear(year);
   };
 

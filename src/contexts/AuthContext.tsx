@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { User, AuthContextType, SignUpData } from '../types/auth';
 import { authService } from '../data/mockUsers';
+import { logger } from '../utils/logger';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -22,11 +23,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (parsedUser && typeof parsedUser === 'object' && 'id' in parsedUser && 'email' in parsedUser) {
           setUser(parsedUser as User);
         } else {
-          console.warn('Invalid user data in localStorage, removing...');
+          logger.warn('Invalid user data in localStorage, removing...', { context: 'AuthContext' });
           localStorage.removeItem('hospitalFinanceUser');
         }
       } catch (error) {
-        console.error('Failed to parse stored user data:', error);
+        logger.error('Failed to parse stored user data', { context: 'AuthContext', data: error });
         localStorage.removeItem('hospitalFinanceUser');
       }
     }
@@ -43,7 +44,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(userData);
       localStorage.setItem('hospitalFinanceUser', JSON.stringify(userData));
     } catch (error) {
-      console.error('Sign in failed:', error);
+      logger.error('Sign in failed', { context: 'AuthContext', data: error });
       throw error; // Re-throw to let the component handle the error
     } finally {
       setIsLoading(false);
@@ -60,7 +61,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(newUser);
       localStorage.setItem('hospitalFinanceUser', JSON.stringify(newUser));
     } catch (error) {
-      console.error('Sign up failed:', error);
+      logger.error('Sign up failed', { context: 'AuthContext', data: error });
       throw error; // Re-throw to let the component handle the error
     } finally {
       setIsLoading(false);
@@ -68,6 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const signOut = () => {
+    logger.info('User signed out', { context: 'AuthContext', data: { userId: user?.id } });
     setUser(null);
     localStorage.removeItem('hospitalFinanceUser');
   };

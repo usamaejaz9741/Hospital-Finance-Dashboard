@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { validatePassword, formatAuthError } from '../../utils/auth';
+import { demoAccounts } from '../../config/demo';
+import { logger } from '../../utils/logger';
 
 interface SignInPageProps {
   onSwitchToSignUp: () => void;
@@ -12,36 +15,26 @@ const SignInPage: React.FC<SignInPageProps> = ({ onSwitchToSignUp }: SignInPageP
   const [showPassword, setShowPassword] = useState(false);
   const { signIn, isLoading } = useAuth();
 
-  // Validates password before submission
-  const validatePassword = (value: string): string | null => {
-    if (value.length === 0) return 'Password is required';
-    if (value.length < 6) return 'Password must be at least 6 characters long';
-    return null;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
 
     // Validate password before submission
-    const passwordError = validatePassword(password);
-    if (passwordError) {
-      setErrorMessage(passwordError);
+    const validation = validatePassword(password);
+    if (!validation.isValid) {
+      setErrorMessage(validation.errors[0] || 'Invalid password'); // Show first error for UX
       return;
     }
 
     try {
+      logger.info('Sign in attempt', { context: 'SignInPage', data: { email } });
       await signIn(email, password);
+      logger.info('Sign in successful', { context: 'SignInPage', data: { email } });
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'An error occurred');
+      logger.error('Sign in failed', { context: 'SignInPage', data: { email, error } });
+      setErrorMessage(formatAuthError(error));
     }
   };
-
-  const demoAccounts = [
-    { role: 'Admin', email: 'admin@hospitalfinance.com', password: 'AdminHF2024!' },
-    { role: 'Hospital Owner', email: 'owner@metrogeneral.com', password: 'OwnerMG2024!' },
-    { role: 'Branch Manager', email: 'manager@metrogeneral.com', password: 'ManagerMG2024!' }
-  ];
 
   const fillDemo = (email: string, password: string) => {
     setEmail(email);

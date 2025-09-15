@@ -66,7 +66,7 @@ const ExpensePieChart: React.FC<ExpensePieChartProps> = ({ data }) => {
   }
 
   const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
-    if (active && payload && payload.length) {
+    if (active && payload?.[0]?.payload) {
       const data = payload[0].payload;
       return (
         <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg">

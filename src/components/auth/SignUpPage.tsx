@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { UserRole } from '../../types/auth';
+import { UserRole, SignUpData } from '../../types/auth';
 import { hospitals } from '../../data/mockData';
 import { roleDescriptions } from '../../data/mockUsers';
 
@@ -48,14 +48,22 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
     }
 
     try {
-      await signUp({
+      const signUpData: SignUpData = {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        role: formData.role,
-        hospitalId: formData.role === 'branch_owner' ? formData.hospitalId : undefined,
-        hospitalIds: formData.role === 'hospital_owner' ? formData.hospitalIds : undefined
-      });
+        role: formData.role
+      };
+
+      if (formData.role === 'branch_owner' && formData.hospitalId) {
+        signUpData.hospitalId = formData.hospitalId;
+      }
+      
+      if (formData.role === 'hospital_owner' && formData.hospitalIds.length > 0) {
+        signUpData.hospitalIds = formData.hospitalIds;
+      }
+
+      await signUp(signUpData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     }
