@@ -141,7 +141,7 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="text-gray-900 dark:text-gray-100">
+    <div className="text-gray-900 dark:text-gray-100 relative">
       <Header
         hospitals={filteredHospitals}
         selectedHospitalId={selectedHospitalId}
@@ -151,11 +151,11 @@ const Dashboard: React.FC = () => {
         onYearChange={handleYearChange}
       />
       
-      <main className="p-4 sm:p-6">
+      <main className="p-3 sm:p-4 lg:p-6 xl:p-8">
         {/* Key Metrics */}
-        <div className="mb-8">
+        <div className="mb-6 lg:mb-8">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Key Financial Metrics</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
             {currentData.financialMetrics.map((metric) => (
               <MetricCard key={metric.id} metric={metric} />
             ))}
@@ -163,24 +163,26 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <div className="lg:col-span-2">
+        <div className="space-y-6 lg:space-y-8 mb-6 lg:mb-8">
+          {/* Revenue Chart - Full Width */}
+          <div className="w-full">
             <RevenueChart data={currentData.revenueData} />
+          </div>
+
+          {/* Side-by-side charts on larger screens */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
+            <ExpensePieChart data={currentData.expenseBreakdown} />
+            <CashFlowChart data={currentData.cashFlowData} />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <ExpensePieChart data={currentData.expenseBreakdown} />
-          <CashFlowChart data={currentData.cashFlowData} />
-        </div>
-
         {/* Patient Metrics */}
-        <div className="mb-8">
+        <div className="mb-6 lg:mb-8">
           <PatientMetricsCard metrics={currentData.patientMetrics} />
         </div>
 
         {/* Department Performance */}
-        <div className="mb-8">
+        <div className="mb-6 lg:mb-8">
           <DepartmentTable departments={currentData.departmentFinances} />
         </div>
 

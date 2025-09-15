@@ -2,12 +2,15 @@ import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { ExpenseBreakdown } from '../types/finance';
 import { formatCurrency, formatPercentage } from '../utils/formatters';
+import { useChartTheme } from '../hooks/useChartTheme';
 
 interface ExpensePieChartProps {
   data: ExpenseBreakdown[];
 }
 
 const ExpensePieChart: React.FC<ExpensePieChartProps> = ({ data }) => {
+  const { chartTheme } = useChartTheme();
+  
   if (!data || data.length === 0) {
     return (
       <div className="card">
@@ -69,12 +72,22 @@ const ExpensePieChart: React.FC<ExpensePieChartProps> = ({ data }) => {
     if (active && payload?.[0]?.payload) {
       const data = payload[0].payload;
       return (
-        <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg">
-          <p className="font-medium text-gray-900 mb-1">{data.category}</p>
-          <p className="text-sm text-gray-600">
+        <div 
+          className="p-4 rounded-lg shadow-lg border backdrop-blur-sm"
+          style={{ 
+            backgroundColor: chartTheme.tooltip.backgroundColor,
+            borderColor: chartTheme.tooltip.border,
+            color: chartTheme.tooltip.textColor,
+            boxShadow: `0 10px 15px -3px ${chartTheme.tooltip.shadowColor}`
+          }}
+        >
+          <p className="font-medium mb-1" style={{ color: chartTheme.tooltip.textColor }}>
+            {data.category}
+          </p>
+          <p className="text-sm" style={{ color: chartTheme.tooltip.textColor }}>
             Amount: {formatCurrency(data.amount)}
           </p>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm" style={{ color: chartTheme.tooltip.textColor }}>
             Percentage: {formatPercentage(data.percentage)}
           </p>
         </div>
@@ -88,14 +101,14 @@ const ExpensePieChart: React.FC<ExpensePieChartProps> = ({ data }) => {
     
     return (
       <div className="mt-4">
-        <div className="grid grid-cols-2 gap-2 text-sm">
-          {payload.map((entry, index: number) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+          {data.map((item, index: number) => (
             <div key={index} className="flex items-center">
               <div 
                 className="w-3 h-3 rounded-full mr-2 flex-shrink-0"
-                style={{ backgroundColor: entry.color }}
+                style={{ backgroundColor: item.color }}
               ></div>
-              <span className="text-gray-700 dark:text-gray-300 truncate">{entry.value}</span>
+              <span className="text-gray-700 dark:text-gray-300 truncate">{item.category}</span>
             </div>
           ))}
         </div>
@@ -112,15 +125,15 @@ const ExpensePieChart: React.FC<ExpensePieChartProps> = ({ data }) => {
         </div>
       </div>
       
-      <div className="h-80">
+      <div className="h-80 sm:h-96">
         <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
+          <PieChart margin={{ top: 5, right: 0, bottom: 5, left: 0 }}>
             <Pie
               data={data}
               cx="50%"
-              cy="45%"
-              outerRadius={80}
-              innerRadius={40}
+              cy="50%"
+              outerRadius="95%"
+              innerRadius="47%"
               paddingAngle={2}
               dataKey="amount"
             >

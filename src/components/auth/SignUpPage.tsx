@@ -88,21 +88,21 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-blue-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-lg w-full space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-lg w-full space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="text-center">
           <div className="mx-auto w-16 h-16 bg-primary-600 rounded-xl flex items-center justify-center mb-4">
             <span className="text-white font-bold text-2xl">H</span>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">Create Account</h2>
-          <p className="mt-2 text-gray-600">Join the Hospital Finance Dashboard</p>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Create Account</h2>
+          <p className="mt-2 text-gray-600 dark:text-gray-300">Join the Hospital Finance Dashboard</p>
         </div>
 
         {/* Sign Up Form */}
-        <form className="bg-white rounded-lg shadow-lg p-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 sm:p-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-danger-50 border border-danger-200 text-danger-700 px-4 py-3 rounded-lg text-sm">
+            <div className="bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800 text-danger-700 dark:text-danger-300 px-4 py-3 rounded-lg text-sm">
               {error}
             </div>
           )}
@@ -110,7 +110,7 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
           {/* Basic Information */}
           <div className="grid grid-cols-1 gap-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Full Name
               </label>
               <input
@@ -119,13 +119,13 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
                 required
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 placeholder="Enter your full name"
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Email Address
               </label>
               <input
@@ -134,13 +134,13 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
                 required
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 placeholder="Enter your email"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Password
               </label>
               <div className="relative">
@@ -150,13 +150,13 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
                   required
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 pr-10"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 pr-10"
                   placeholder="Create a password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                 >
                   {showPassword ? (
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -173,7 +173,7 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Confirm Password
               </label>
               <input
@@ -182,7 +182,7 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
                 required
                 value={formData.confirmPassword}
                 onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 placeholder="Confirm your password"
               />
             </div>
@@ -190,7 +190,7 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
 
           {/* Role Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
               Account Type
             </label>
             <div className="space-y-3">
@@ -203,15 +203,15 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
                     value={role}
                     checked={formData.role === role}
                     onChange={(e) => handleInputChange('role', e.target.value as UserRole)}
-                    className="mt-1 h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+                    className="mt-1 h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
                     disabled={role === 'admin'} // Admin accounts are created differently
                   />
                   <div className="ml-3">
-                    <label htmlFor={role} className="block text-sm font-medium text-gray-900">
+                    <label htmlFor={role} className="block text-sm font-medium text-gray-900 dark:text-white">
                       {roleDescriptions[role].title}
-                      {role === 'admin' && <span className="text-gray-400 ml-2">(Contact admin)</span>}
+                      {role === 'admin' && <span className="text-gray-400 dark:text-gray-500 ml-2">(Contact admin)</span>}
                     </label>
-                    <p className="text-xs text-gray-600">
+                    <p className="text-xs text-gray-600 dark:text-gray-400">
                       {roleDescriptions[role].description}
                     </p>
                   </div>
@@ -223,32 +223,39 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
           {/* Hospital Selection */}
           {formData.role === 'branch_owner' && (
             <div>
-              <label htmlFor="hospitalId" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="hospitalId" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Select Hospital
               </label>
-              <select
-                id="hospitalId"
-                value={formData.hospitalId}
-                onChange={(e) => handleInputChange('hospitalId', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                required
-              >
-                <option value="">Choose a hospital...</option>
-                {hospitals.map((hospital) => (
-                  <option key={hospital.id} value={hospital.id}>
-                    {hospital.name} ({hospital.type} • {hospital.location})
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  id="hospitalId"
+                  value={formData.hospitalId}
+                  onChange={(e) => handleInputChange('hospitalId', e.target.value)}
+                  className="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none"
+                  required
+                >
+                  <option value="">Choose a hospital...</option>
+                  {hospitals.map((hospital) => (
+                    <option key={hospital.id} value={hospital.id}>
+                      {hospital.name} ({hospital.type} • {hospital.location})
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                  <svg className="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
             </div>
           )}
 
           {formData.role === 'hospital_owner' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Select Hospitals (you can select multiple)
               </label>
-              <div className="space-y-2 max-h-32 overflow-y-auto border border-gray-300 rounded-lg p-3">
+              <div className="space-y-2 max-h-32 overflow-y-auto border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-gray-50 dark:bg-gray-700">
                 {hospitals.map((hospital) => (
                   <div key={hospital.id} className="flex items-center">
                     <input
@@ -256,11 +263,11 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
                       type="checkbox"
                       checked={formData.hospitalIds.includes(hospital.id)}
                       onChange={(e) => handleHospitalSelection(hospital.id, e.target.checked)}
-                      className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded"
                     />
-                    <label htmlFor={`hospital-${hospital.id}`} className="ml-2 text-sm text-gray-900">
+                    <label htmlFor={`hospital-${hospital.id}`} className="ml-2 text-sm text-gray-900 dark:text-white">
                       {hospital.name}
-                      <span className="text-gray-500 ml-1">({hospital.type} • {hospital.location})</span>
+                      <span className="text-gray-500 dark:text-gray-400 ml-1">({hospital.type} • {hospital.location})</span>
                     </label>
                   </div>
                 ))}
@@ -284,12 +291,12 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
           </button>
 
           <div className="text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Already have an account?{' '}
               <button
                 type="button"
                 onClick={onSwitchToSignIn}
-                className="text-primary-600 hover:text-primary-700 font-medium"
+                className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
               >
                 Sign in
               </button>
@@ -298,7 +305,7 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
         </form>
 
         {/* Footer */}
-        <div className="text-center text-xs text-gray-500">
+        <div className="text-center text-xs text-gray-500 dark:text-gray-400">
           <p>© 2024 Hospital Finance Dashboard. All rights reserved.</p>
         </div>
       </div>

@@ -11,7 +11,7 @@ function App() {
         <ErrorBoundary>
           <AuthProvider>
             <ErrorBoundary>
-              <div className="App min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-200 overflow-visible">
+              <div className="App min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-200 overflow-x-hidden">
                 <AuthWrapper>
                   <ErrorBoundary>
                     <Dashboard />

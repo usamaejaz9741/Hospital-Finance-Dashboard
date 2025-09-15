@@ -2,12 +2,14 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { CashFlowData } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
+import { useChartTheme } from '../hooks/useChartTheme';
 
 interface CashFlowChartProps {
   data: CashFlowData[];
 }
 
 const CashFlowChart: React.FC<CashFlowChartProps> = ({ data }) => {
+  const { chartTheme } = useChartTheme();
   interface TooltipPayload {
     name: string;
     value: number;
@@ -23,8 +25,16 @@ const CashFlowChart: React.FC<CashFlowChartProps> = ({ data }) => {
   const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg">
-          <p className="font-medium text-gray-900 mb-2">{label}</p>
+        <div 
+          className="p-4 rounded-lg shadow-lg border backdrop-blur-sm"
+          style={{ 
+            backgroundColor: chartTheme.tooltip.backgroundColor,
+            borderColor: chartTheme.tooltip.border,
+            color: chartTheme.tooltip.textColor,
+            boxShadow: `0 10px 15px -3px ${chartTheme.tooltip.shadowColor}`
+          }}
+        >
+          <p className="font-medium mb-2" style={{ color: chartTheme.tooltip.textColor }}>{label}</p>
           {payload.map((entry, index: number) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
               {`${entry.name}: ${formatCurrency(entry.value)}`}
@@ -40,63 +50,47 @@ const CashFlowChart: React.FC<CashFlowChartProps> = ({ data }) => {
     <div className="card">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Cash Flow Analysis</h2>
-        <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-300">
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-primary-500 rounded-full mr-2"></div>
-            <span>Operating</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-warning-500 rounded-full mr-2"></div>
-            <span>Investing</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
-            <span>Financing</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-success-500 rounded-full mr-2"></div>
-            <span>Net Cash Flow</span>
-          </div>
-        </div>
       </div>
       
-      <div className="h-80">
+      <div className="h-64 sm:h-80">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+            <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid.stroke} />
             <XAxis 
               dataKey="date" 
-              stroke="#64748b"
+              stroke={chartTheme.axis.stroke}
               fontSize={12}
             />
             <YAxis 
-              stroke="#64748b"
+              stroke={chartTheme.axis.stroke}
               fontSize={12}
               tickFormatter={(value) => `$${(value / 1000000).toFixed(1)}M`}
             />
             <Tooltip content={<CustomTooltip />} />
-            <Legend />
+            <Legend 
+              wrapperStyle={{ color: chartTheme.legend.color }}
+            />
             <Bar 
               dataKey="operatingCashFlow" 
-              fill="#3b82f6" 
-              name="Operating Cash Flow"
+              fill={chartTheme.colors.primary} 
+              name="Operating"
               radius={[2, 2, 0, 0]}
             />
             <Bar 
               dataKey="investingCashFlow" 
-              fill="#f59e0b" 
-              name="Investing Cash Flow"
+              fill={chartTheme.colors.warning} 
+              name="Investing"
               radius={[2, 2, 0, 0]}
             />
             <Bar 
               dataKey="financingCashFlow" 
-              fill="#8b5cf6" 
-              name="Financing Cash Flow"
+              fill={chartTheme.colors.secondary} 
+              name="Financing"
               radius={[2, 2, 0, 0]}
             />
             <Bar 
               dataKey="netCashFlow" 
-              fill="#22c55e" 
+              fill={chartTheme.colors.success} 
               name="Net Cash Flow"
               radius={[2, 2, 0, 0]}
             />

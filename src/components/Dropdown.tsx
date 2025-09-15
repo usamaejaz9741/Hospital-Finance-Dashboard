@@ -23,6 +23,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [zIndex, setZIndex] = useState(10);
 
   const selectedOption = options.find(option => option.value === value);
 
@@ -30,6 +31,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
+        setZIndex(10);
       }
     };
 
@@ -42,26 +44,42 @@ const Dropdown: React.FC<DropdownProps> = ({
   const handleOptionClick = (optionValue: string) => {
     onChange(optionValue);
     setIsOpen(false);
+    setZIndex(10);
+  };
+
+  const handleToggle = () => {
+    if (!isOpen) {
+      // Set higher z-index when opening
+      setZIndex(70);
+    } else {
+      // Reset z-index when closing
+      setZIndex(10);
+    }
+    setIsOpen(!isOpen);
   };
 
   return (
-    <div ref={dropdownRef} className={`dropdown-container relative ${className}`}>
+    <div 
+      ref={dropdownRef} 
+      className={`dropdown-container relative ${className}`}
+      style={{ zIndex: zIndex }}
+    >
       <button
         type="button"
         className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 hover:border-gray-400 dark:hover:border-gray-500 transition-colors duration-200"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggle}
       >
         <div className="flex items-center justify-between">
           <div className="min-w-0 flex-1">
             {selectedOption ? (
-              <div>
-                <div className="font-medium text-gray-900 dark:text-white">{selectedOption.label}</div>
+              <div className="min-w-0">
+                <div className="font-medium text-gray-900 dark:text-white truncate">{selectedOption.label}</div>
                 {selectedOption.subtitle && (
-                  <div className="text-sm text-gray-500 dark:text-gray-400">{selectedOption.subtitle}</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400 truncate">{selectedOption.subtitle}</div>
                 )}
               </div>
             ) : (
-              <span className="text-gray-500 dark:text-gray-400">{placeholder}</span>
+              <span className="text-gray-500 dark:text-gray-400 truncate">{placeholder}</span>
             )}
           </div>
           <div className="ml-2 flex-shrink-0">
@@ -83,7 +101,6 @@ const Dropdown: React.FC<DropdownProps> = ({
         <div 
           className="absolute w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg dark:shadow-gray-900/20 max-h-60 overflow-auto"
           style={{ 
-            zIndex: 99999,
             position: 'absolute',
             top: '100%',
             left: 0,
@@ -99,10 +116,12 @@ const Dropdown: React.FC<DropdownProps> = ({
               }`}
               onClick={() => handleOptionClick(option.value)}
             >
-              <div className="font-medium text-gray-900 dark:text-white">{option.label}</div>
-              {option.subtitle && (
-                <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">{option.subtitle}</div>
-              )}
+              <div className="min-w-0">
+                <div className="font-medium text-gray-900 dark:text-white truncate">{option.label}</div>
+                {option.subtitle && (
+                  <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">{option.subtitle}</div>
+                )}
+              </div>
             </button>
           ))}
         </div>

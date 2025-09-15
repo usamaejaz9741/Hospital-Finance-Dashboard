@@ -11,6 +11,38 @@
     <title>Hospital Finance Dashboard</title>
   </head>
   <body>
+    <!-- Theme initialization script to prevent FOUC -->
+    <script>
+      (function() {
+        try {
+          const stored = localStorage.getItem('hospitalFinanceTheme');
+          const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          
+          let shouldBeDark = false;
+          
+          if (stored === 'dark') {
+            shouldBeDark = true;
+          } else if (stored === 'light') {
+            shouldBeDark = false;
+          } else {
+            // Auto or no preference stored - use system
+            shouldBeDark = systemDark;
+          }
+          
+          if (shouldBeDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {
+          // Fallback to system preference if localStorage fails
+          if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+          }
+        }
+      })();
+    </script>
+    
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

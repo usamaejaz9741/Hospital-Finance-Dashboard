@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Dropdown from './Dropdown';
 import ThemeToggle from './ThemeToggle';
 import { Hospital } from '../types/finance';
@@ -23,6 +23,20 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const { user, signOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Handle body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
   const hospitalOptions = hospitals.map(hospital => ({
     value: hospital.id,
     label: hospital.name,
@@ -60,9 +74,9 @@ const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-6">
+          <div className="hidden xl:flex items-center space-x-6">
             {/* Dropdowns */}
-            <div className="flex items-end space-x-4">
+            <div className="flex items-end space-x-2 sm:space-x-4 min-w-0">
               <div className="flex flex-col space-y-1">
                 <label className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">
                   Hospital
@@ -72,7 +86,7 @@ const Header: React.FC<HeaderProps> = ({
                   value={selectedHospitalId}
                   onChange={onHospitalChange}
                   placeholder="Select Hospital"
-                  className="w-64"
+                  className="w-full sm:w-64"
                 />
               </div>
               
@@ -85,7 +99,7 @@ const Header: React.FC<HeaderProps> = ({
                   value={selectedYear.toString()}
                   onChange={(value) => onYearChange(parseInt(value))}
                   placeholder="Select Year"
-                  className="w-40"
+                  className="w-full sm:w-40"
                 />
               </div>
             </div>
@@ -94,13 +108,13 @@ const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center space-x-3">
               <ThemeToggle />
               <button 
-                className="btn-secondary text-sm"
+                className="btn-secondary text-sm hidden 2xl:inline-flex"
                 aria-label="Export financial report"
               >
                 Export Report
               </button>
               <button 
-                className="btn-primary text-sm"
+                className="btn-primary text-sm hidden 2xl:inline-flex"
                 aria-label="Generate financial analysis"
               >
                 Generate Analysis
@@ -132,14 +146,14 @@ const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Mobile menu button */}
-          <div className="lg:hidden flex items-center space-x-2">
+          <div className="xl:hidden flex items-center space-x-2">
             <ThemeToggle size="sm" />
             <button
               type="button"
-              className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+              className="p-2 rounded-md text-gray-900 dark:text-gray-100 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 border border-gray-300 dark:border-gray-600"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-controls="mobile-menu"
-              aria-expanded="false"
+              aria-expanded={isMobileMenuOpen}
             >
               <span className="sr-only">Open main menu</span>
               {!isMobileMenuOpen ? (
@@ -155,84 +169,128 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Mobile menu */}
-        <div className={`lg:hidden ${isMobileMenuOpen ? 'block' : 'hidden'}`} id="mobile-menu">
-          <div className="px-2 pt-2 pb-3 space-y-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-            {/* User Info */}
-            <div className="flex items-center space-x-3 px-3 py-2">
-              <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-medium">
-                  {user?.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-                </span>
+        {/* Mobile full-screen menu */}
+        {isMobileMenuOpen && (
+          <div className="xl:hidden fixed inset-0 z-50">
+            {/* Full-screen menu */}
+            <div 
+              className={`fixed top-0 right-0 h-full w-full bg-white dark:bg-gray-800 shadow-xl transform transition-transform duration-300 ease-in-out ${
+                isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+              }`}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
+                    <span className="text-white font-bold text-lg">H</span>
+                  </div>
+                  <span className="font-semibold text-gray-900 dark:text-white">Menu</span>
+                </div>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
-              <div>
-                <p className="font-medium text-gray-900 dark:text-white">{user?.name}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">{user?.role.replace('_', ' ')}</p>
-              </div>
-            </div>
 
-            {/* Mobile Dropdowns */}
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Hospital
-                </label>
-                <Dropdown
-                  options={hospitalOptions}
-                  value={selectedHospitalId}
-                  onChange={onHospitalChange}
-                  placeholder="Select Hospital"
-                  className="w-full"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Year
-                </label>
-                <Dropdown
-                  options={yearOptions}
-                  value={selectedYear.toString()}
-                  onChange={(value) => onYearChange(parseInt(value))}
-                  placeholder="Select Year"
-                  className="w-full"
-                />
-              </div>
-            </div>
+              {/* Content */}
+              <div className="flex flex-col h-full">
+                <div className="flex-1 overflow-y-auto p-4 space-y-6">
+                  {/* User Info */}
+                  <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center">
+                        <span className="text-white font-medium text-lg">
+                          {user?.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-gray-900 dark:text-white truncate">{user?.name}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 capitalize truncate">
+                          {user?.role.replace('_', ' ')}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* Sign Out Button - Close to user info */}
+                    <button
+                      onClick={signOut}
+                      className="w-full flex items-center justify-center px-3 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors font-medium text-sm border border-red-200 dark:border-red-800"
+                      aria-label="Sign out of your account"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      Sign Out
+                    </button>
+                  </div>
 
-            {/* Mobile Action Buttons */}
-            <div className="space-y-2 pt-4 border-t border-gray-200 dark:border-gray-700">
-              <button 
-                className="w-full btn-secondary text-left justify-start"
-                aria-label="Export financial report"
-              >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Export Report
-              </button>
-              <button 
-                className="w-full btn-primary text-left justify-start"
-                aria-label="Generate financial analysis"
-              >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-                Generate Analysis
-              </button>
-              <button
-                onClick={signOut}
-                className="w-full flex items-center px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
-                aria-label="Sign out of your account"
-              >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                Sign Out
-              </button>
+                  {/* Filters Section */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-white">Filters</h3>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Hospital
+                      </label>
+                      <Dropdown
+                        options={hospitalOptions}
+                        value={selectedHospitalId}
+                        onChange={onHospitalChange}
+                        placeholder="Select Hospital"
+                        className="w-full"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Year
+                      </label>
+                      <Dropdown
+                        options={yearOptions}
+                        value={selectedYear.toString()}
+                        onChange={(value) => onYearChange(parseInt(value))}
+                        placeholder="Select Year"
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Actions Section */}
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-white">Actions</h3>
+                    
+                    <button 
+                      className="w-full btn-secondary text-left justify-start"
+                      aria-label="Export financial report"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      Export Report
+                    </button>
+                    
+                    <button 
+                      className="w-full btn-primary text-left justify-start"
+                      aria-label="Generate financial analysis"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                      Generate Analysis
+                    </button>
+                  </div>
+                </div>
+
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </header>
   );

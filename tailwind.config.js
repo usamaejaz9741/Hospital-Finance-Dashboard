@@ -6,6 +6,14 @@ export default {
   ],
   darkMode: 'class',
   theme: {
+    screens: {
+      'xs': '475px',
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      '2xl': '1536px',
+    },
     extend: {
       colors: {
         primary: {
@@ -80,16 +88,20 @@ export default {
           800: '#3730a3',
           900: '#312e81',
         },
-        // Dark mode specific colors
+        // Dark mode specific colors - optimized for better contrast
         dark: {
           background: '#0f172a',
           surface: '#1e293b',
           card: '#334155',
           border: '#475569',
           text: {
-            primary: '#f1f5f9',
-            secondary: '#cbd5e1',
+            primary: '#f8fafc',
+            secondary: '#e2e8f0',
             muted: '#94a3b8',
+          },
+          hover: {
+            surface: '#374151',
+            card: '#475569',
           }
         }
       },
