@@ -1,12 +1,6 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
 import Header from './Header';
 import MetricCard from './MetricCard';
-import RevenueChart from './RevenueChart';
-import DepartmentTable from './DepartmentTable';
-import ExpensePieChart from './ExpensePieChart';
-import PatientMetricsCard from './PatientMetricsCard';
-import CashFlowChart from './CashFlowChart';
-import LoadingSpinner from './LoadingSpinner';
 import { logger } from '../utils/logger';
 import {
   hospitals,
@@ -15,9 +9,25 @@ import {
 } from '../data/mockData';
 import { HospitalData } from '../types/finance';
 import { useAuth } from '../hooks/useAuth';
+import Dropdown from './Dropdown';
+import Button from './Button';
+import DashboardLoading from './DashboardLoading';
+import DashboardNoData from './DashboardNoData';
+import LoadingSpinner from './LoadingSpinner';
 
+const RevenueChart = lazy(() => import('./RevenueChart'));
+const ExpensePieChart = lazy(() => import('./ExpensePieChart'));
+const CashFlowChart = lazy(() => import('./CashFlowChart'));
+const PatientMetricsCard = lazy(() => import('./PatientMetricsCard'));
+const DepartmentTable = lazy(() => import('./DepartmentTable'));
+
+/**
+ * Main dashboard component for displaying hospital financial data.
+ * 
+ * @returns {React.ReactElement} The rendered dashboard component.
+ */
 const Dashboard: React.FC = () => {
-  const { getAccessibleHospitals, canAccessHospital } = useAuth();
+  const { user, signOut, getAccessibleHospitals, canAccessHospital } = useAuth();
   const accessibleHospitals = getAccessibleHospitals();
   const filteredHospitals = useMemo(() => {
     return hospitals.filter(h => accessibleHospitals.includes(h.id));
@@ -29,6 +39,7 @@ const Dashboard: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<number>(2024);
   const [currentData, setCurrentData] = useState<HospitalData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [showFilters, setShowFilters] = useState(false);
 
   // Update data when hospital or year changes
   useEffect(() => {
@@ -86,59 +97,48 @@ const Dashboard: React.FC = () => {
     setSelectedYear(year);
   }, [selectedYear]);
 
+  const hospitalOptions = useMemo(() => {
+    return filteredHospitals.map(hospital => ({
+      value: hospital.id,
+      label: hospital.name,
+      subtitle: `${hospital.type} • ${hospital.location}`
+    }));
+  }, [filteredHospitals]);
+
+  const yearOptions = useMemo(() => {
+    return availableYears.map(year => ({
+      value: year.toString(),
+      label: year.toString()
+    }));
+  }, []);
+
   if (isLoading) {
     return (
-      <div className="text-gray-900 dark:text-gray-100">
-        <Header
-          hospitals={filteredHospitals}
-          selectedHospitalId={selectedHospitalId}
-          selectedYear={selectedYear}
-          availableYears={availableYears}
-          onHospitalChange={handleHospitalChange}
-          onYearChange={handleYearChange}
-        />
-        
-        <main className="p-4 sm:p-6">
-          <LoadingSpinner
-            size="md"
-            text="Loading dashboard data..."
-            subtext={`${hospitals.find(h => h.id === selectedHospitalId)?.name} • ${selectedYear}`}
-            className="min-h-96"
-          />
-        </main>
-      </div>
+      <DashboardLoading 
+        hospitals={filteredHospitals}
+        selectedHospitalId={selectedHospitalId}
+        selectedYear={selectedYear}
+        availableYears={availableYears}
+        onHospitalChange={handleHospitalChange}
+        onYearChange={handleYearChange}
+        user={user}
+        signOut={signOut}
+      />
     );
   }
 
   if (!currentData) {
     return (
-      <div className="text-gray-900 dark:text-gray-100">
-        <Header
-          hospitals={filteredHospitals}
-          selectedHospitalId={selectedHospitalId}
-          selectedYear={selectedYear}
-          availableYears={availableYears}
-          onHospitalChange={handleHospitalChange}
-          onYearChange={handleYearChange}
-        />
-        
-        <main className="p-4 sm:p-6">
-          <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
-              <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No Data Available</h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              No financial data found for the selected hospital and year combination.
-            </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-              Please select a different hospital or year.
-            </p>
-          </div>
-        </main>
-      </div>
+      <DashboardNoData
+        hospitals={filteredHospitals}
+        selectedHospitalId={selectedHospitalId}
+        selectedYear={selectedYear}
+        availableYears={availableYears}
+        onHospitalChange={handleHospitalChange}
+        onYearChange={handleYearChange}
+        user={user}
+        signOut={signOut}
+      />
     );
   }
 
@@ -153,10 +153,57 @@ const Dashboard: React.FC = () => {
         onYearChange={handleYearChange}
       />
       
-      <main className="p-3 sm:p-4 lg:p-6 xl:p-8">
+      <main className="p-3 sm:p-4 lg:p-6 xl:p-8 max-w-screen-2xl mx-auto">
+        {/* Responsive Filter Bar */}
+        <div className="xl:hidden mb-4">
+          <Button 
+            onClick={() => setShowFilters(!showFilters)}
+            className="w-full"
+            aria-expanded={showFilters}
+            aria-controls="mobile-filter-panel"
+          >
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            {showFilters ? 'Hide' : 'Show'} Filters
+          </Button>
+
+          {showFilters && (
+            <div id="mobile-filter-panel" className="mt-4 p-4 bg-white dark:bg-dark-surface rounded-lg shadow-md border border-gray-200 dark:border-dark-border">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Hospital
+                  </label>
+                  <Dropdown
+                    options={hospitalOptions}
+                    value={selectedHospitalId}
+                    onChange={handleHospitalChange}
+                    placeholder="Select Hospital"
+                    className="w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Year
+                  </label>
+                  <Dropdown
+                    options={yearOptions}
+                    value={selectedYear.toString()}
+                    onChange={(value) => handleYearChange(parseInt(value))}
+                    placeholder="Select Year"
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        
         {/* Key Metrics */}
         <div className="mb-6 lg:mb-8">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Key Financial Metrics</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Key Financial Metrics</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
             {currentData.financialMetrics.map((metric) => (
               <MetricCard key={metric.id} metric={metric} />
@@ -164,29 +211,31 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Charts Section */}
-        <div className="space-y-6 lg:space-y-8 mb-6 lg:mb-8">
-          {/* Revenue Chart - Full Width */}
-          <div className="w-full">
-            <RevenueChart data={currentData.revenueData} />
+        <Suspense fallback={<LoadingSpinner text="Loading charts..." />}>
+          {/* Charts Section */}
+          <div className="space-y-6 lg:space-y-8 mb-6 lg:mb-8">
+            {/* Revenue Chart - Full Width */}
+            <div className="w-full">
+              <RevenueChart data={currentData.revenueData} />
+            </div>
+
+            {/* Side-by-side charts on larger screens */}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
+              <ExpensePieChart data={currentData.expenseBreakdown} />
+              <CashFlowChart data={currentData.cashFlowData} />
+            </div>
           </div>
 
-          {/* Side-by-side charts on larger screens */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
-            <ExpensePieChart data={currentData.expenseBreakdown} />
-            <CashFlowChart data={currentData.cashFlowData} />
+          {/* Patient Metrics */}
+          <div className="mb-6 lg:mb-8">
+            <PatientMetricsCard metrics={currentData.patientMetrics} />
           </div>
-        </div>
 
-        {/* Patient Metrics */}
-        <div className="mb-6 lg:mb-8">
-          <PatientMetricsCard metrics={currentData.patientMetrics} />
-        </div>
-
-        {/* Department Performance */}
-        <div className="mb-6 lg:mb-8">
-          <DepartmentTable departments={currentData.departmentFinances} />
-        </div>
+          {/* Department Performance */}
+          <div className="mb-6 lg:mb-8">
+            <DepartmentTable departments={currentData.departmentFinances} />
+          </div>
+        </Suspense>
 
         {/* Footer */}
         <footer className="text-center text-sm text-gray-500 dark:text-gray-400 mt-12 py-6 border-t border-gray-200 dark:border-gray-700">

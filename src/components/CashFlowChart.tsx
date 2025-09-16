@@ -8,6 +8,13 @@ interface CashFlowChartProps {
   data: CashFlowData[];
 }
 
+/**
+ * Renders a bar chart displaying cash flow analysis.
+ *
+ * @param {CashFlowChartProps} props The component props.
+ * @param {CashFlowData[]} props.data The data to display in the chart.
+ * @returns {React.ReactElement} The rendered bar chart.
+ */
 const CashFlowChart: React.FC<CashFlowChartProps> = ({ data }) => {
   const { chartTheme } = useChartTheme();
   interface TooltipPayload {
@@ -47,12 +54,12 @@ const CashFlowChart: React.FC<CashFlowChartProps> = ({ data }) => {
   };
 
   return (
-    <div className="card">
+    <div className="bg-white dark:bg-dark-surface p-4 sm:p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 dark:border-dark-border">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Cash Flow Analysis</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Cash Flow Analysis</h2>
       </div>
       
-      <div className="h-64 sm:h-80">
+      <div className="h-64 sm:h-80 -ml-4">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid.stroke} />

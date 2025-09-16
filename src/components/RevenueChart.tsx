@@ -3,29 +3,37 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { RevenueData } from '../types/finance';
 import { formatCurrency } from '../utils/formatters';
 import { useChartTheme } from '../hooks/useChartTheme';
+import ChartNoData from './ChartNoData';
 
 interface RevenueChartProps {
   data: RevenueData[];
 }
 
+/**
+ * Renders a line chart displaying revenue and expenses trends.
+ *
+ * @param {RevenueChartProps} props The component props.
+ * @param {RevenueData[]} props.data The data to display in the chart.
+ * @returns {React.ReactElement} The rendered line chart.
+ */
 const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
   const { chartTheme } = useChartTheme();
   
   if (!data || data.length === 0) {
     return (
-      <div className="card">
+      <div className="bg-white dark:bg-dark-surface p-4 sm:p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 dark:border-dark-border">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Revenue & Expenses Trend</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Revenue & Expenses Trend</h2>
         </div>
-        <div className="h-80 flex items-center justify-center">
-          <div className="text-center text-gray-500 dark:text-gray-400">
-            <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <ChartNoData
+          title="No Data Available"
+          message="There is no revenue data to display for the selected period."
+          icon={
+            <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
-            <p className="text-lg font-medium mb-2">No Data Available</p>
-            <p className="text-sm">There is no revenue data to display for the selected period.</p>
-          </div>
-        </div>
+          }
+        />
       </div>
     );
   }
@@ -69,12 +77,12 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
   };
 
   return (
-    <div className="card">
+    <div className="bg-white dark:bg-dark-surface p-4 sm:p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 dark:border-dark-border">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Revenue & Expenses Trend</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Revenue & Expenses Trend</h2>
       </div>
       
-      <div className="h-64 sm:h-80 lg:h-96">
+      <div className="h-64 sm:h-80 lg:h-96 -ml-4">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid.stroke} />

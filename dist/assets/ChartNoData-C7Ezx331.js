@@ -1,0 +1,2 @@
+import{j as e}from"./vendor-AJSyh0cO.js";const s=({title:s,message:t,icon:a})=>e.jsx("div",{className:"h-80 flex items-center justify-center",children:e.jsxs("div",{className:"text-center text-gray-500 dark:text-gray-400",children:[a&&e.jsx("div",{className:"w-16 h-16 mx-auto mb-4",children:a}),e.jsx("p",{className:"text-lg font-medium mb-2",children:s}),e.jsx("p",{className:"text-sm",children:t})]})});export{s as C};
+//# sourceMappingURL=ChartNoData-C7Ezx331.js.map

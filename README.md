@@ -2,6 +2,21 @@
 
 A comprehensive, modern hospital finance dashboard built with React, TypeScript, and Tailwind CSS. This dashboard provides real-time financial insights, analytics, and key performance indicators for healthcare institutions.
 
+## 📋 Table of Contents
+
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Component Documentation](#component-documentation)
+- [Configuration](#configuration)
+- [Development Guide](#development-guide)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Security](#security)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Features
 
 ### 🔐 Authentication & Role-Based Access
@@ -50,12 +65,31 @@ A comprehensive, modern hospital finance dashboard built with React, TypeScript,
 
 ## Technology Stack
 
-- **Frontend**: React 18 with TypeScript
-- **Styling**: Tailwind CSS
-- **Charts**: Recharts
-- **Icons**: Lucide React
-- **Build Tool**: Vite
+### Core Technologies
+- **Frontend Framework**: React 18 with TypeScript
+- **Build Tool**: Vite (with fast HMR and optimized builds)
 - **Package Manager**: npm
+
+### UI & Styling
+- **CSS Framework**: Tailwind CSS (with dark mode support)
+- **Icons**: Lucide React (modern icon library)
+- **Design System**: Custom components with consistent theming
+
+### Data Visualization
+- **Chart Library**: Recharts (responsive charts with animations)
+- **Chart Types**: Line charts, pie charts, bar charts, area charts
+
+### Development Tools
+- **Linting**: ESLint with TypeScript rules
+- **Testing**: Jest + React Testing Library
+- **Type Checking**: TypeScript (strict mode enabled)
+- **Code Formatting**: Prettier (integrated with ESLint)
+
+### Performance & Optimization
+- **Code Splitting**: Dynamic imports with lazy loading
+- **Bundle Analysis**: Rollup plugin visualizer
+- **Memoization**: React.memo, useMemo, useCallback optimizations
+- **Tree Shaking**: Automatic dead code elimination
 
 ## Getting Started
 
@@ -125,207 +159,313 @@ A comprehensive, modern hospital finance dashboard built with React, TypeScript,
 ## Project Structure
 
 ```plaintext
-src/
-├── components/          # React components
-│   ├── auth/           # Authentication components
-│   │   ├── SignInPage.tsx    # Sign in form
-│   │   ├── SignUpPage.tsx    # Sign up form
-│   │   └── AuthWrapper.tsx   # Authentication wrapper
-│   ├── Dashboard.tsx    # Main dashboard layout
-│   ├── Header.tsx       # Application header
-│   ├── MetricCard.tsx   # Key metrics display
-│   ├── RevenueChart.tsx # Revenue trend chart
-│   ├── DepartmentTable.tsx # Department performance table
-│   ├── ExpensePieChart.tsx # Expense breakdown pie chart
-│   ├── PatientMetricsCard.tsx # Patient statistics
-│   ├── CashFlowChart.tsx # Cash flow bar chart
-│   ├── ErrorBoundary.tsx # Error boundary for error handling
-│   ├── ThemeToggle.tsx  # Theme switching component
-│   ├── LoadingSpinner.tsx # Reusable loading spinner component
-│   ├── Button.tsx       # Reusable button component with variants
-│   └── Dropdown.tsx     # Reusable dropdown component
-├── contexts/
-│   ├── AuthContext.tsx  # Authentication context
-│   └── ThemeContext.tsx # Theme management context
-├── hooks/
-│   ├── useAuth.ts       # Authentication hook
-│   └── useTheme.ts      # Theme switching hook
-├── data/
-│   ├── mockData.ts      # Sample financial data
-│   └── mockUsers.ts     # Sample user accounts
-├── types/
-│   ├── finance.ts       # Financial data types
-│   ├── auth.ts          # Authentication types
-│   └── theme.ts         # Theme-related types
-├── utils/
-│   └── formatters.ts    # Data formatting utilities
-├── App.tsx              # Main application component
-├── main.tsx            # Application entry point
-├── index.css           # Global styles
-└── vite-env.d.ts       # Vite environment type definitions
+Hospital-Finance-Dashboard/
+├── 📁 public/                    # Static assets
+│   └── favicon/                  # Favicon files
+├── 📁 src/                       # Source code
+│   ├── 📁 components/            # React components
+│   │   ├── 📁 auth/             # Authentication components
+│   │   │   ├── AuthWrapper.tsx   # Authentication route wrapper
+│   │   │   ├── SignInPage.tsx    # User sign-in form
+│   │   │   └── SignUpPage.tsx    # User registration form
+│   │   ├── 📁 optimized/        # Performance-optimized components
+│   │   │   └── OptimizedRevenueChart.tsx
+│   │   ├── 📁 ui/               # Reusable UI components
+│   │   │   ├── Card.tsx          # Generic card component
+│   │   │   └── Input.tsx         # Enhanced input component
+│   │   ├── 📁 __tests__/        # Component tests
+│   │   ├── Button.tsx            # Reusable button component
+│   │   ├── CashFlowChart.tsx     # Cash flow visualization
+│   │   ├── ChartNoData.tsx       # Empty state for charts
+│   │   ├── Dashboard.tsx         # Main dashboard layout
+│   │   ├── DashboardLoading.tsx  # Dashboard loading state
+│   │   ├── DashboardNoData.tsx   # Dashboard empty state
+│   │   ├── DepartmentTable.tsx   # Department performance table
+│   │   ├── Dropdown.tsx          # Dropdown selection component
+│   │   ├── ErrorBoundary.tsx     # Error boundary wrapper
+│   │   ├── ExpensePieChart.tsx   # Expense breakdown chart
+│   │   ├── Header.tsx            # Application header
+│   │   ├── LoadingSpinner.tsx    # Loading spinner component
+│   │   ├── MetricCard.tsx        # Financial metric cards
+│   │   ├── PatientMetricsCard.tsx # Patient statistics
+│   │   ├── RevenueChart.tsx      # Revenue trend chart
+│   │   └── ThemeToggle.tsx       # Dark/light mode toggle
+│   ├── 📁 contexts/              # React contexts
+│   │   ├── AuthContext.tsx       # Authentication state
+│   │   └── ThemeContext.tsx      # Theme management
+│   ├── 📁 hooks/                 # Custom React hooks
+│   │   ├── useAuth.ts            # Authentication utilities
+│   │   ├── useChartTheme.ts      # Chart theming hook
+│   │   ├── useResponsive.ts      # Responsive design hook
+│   │   └── useTheme.ts           # Theme switching hook
+│   ├── 📁 data/                  # Mock data and configurations
+│   │   ├── mockData.ts           # Financial data generator
+│   │   └── mockUsers.ts          # User authentication data
+│   ├── 📁 types/                 # TypeScript type definitions
+│   │   ├── auth.ts               # Authentication types
+│   │   ├── errors.ts             # Error handling types
+│   │   ├── finance.ts            # Financial data types
+│   │   ├── global.d.ts           # Global type declarations
+│   │   └── theme.ts              # Theme-related types
+│   ├── 📁 utils/                 # Utility functions
+│   │   ├── 📁 __tests__/        # Utility tests
+│   │   ├── auth.ts               # Authentication utilities
+│   │   ├── errorHandler.ts       # Error handling system
+│   │   ├── formatters.ts         # Data formatting functions
+│   │   ├── logger.ts             # Logging utilities
+│   │   └── performance.ts        # Performance optimization utils
+│   ├── 📁 config/                # Configuration files
+│   │   └── demo.ts               # Demo configuration
+│   ├── 📁 test/                  # Test configuration
+│   │   └── mocks.ts              # Test mocks and utilities
+│   ├── App.tsx                   # Main application component
+│   ├── main.tsx                  # Application entry point
+│   ├── index.css                 # Global styles and CSS variables
+│   ├── setupTests.ts             # Jest test setup
+│   └── vite-env.d.ts            # Vite environment types
+├── 📁 docs/                      # Documentation
+│   ├── API.md                    # API documentation
+│   ├── AUDIT_SUMMARY.md          # Code audit results
+│   ├── IMPROVEMENT_PLAN.md       # Development roadmap
+│   └── SECURITY.md               # Security considerations
+├── 📁 dist/                      # Production build output
+├── package.json                  # Dependencies and scripts
+├── vite.config.ts               # Vite configuration
+├── tailwind.config.js           # Tailwind CSS configuration
+├── tsconfig.json                # TypeScript configuration
+├── jest.config.js               # Jest test configuration
+├── postcss.config.js            # PostCSS configuration
+└── README.md                    # Project documentation
 ```
 
-## Key Components
+## Component Documentation
 
-## Core Components
+### Core Dashboard Components
 
-Key components that make up the dashboard interface:
+#### Financial Visualization Components
+- **MetricCard**: Displays key financial metrics with trend indicators and percentage changes
+- **RevenueChart**: Interactive line chart showing revenue, expenses, and net income trends
+- **DepartmentTable**: Sortable table displaying department-wise financial performance
+- **ExpensePieChart**: Pie chart visualization of expense breakdown by category
+- **CashFlowChart**: Bar chart showing operating, investing, and financing cash flows
 
-### Financial Components
+#### Patient Analytics Components  
+- **PatientMetricsCard**: Grid layout showing patient statistics and hospital occupancy metrics
 
-- **MetricCard**: Single-responsibility component for displaying financial metrics with consistent formatting and accessibility
-- **RevenueChart**: Interactive revenue visualization using Recharts with drill-down capabilities
-- **DepartmentTable**: Sortable table showing department-wise financial performance
-- **ExpensePieChart**: Expense breakdown visualization with hover tooltips and legend
-- **CashFlowChart**: Multi-line chart showing operating, investing, and financing cash flows
+#### UI Infrastructure Components
+- **ErrorBoundary**: React error boundary with graceful fallback UI and recovery options
+- **ThemeToggle**: Light/dark mode toggle with system preference detection
+- **LoadingSpinner**: Customizable loading spinner with text and animations
+- **Button**: Flexible button component with multiple variants and accessibility features
+- **Dropdown**: Animated dropdown with keyboard navigation support
 
-### Patient Analytics
+#### Authentication Components
+- **AuthWrapper**: Route protection wrapper with role-based access control
+- **SignInPage**: User authentication form with validation and security features
+- **SignUpPage**: User registration form with comprehensive validation
 
-- **PatientMetricsCard**: Displays key patient statistics and trends over time, including occupancy and stay duration
+## Configuration
 
-### UI Infrastructure
+### Environment Variables
 
-- **ErrorBoundary**: Catches and handles React errors with fallback UI components
-- **ThemeToggle**: Manages light/dark mode with system preference detection
+The application supports environment-based configuration:
+
+```bash
+# Development
+VITE_NODE_ENV=development
+VITE_API_URL=http://localhost:3001
+
+# Production  
+VITE_NODE_ENV=production
+VITE_API_URL=https://api.hospitalfinance.com
+```
+
+### Build Configuration
+
+The project uses optimized Vite configuration with:
+
+- **Chunk Splitting**: Vendor and app code separation for better caching
+- **Source Maps**: Enabled for production debugging
+- **Bundle Analysis**: Generate `dist/stats.html` with `npm run analyze`
+- **Terser Minification**: Optimized JavaScript compression
+
+### Tailwind Configuration
+
+Custom design tokens in `tailwind.config.js`:
+
+```javascript
+// Color palette
+colors: {
+  primary: { 50: '#eff6ff', 500: '#3b82f6', 900: '#1e3a8a' },
+  success: { 600: '#16a34a' },
+  danger: { 600: '#dc2626' }
+}
+```
 
 ## Development Guide
 
 ### Data Management
 
 #### Adding Hospital Data
+1. Update `hospitals` array in `src/data/mockData.ts`
+2. Follow existing structure with required fields
+3. Data automatically generates for all available years (2021-2024)
 
-1. Add new hospital entries to the `hospitals` array in `src/data/mockData.ts`
-2. Follow the existing hospital data structure
-3. Update years if needed (currently 2021-2024)
+#### Creating New Metrics
+1. Extend `FinancialMetric` interface in `src/types/finance.ts`
+2. Add data generation logic in `mockData.ts`
+3. Metrics appear automatically in dashboard
 
-#### Creating Financial Metrics
-
-1. Update the `FinancialMetric` interface in `src/types/finance.ts`
-2. Add mock data in `mockData.ts`
-3. Use `MetricCard` component to display
-
-#### Data Structure
-
-- **Hospital Records**: Each hospital has data for all available years (2021-2024)
-- **Metrics System**: Consistent metrics across all hospitals
-- **Access Control**: Role-based filtering of visible data
+#### Data Architecture
+- **Consistent Structure**: All hospitals share the same data schema
+- **Dynamic Generation**: Realistic financial variations using seeded random data
+- **Role-Based Filtering**: Data access controlled by user permissions
 
 ### UI Customization
 
+#### Theme Customization
+- Modify color palette in `tailwind.config.js`
+- Use CSS variables for dynamic theming
+- Follow dark mode patterns with `dark:` prefix classes
+
 #### Chart Configuration
-
 - Update colors in individual chart components
-- Use Tailwind CSS color classes
-- Follow accessibility guidelines for contrast
+- Modify chart types in Recharts configuration
+- Ensure accessibility with proper contrast ratios
 
-#### Style Guide
+## Testing
 
-- Modify the color palette in `tailwind.config.js`
-- Use utility classes for consistent spacing
-- Follow dark mode patterns with `dark:` prefix
+### Running Tests
 
-## Get Involved
+```bash
+# Run all tests
+npm run test
 
-See our [Improvement Plan](docs/IMPROVEMENT_PLAN.md) for upcoming enhancements and contribution guidelines.
+# Run tests in watch mode
+npm run test:watch
 
----
-_Built with care for healthcare financial management_
-Displays key financial metrics with trend indicators and percentage changes.
+# Generate coverage report
+npm run test:coverage
+```
 
-## Component Documentation
+### Test Structure
 
-### Core Visualizations
+- **Unit Tests**: Component and utility function tests
+- **Integration Tests**: Authentication and data flow tests
+- **Test Coverage**: Maintained above 80% for critical components
 
-#### RevenueChart
+### Testing Guidelines
 
-Line chart showing revenue, expenses, and net income trends over time.
+- All new components require corresponding test files
+- Use React Testing Library for component testing
+- Mock external dependencies and API calls
+- Test both happy path and error scenarios
 
-#### DepartmentTable
+## Deployment
 
-Table view of department-wise performance including revenue, expenses, profit, and margins.
+### Production Build
 
-#### ExpensePieChart
+```bash
+# Create optimized production build
+npm run build
 
-Pie chart visualization of expense breakdown by category.
+# Preview production build locally
+npm run preview
+```
 
-#### PatientMetricsCard
+### Build Output
 
-Grid layout showing patient-related metrics and hospital occupancy.
+- **dist/**: Production-ready static files
+- **assets/**: Optimized JavaScript, CSS, and images
+- **stats.html**: Bundle analysis report
 
-#### CashFlowChart
+### Deployment Platforms
 
-Bar chart displaying cash flow analysis across different categories.
+The application is compatible with:
+- **Vercel**: Zero-configuration deployment
+- **Netlify**: Static site hosting with form handling
+- **AWS S3 + CloudFront**: Scalable static hosting
+- **Docker**: Containerized deployment
 
-### Infrastructure Components
+## Security
 
-#### ErrorBoundary
+### Authentication Security
 
-React error boundary component that catches JavaScript errors anywhere in the child component tree, logs those errors, and displays a fallback UI instead of crashing the application.
+- **Password Requirements**: 8+ characters with complexity validation
+- **Rate Limiting**: 5 failed attempts trigger 15-minute lockout
+- **Secure Storage**: Authentication data stored securely
+- **Error Handling**: No information disclosure in error messages
 
-#### ThemeToggle
+### Data Protection
 
-Toggle component for switching between light and dark themes with system preference detection.
+- **Input Sanitization**: All user inputs validated and sanitized
+- **XSS Prevention**: Proper output encoding and CSP headers
+- **CSRF Protection**: Anti-forgery tokens for state-changing operations
+
+For detailed security information, see [docs/SECURITY.md](docs/SECURITY.md).
 
 ## Technical Architecture
 
-### Data Models
+### TypeScript Types
 
-The dashboard uses TypeScript interfaces for type safety:
+Core data models ensure type safety:
 
-- `FinancialMetric`: Key performance indicators
-- `RevenueData`: Monthly revenue and expense data
-- `DepartmentFinance`: Department-wise financial data
-- `PatientMetrics`: Patient and occupancy statistics
-- `ExpenseBreakdown`: Categorized expense data
-- `CashFlowData`: Cash flow analysis data
+```typescript
+interface FinancialMetric {
+  id: string;
+  title: string;
+  value: number;
+  change: number;
+  changeType: 'increase' | 'decrease';
+  format: 'currency' | 'percentage' | 'number';
+}
+```
 
-### Customization Guide
+### Performance Optimizations
 
-#### Hospital Configuration
-
-1. Add new hospital entries to the `hospitals` array in `src/data/mockData.ts`
-2. The data generation system will automatically create financial data for all years
-3. Hospital types supported: General, Specialty, Pediatric, Trauma
-
-#### Metric Management
-
-1. Update the `FinancialMetric` interface in `src/types/finance.ts`
-2. Add new metric data to the hospital data generation in `src/data/mockData.ts`
-3. The `MetricCard` component will automatically display the new metrics
-
-#### Data Architecture
-
-- **Hospital Records**: Each hospital has data for all available years (2021-2024)
-- **Dynamic Generation**: Financial data is generated with realistic variations
-- **Filtering**: Dashboard filters data based on selected hospital and year
-
-#### Chart Customization
-
-Charts are built with Recharts and can be customized by:
-
-- Updating colors in individual components
-- Adding new data series
-- Modifying chart types (line, bar, pie, area)
-
-#### Style Management
-
-The project uses Tailwind CSS:
-
-- Modify colors in `tailwind.config.js`
-- Update component styles individually
-- Add custom CSS in `src/index.css`
+- **Code Splitting**: Lazy-loaded components with Suspense
+- **Memoization**: React.memo, useMemo, and useCallback optimizations
+- **Bundle Analysis**: Track and optimize bundle size
+- **Error Boundaries**: Graceful error handling without full page crashes
 
 ## Contributing
 
-See our [Improvement Plan](docs/IMPROVEMENT_PLAN.md) for upcoming enhancements and contribution guidelines.
+We welcome contributions to the Hospital Finance Dashboard! Please see our [Improvement Plan](docs/IMPROVEMENT_PLAN.md) for upcoming enhancements and development priorities.
+
+### Development Workflow
+
+1. **Fork** the repository
+2. **Create** a feature branch: `git checkout -b feature/your-feature-name`
+3. **Install** dependencies: `npm install`
+4. **Make** your changes with proper tests and documentation
+5. **Run** tests: `npm run test`
+6. **Lint** code: `npm run lint`
+7. **Commit** changes: `git commit -m 'Add your feature'`
+8. **Push** to branch: `git push origin feature/your-feature-name`
+9. **Create** a Pull Request
+
+### Code Standards
+
+- Follow TypeScript strict mode requirements
+- Add JSDoc comments for all public APIs
+- Include tests for new functionality
+- Follow existing code style and patterns
+- Update documentation for significant changes
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Support
 
-For support, please contact the development team or create an issue in the repository.
+For support and questions:
+
+- 📖 Check the [API Documentation](docs/API.md)
+- 🔒 Review [Security Guidelines](docs/SECURITY.md)
+- 🛠️ See [Improvement Plan](docs/IMPROVEMENT_PLAN.md) for roadmap
+- 📧 Contact the development team
+- 🐛 Create an issue for bug reports
 
 ---
-[🏥 Built with care for healthcare financial management]
+
+**🏥 Built with care for healthcare financial management**

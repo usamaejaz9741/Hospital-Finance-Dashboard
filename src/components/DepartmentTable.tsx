@@ -6,11 +6,18 @@ interface DepartmentTableProps {
   departments: DepartmentFinance[];
 }
 
+/**
+ * Renders a table displaying department financial performance.
+ *
+ * @param {DepartmentTableProps} props The component props.
+ * @param {DepartmentFinance[]} props.departments The department data to display.
+ * @returns {React.ReactElement} The rendered table.
+ */
 const DepartmentTable: React.FC<DepartmentTableProps> = ({ departments }) => {
   return (
-    <div className="card">
+    <div className="bg-white dark:bg-dark-surface p-4 sm:p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 dark:border-dark-border">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-        <h2 className="text-lg font-semibold">Department Performance</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Department Performance</h2>
         <button className="btn-secondary text-sm w-full sm:w-auto">
           View Details
         </button>

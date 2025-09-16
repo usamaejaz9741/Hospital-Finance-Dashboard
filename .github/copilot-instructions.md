@@ -1,84 +1,80 @@
 # Copilot Instructions for Hospital Finance Dashboard
 
 ## Project Overview
-- **Stack:** React 18, TypeScript, Tailwind CSS, Vite, Recharts
-- **Purpose:** Real-time financial analytics and KPIs for hospitals, with multi-hospital/year support and role-based access.
-- **Target User Roles:** Admin, Hospital Owner, Branch Manager (permissions managed via `AuthContext`)
+- **Stack:** React 18, TypeScript (strict), Tailwind CSS, Vite, Recharts
+- **Purpose:** Real-time financial analytics and KPIs for hospitals, supporting multi-hospital/year data and role-based access.
+- **User Roles:** Admin, Hospital Owner, Branch Manager (see `src/types/auth.ts`)
 
 ## Architecture & Data Flow
-- **Component-driven:** All UI is built from modular React components in `src/components/`
-- **Authentication:** 
-  - Managed via `AuthContext` and `useAuth` hook
-  - Role-based access in `src/types/auth.ts`
+- **Component-Driven UI:** All UI is built from modular React components in `src/components/`. Use colocated test files in `__tests__/` for new components.
+- **Authentication:**
+  - Managed via `AuthContext` (`src/contexts/AuthContext.tsx`) and `useAuth` hook (`src/hooks/useAuth.ts`)
+  - Role-based permissions in `src/types/auth.ts`
   - Demo users in `src/data/mockUsers.ts`
-- **Data & State:**
-  - All data mocked in `src/data/mockData.ts` (2021-2024)
-  - Theme and auth state via React Context
-  - Strong TypeScript interfaces in `src/types/finance.ts`
-- **Charts:** Recharts-based visualizations with consistent formatting
-- **Error Boundaries:** Nested at App, Auth, Dashboard levels
+- **Mock Data:**
+  - All financial and patient data is mocked in `src/data/mockData.ts` (2021-2024)
+  - No API/network calls; all data is local and static
+- **State Management:**
+  - Theme and auth state via React Contexts (`src/contexts/`)
+  - Strong TypeScript interfaces in `src/types/finance.ts` and related files
+- **Charts:**
+  - Use Recharts for all visualizations (see `RevenueChart.tsx`, `ExpensePieChart.tsx`, `CashFlowChart.tsx`)
+  - Consistent formatting via `src/utils/formatters.ts`
+- **Error Boundaries:**
+  - Nested at App, Auth, and Dashboard levels (`src/components/ErrorBoundary.tsx`)
 
 ## Developer Workflows
-- **Dev Server:** `npm run dev` (Vite, port 3000, auto-opens)
-- **Build:** `npm run build` (chunk-optimized)
+- **Dev Server:** `npm run dev` (Vite, port 3000, auto-opens browser)
+- **Build:** `npm run build` (outputs to `dist/`, chunk-optimized)
 - **Preview:** `npm run preview`
-- **Tests:** Jest + React Testing Library (see `MetricCard.test.tsx`)
-- **Bundle Analysis:** Auto-generates `dist/stats.html` on build
+- **Tests:** `npm test` (Jest + React Testing Library, see `src/components/__tests__/`)
+- **Bundle Analysis:** Build auto-generates `dist/stats.html` for bundle size review
 
 ## Key Patterns & Conventions
 - **Component Structure:**
-  ```tsx
-  interface MetricCardProps {
-    metric: FinancialMetric;  // Props interface above component
-  }
-  
-  const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
-    // Consistent a11y patterns
-    return (
-      <div role="article" aria-labelledby={`metric-title-${metric.id}`}>
-        {/* Colocated Tailwind styles */}
-      </div>
+  - Always type props with interfaces (no `any`)
+  - Use `React.FC<Props>` typing
+  - Example:
+    ```tsx
+    interface MetricCardProps {
+      metric: FinancialMetric;
+    }
+    const MetricCard: React.FC<MetricCardProps> = ({ metric }) => (
+      <div role="article" aria-labelledby={`metric-title-${metric.id}`}>...</div>
     );
-  };
-  ```
-
-- **Type Safety:** 
-  - No `any` types allowed
-  - Use `types/finance.ts` interfaces
-  - React.FC typing required
-
-- **Data Formatting:**
-  - Currency: `formatCurrency(value)` 
-  - Percentages: `formatPercentage(value)`
-  - Numbers: `formatNumber(value)`
-
+    ```
+- **A11y:**
+  - Follow patterns in `MetricCard.tsx` for ARIA and roles
+- **Formatting:**
+  - Use `formatCurrency`, `formatPercentage`, `formatNumber` from `src/utils/formatters.ts`
+- **Type Safety:**
+  - No `any` types; use interfaces from `src/types/`
 - **Performance:**
   - Vendor chunk splitting in `vite.config.ts`
-  - Code-split charts and icon bundles
-  - Bundle size monitoring via `stats.html`
+  - Code-split large chart/icon bundles
+  - Monitor bundle size via `dist/stats.html`
 
-## Examples & Common Tasks
+## Common Tasks & Examples
 - **Add Financial Metric:**
-  1. Extend `FinancialMetric` in `types/finance.ts`
-  2. Add mock data in `mockData.ts`
+  1. Extend `FinancialMetric` in `src/types/finance.ts`
+  2. Add mock data in `src/data/mockData.ts`
   3. Use `<MetricCard metric={newMetric} />`
-
 - **Add Chart Component:**
-  1. Create file in `src/components/`
-  2. Import Recharts + formatting utils
-  3. Define data interface in `types/finance.ts`
-  4. Follow existing chart patterns (see `RevenueChart.tsx`)
+  1. Create in `src/components/`
+  2. Import Recharts and formatting utils
+  3. Define data interface in `src/types/finance.ts`
+  4. Follow patterns in `RevenueChart.tsx`
 
-## Critical Notes for AI
-- **Authentication Required** - verify user role before operations
-- **TypeScript Strict Mode** - no any types, use interfaces
-- **Component-First** - minimize utility functions
-- **A11y Required** - follow MetricCard patterns
-- **Mock Data Only** - no API calls
-- **Bundle Size Matters** - use code splitting for large features
+## Critical Notes for AI Agents
+- **Authentication Required:** Always check user role before sensitive operations
+- **TypeScript Strict:** No `any` types; always use interfaces
+- **Component-First:** Minimize utility functions, prefer React components
+- **A11y Required:** Follow `MetricCard` accessibility patterns
+- **Mock Data Only:** Never add API/network calls
+- **Bundle Size:** Use code splitting for large features
 
 ## Testing Patterns
-- Test files colocated with components (`__tests__/`)
-- React Testing Library + Jest
+- Tests colocated with components in `__tests__/`
+- Use React Testing Library + Jest
 - Focus on user interactions and accessibility
-- Mock contexts where needed (`test/mocks.ts`)
+- Mock contexts as needed (`src/test/mocks.ts`)

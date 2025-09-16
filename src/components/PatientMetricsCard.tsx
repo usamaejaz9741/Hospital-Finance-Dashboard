@@ -6,6 +6,13 @@ interface PatientMetricsCardProps {
   metrics: PatientMetrics;
 }
 
+/**
+ * Renders a card displaying key patient metrics.
+ *
+ * @param {PatientMetricsCardProps} props The component props.
+ * @param {PatientMetrics} props.metrics The patient metrics to display.
+ * @returns {React.ReactElement} The rendered card.
+ */
 const PatientMetricsCard: React.FC<PatientMetricsCardProps> = ({ metrics }) => {
   const metricItems = [
     {
@@ -47,9 +54,9 @@ const PatientMetricsCard: React.FC<PatientMetricsCardProps> = ({ metrics }) => {
   ];
 
   return (
-    <div className="card">
+    <div className="bg-white dark:bg-dark-surface p-4 sm:p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 dark:border-dark-border">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Patient Metrics</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Patient Metrics</h2>
         <button 
           className="btn-secondary text-sm"
           aria-label="View detailed patient metrics report"

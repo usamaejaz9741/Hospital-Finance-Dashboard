@@ -1,5 +1,6 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { logger } from '../utils/logger';
+import Button from './Button';
 
 interface Props {
   children: ReactNode;
@@ -12,6 +13,10 @@ interface State {
   errorInfo?: ErrorInfo;
 }
 
+/**
+ * A component that catches JavaScript errors anywhere in its child component tree,
+ * logs those errors, and displays a fallback UI instead of the component tree that crashed.
+ */
 class ErrorBoundary extends Component<Props, State> {
   public override state: State = {
     hasError: false
@@ -65,19 +70,20 @@ class ErrorBoundary extends Component<Props, State> {
               </p>
               
               <div className="space-y-3">
-                <button
+                <Button
                   onClick={() => window.location.reload()}
-                  className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+                  fullWidth
                 >
                   Refresh Page
-                </button>
+                </Button>
                 
-                <button
+                <Button
                   onClick={() => this.setState({ hasError: false })}
-                  className="w-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+                  variant="secondary"
+                  fullWidth
                 >
                   Try Again
-                </button>
+                </Button>
               </div>
 
               {import.meta.env.DEV && this.state.error && (

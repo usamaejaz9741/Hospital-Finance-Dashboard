@@ -23,7 +23,6 @@ const Dropdown: React.FC<DropdownProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [zIndex, setZIndex] = useState(10);
 
   const selectedOption = options.find(option => option.value === value);
 
@@ -31,7 +30,6 @@ const Dropdown: React.FC<DropdownProps> = ({
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
-        setZIndex(10);
       }
     };
 
@@ -44,30 +42,23 @@ const Dropdown: React.FC<DropdownProps> = ({
   const handleOptionClick = (optionValue: string) => {
     onChange(optionValue);
     setIsOpen(false);
-    setZIndex(10);
   };
 
   const handleToggle = () => {
-    if (!isOpen) {
-      // Set higher z-index when opening
-      setZIndex(70);
-    } else {
-      // Reset z-index when closing
-      setZIndex(10);
-    }
     setIsOpen(!isOpen);
   };
 
   return (
     <div 
       ref={dropdownRef} 
-      className={`dropdown-container relative ${className}`}
-      style={{ zIndex: zIndex }}
+      className={`relative ${className}`}
     >
       <button
         type="button"
-        className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 hover:border-gray-400 dark:hover:border-gray-500 transition-colors duration-200"
+        className="w-full bg-white dark:bg-dark-surface border border-gray-300 dark:border-dark-border rounded-lg px-4 py-3 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200 transform hover:-translate-y-0.5"
         onClick={handleToggle}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
       >
         <div className="flex items-center justify-between">
           <div className="min-w-0 flex-1">
@@ -97,17 +88,13 @@ const Dropdown: React.FC<DropdownProps> = ({
         </div>
       </button>
 
-      {isOpen && (
-        <div 
-          className="absolute w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg dark:shadow-gray-900/20 max-h-60 overflow-auto"
-          style={{ 
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0
-          }}
-        >
-          {options.map((option) => (
+      <div 
+        className={`absolute w-full mt-1 bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-lg shadow-2xl max-h-60 overflow-auto transition-all duration-300 ease-in-out z-50 ${
+          isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+        }`}
+        role="listbox"
+      >
+        {options.map((option) => (
             <button
               key={option.value}
               type="button"
@@ -125,7 +112,6 @@ const Dropdown: React.FC<DropdownProps> = ({
             </button>
           ))}
         </div>
-      )}
     </div>
   );
 };

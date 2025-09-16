@@ -1,4 +1,5 @@
 import { User, UserRole } from '../types/auth';
+import { validatePassword } from '../utils/auth';
 
 export const mockUsers: User[] = [
   {
@@ -71,9 +72,10 @@ export const authService = {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Check password length first for better security
-    if (password.length < 6) {
-      throw new Error('Password must be at least 6 characters long');
+    // Check password strength using proper validation
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      throw new Error(passwordValidation.errors[0]);
     }
     
     const user = mockUsers.find(u => u.email === email);
@@ -81,13 +83,41 @@ export const authService = {
       throw new Error('No account found with this email address');
     }
     
-    // For demo purposes, we'll simulate password verification
-    // In a real app, we would properly hash and verify the password
-    if (password !== 'UsamaHF2024!' && 
-        password !== 'OwnerMG2024!' && 
-        password !== 'ManagerMG2024!') {
+    // Simulate rate limiting (in real app, this would be server-side)
+    const attemptKey = `login_attempts_${email}`;
+    const attempts = parseInt(localStorage.getItem(attemptKey) || '0');
+    if (attempts >= 5) {
+      const lockoutTime = localStorage.getItem(`lockout_${email}`);
+      if (lockoutTime && Date.now() - parseInt(lockoutTime) < 15 * 60 * 1000) {
+        throw new Error('Account temporarily locked due to too many failed attempts. Try again in 15 minutes.');
+      } else {
+        // Reset attempts after lockout period
+        localStorage.removeItem(attemptKey);
+        localStorage.removeItem(`lockout_${email}`);
+      }
+    }
+    
+    // For demo purposes, we'll accept any password that meets strength requirements
+    // In a real app, you would hash and verify against stored password hash
+    const demoPasswords = [
+      'UsamaHF2024!',
+      'OwnerMG2024!', 
+      'ManagerMG2024!',
+      'Demo123!@#' // Added a demo password that meets requirements
+    ];
+    
+    if (!demoPasswords.includes(password)) {
+      // Increment failed attempts
+      localStorage.setItem(attemptKey, (attempts + 1).toString());
+      if (attempts + 1 >= 5) {
+        localStorage.setItem(`lockout_${email}`, Date.now().toString());
+      }
       throw new Error('Incorrect password');
     }
+    
+    // Clear failed attempts on successful login
+    localStorage.removeItem(attemptKey);
+    localStorage.removeItem(`lockout_${email}`);
     
     // Update last login time
     user.lastLogin = new Date().toISOString();

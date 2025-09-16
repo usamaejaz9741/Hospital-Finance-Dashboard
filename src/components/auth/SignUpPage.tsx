@@ -89,20 +89,24 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-blue-100 dark:from-dark-bg dark:to-slate-900 flex items-center justify-center py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-lg w-full space-y-6 sm:space-y-8">
-        <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-primary-600 rounded-xl flex items-center justify-center mb-4">
-            <span className="text-white font-bold text-2xl">H</span>
+    <div className="min-h-screen bg-gray-50 dark:bg-dark-bg flex items-center justify-center py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-lg w-full">
+        <div className="text-center mb-8 animate-fade-in-down">
+          <div className="mx-auto w-16 h-16 bg-primary-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
+            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2v10m0-10l3 3m-3-3l-3 3" />
+              <path d="M12 18v2" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
+              <path d="M4 12h2m8 0h2m-4 0h-2" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
+            </svg>
           </div>
-          <h2 className="text-3xl font-bold">Create Account</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Create an Account</h2>
           <p className="mt-2 text-gray-600 dark:text-dark-muted">Join the Hospital Finance Dashboard</p>
         </div>
 
-        <Card>
+        <Card className="animate-fade-in-up">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800 text-danger-700 dark:text-danger-300 px-4 py-3 rounded-lg text-sm">
+              <div className="bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800 text-danger-700 dark:text-danger-300 px-4 py-3 rounded-lg text-sm animate-shake">
                 {error}
               </div>
             )}
@@ -251,7 +255,7 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
           </form>
         </Card>
 
-        <div className="text-center text-xs text-gray-500 dark:text-dark-muted">
+        <div className="text-center text-xs text-gray-500 dark:text-dark-muted mt-8 animate-fade-in-up animation-delay-200">
           <p>© 2024 Hospital Finance Dashboard. All rights reserved.</p>
         </div>
       </div>

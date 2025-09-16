@@ -43,34 +43,42 @@ const SignInPage: React.FC<SignInPageProps> = ({ onSwitchToSignUp }: SignInPageP
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-blue-100 dark:from-dark-bg dark:to-slate-900 text-gray-900 dark:text-dark-primary flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-primary-600 rounded-xl flex items-center justify-center mb-4">
-            <span className="text-white font-bold text-2xl">H</span>
+    <div className="min-h-screen bg-gray-50 dark:bg-dark-bg text-gray-900 dark:text-dark-primary flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
+      <div className="max-w-md w-full">
+        <div className="text-center mb-8 animate-fade-in-down">
+          <div className="mx-auto w-16 h-16 bg-primary-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
+            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2v10m0-10l3 3m-3-3l-3 3" />
+              <path d="M12 18v2" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
+              <path d="M4 12h2m8 0h2m-4 0h-2" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
+            </svg>
           </div>
-          <h2 className="text-3xl font-bold">Welcome back</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Welcome back</h2>
           <p className="mt-2 text-gray-600 dark:text-dark-muted">Sign in to your Hospital Finance Dashboard</p>
         </div>
 
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-          <h3 className="text-sm font-medium text-blue-900 dark:text-blue-200 mb-2">Demo Accounts:</h3>
-          <div className="space-y-2">
-            {demoAccounts.map((account, index) => (
-              <button
-                key={index}
-                onClick={() => fillDemo(account.email, account.password)}
-                className="block w-full text-left text-xs bg-white dark:bg-dark-surface hover:bg-blue-50 dark:hover:bg-blue-900/40 border border-blue-200 dark:border-dark-border rounded px-2 py-1 transition-colors"
-              >
-                <span className="font-medium text-blue-900 dark:text-blue-200">{account.role}</span>
-                <br />
-                <span className="text-blue-700 dark:text-blue-300">{account.email}</span>
-              </button>
-            ))}
+        <Card className="mb-6 animate-fade-in-up">
+          <div className="p-2 sm:p-4">
+            <h3 className="text-sm font-medium text-gray-800 dark:text-gray-200 mb-3 text-center">
+              Or sign in with a demo account:
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {demoAccounts.map((account, index) => (
+                <button
+                  key={index}
+                  onClick={() => fillDemo(account.email, account.password)}
+                  className="w-full text-center text-xs bg-white dark:bg-dark-surface hover:bg-gray-100 dark:hover:bg-dark-hover-surface border border-gray-200 dark:border-dark-border rounded-lg px-2 py-2 transition-all duration-200 shadow-sm hover:shadow-md"
+                >
+                  <span className="font-semibold text-primary-600 dark:text-primary-400 capitalize">
+                    {account.role.replace('_', ' ')}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        </Card>
 
-        <Card>
+        <Card className="animate-fade-in-up animation-delay-200">
           <form onSubmit={handleSubmit} className="space-y-6">
             {errorMessage && (
               <div className="bg-danger-50 border border-danger-200 text-danger-700 px-4 py-3 rounded-lg text-sm">
@@ -113,7 +121,7 @@ const SignInPage: React.FC<SignInPageProps> = ({ onSwitchToSignUp }: SignInPageP
           </div>
         </Card>
 
-        <div className="text-center text-xs text-gray-500 dark:text-dark-muted">
+        <div className="text-center text-xs text-gray-500 dark:text-dark-muted mt-8 animate-fade-in-up animation-delay-400">
           <p>© 2024 Hospital Finance Dashboard. All rights reserved.</p>
         </div>
       </div>

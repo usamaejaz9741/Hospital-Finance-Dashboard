@@ -193,7 +193,23 @@ export const hospitals: Hospital[] = [
 
 export const availableYears = [2021, 2022, 2023, 2024];
 
-// Helper function to generate variations in data
+/**
+ * Generates a random variation of a base value within a specified percentage range.
+ * 
+ * @description This function creates realistic variations in financial data by applying
+ * a random percentage change to a base value. The variation is symmetrical (both positive
+ * and negative changes are possible).
+ * 
+ * @param {number} baseValue - The base value to vary
+ * @param {number} [variationPercent=15] - The maximum percentage variation (default: 15%)
+ * @returns {number} A rounded number representing the varied value
+ * 
+ * @example
+ * ```typescript
+ * const baseRevenue = 1000000;
+ * const variedRevenue = generateVariation(baseRevenue, 20); // Could be between 800,000 and 1,200,000
+ * ```
+ */
 const generateVariation = (baseValue: number, variationPercent: number = 15): number => {
   const variation = baseValue * (variationPercent / 100);
   return Math.round(baseValue + (Math.random() - 0.5) * 2 * variation);
@@ -271,43 +287,72 @@ hospitals.forEach(hospital => {
         { month: 'Nov', revenue: generateVariation(12700000 * baseMultiplier), expenses: generateVariation(9700000 * baseMultiplier), netIncome: generateVariation(3000000 * baseMultiplier) },
         { month: 'Dec', revenue: generateVariation(14200000 * baseMultiplier), expenses: generateVariation(10800000 * baseMultiplier), netIncome: generateVariation(3400000 * baseMultiplier) }
       ],
-      departmentFinances: [
+      departmentFinances: (() => {
+        const emergencyRevenue = generateVariation(3200000 * baseMultiplier);
+        const emergencyExpenses = generateVariation(2400000 * baseMultiplier);
+        const emergencyProfit = emergencyRevenue - emergencyExpenses;
+        
+        return [
         {
           department: 'Emergency',
-          revenue: generateVariation(3200000 * baseMultiplier),
-          expenses: generateVariation(2400000 * baseMultiplier),
-          profit: generateVariation(800000 * baseMultiplier),
-          profitMargin: generateVariation(25.0, 30)
+          revenue: emergencyRevenue,
+          expenses: emergencyExpenses,
+          profit: emergencyProfit,
+          profitMargin: (emergencyProfit / emergencyRevenue) * 100
         },
-        {
-          department: 'Surgery',
-          revenue: generateVariation(4500000 * baseMultiplier),
-          expenses: generateVariation(3100000 * baseMultiplier),
-          profit: generateVariation(1400000 * baseMultiplier),
-          profitMargin: generateVariation(31.1, 25)
-        },
-        {
-          department: 'Cardiology',
-          revenue: generateVariation(2800000 * baseMultiplier),
-          expenses: generateVariation(1900000 * baseMultiplier),
-          profit: generateVariation(900000 * baseMultiplier),
-          profitMargin: generateVariation(32.1, 20)
-        },
-        {
-          department: hospital.type === 'Pediatric' ? 'Pediatrics' : 'Oncology',
-          revenue: generateVariation(1900000 * baseMultiplier),
-          expenses: generateVariation(1400000 * baseMultiplier),
-          profit: generateVariation(500000 * baseMultiplier),
-          profitMargin: generateVariation(26.3, 35)
-        },
-        {
-          department: hospital.type === 'Trauma' ? 'Trauma' : 'Orthopedics',
-          revenue: generateVariation(1100000 * baseMultiplier),
-          expenses: generateVariation(800000 * baseMultiplier),
-          profit: generateVariation(300000 * baseMultiplier),
-          profitMargin: generateVariation(27.3, 40)
-        }
-      ],
+        (() => {
+          const surgeryRevenue = generateVariation(4500000 * baseMultiplier);
+          const surgeryExpenses = generateVariation(3100000 * baseMultiplier);
+          const surgeryProfit = surgeryRevenue - surgeryExpenses;
+          
+          return {
+            department: 'Surgery',
+            revenue: surgeryRevenue,
+            expenses: surgeryExpenses,
+            profit: surgeryProfit,
+            profitMargin: (surgeryProfit / surgeryRevenue) * 100
+          };
+        })(),
+        (() => {
+          const cardiologyRevenue = generateVariation(2800000 * baseMultiplier);
+          const cardiologyExpenses = generateVariation(1900000 * baseMultiplier);
+          const cardiologyProfit = cardiologyRevenue - cardiologyExpenses;
+          
+          return {
+            department: 'Cardiology',
+            revenue: cardiologyRevenue,
+            expenses: cardiologyExpenses,
+            profit: cardiologyProfit,
+            profitMargin: (cardiologyProfit / cardiologyRevenue) * 100
+          };
+        })(),
+        (() => {
+          const deptRevenue = generateVariation(1900000 * baseMultiplier);
+          const deptExpenses = generateVariation(1400000 * baseMultiplier);
+          const deptProfit = deptRevenue - deptExpenses;
+          
+          return {
+            department: hospital.type === 'Pediatric' ? 'Pediatrics' : 'Oncology',
+            revenue: deptRevenue,
+            expenses: deptExpenses,
+            profit: deptProfit,
+            profitMargin: (deptProfit / deptRevenue) * 100
+          };
+        })(),
+        (() => {
+          const orthoRevenue = generateVariation(1100000 * baseMultiplier);
+          const orthoExpenses = generateVariation(800000 * baseMultiplier);
+          const orthoProfit = orthoRevenue - orthoExpenses;
+          
+          return {
+            department: hospital.type === 'Trauma' ? 'Trauma' : 'Orthopedics',
+            revenue: orthoRevenue,
+            expenses: orthoExpenses,
+            profit: orthoProfit,
+            profitMargin: (orthoProfit / orthoRevenue) * 100
+          };
+        })()
+      ]; })(),
       patientMetrics: {
         totalPatients: generateVariation(15420 * baseMultiplier, 20),
         inpatients: generateVariation(2180 * baseMultiplier, 25),
@@ -316,14 +361,25 @@ hospitals.forEach(hospital => {
         averageStayDuration: generateVariation(4.2 * 10, 15) / 10,
         occupancyRate: generateVariation(87.5, 10)
       },
-      expenseBreakdown: [
-        { category: 'Salaries & Benefits', amount: generateVariation(5200000 * baseMultiplier), percentage: generateVariation(53.1, 8), color: '#3b82f6' },
-        { category: 'Medical Supplies', amount: generateVariation(1800000 * baseMultiplier), percentage: generateVariation(18.4, 15), color: '#10b981' },
-        { category: 'Equipment', amount: generateVariation(1200000 * baseMultiplier), percentage: generateVariation(12.2, 20), color: '#f59e0b' },
-        { category: 'Utilities', amount: generateVariation(600000 * baseMultiplier), percentage: generateVariation(6.1, 25), color: '#ef4444' },
-        { category: 'Maintenance', amount: generateVariation(500000 * baseMultiplier), percentage: generateVariation(5.1, 30), color: '#8b5cf6' },
-        { category: 'Other', amount: generateVariation(500000 * baseMultiplier), percentage: generateVariation(5.1, 35), color: '#6b7280' }
-      ],
+      expenseBreakdown: (() => {
+        const salariesAmount = generateVariation(5200000 * baseMultiplier);
+        const suppliesAmount = generateVariation(1800000 * baseMultiplier);
+        const equipmentAmount = generateVariation(1200000 * baseMultiplier);
+        const utilitiesAmount = generateVariation(600000 * baseMultiplier);
+        const maintenanceAmount = generateVariation(500000 * baseMultiplier);
+        const otherAmount = generateVariation(500000 * baseMultiplier);
+        
+        const totalAmount = salariesAmount + suppliesAmount + equipmentAmount + utilitiesAmount + maintenanceAmount + otherAmount;
+        
+        return [
+          { category: 'Salaries & Benefits', amount: salariesAmount, percentage: Math.round((salariesAmount / totalAmount) * 100 * 10) / 10, color: '#3b82f6' },
+          { category: 'Medical Supplies', amount: suppliesAmount, percentage: Math.round((suppliesAmount / totalAmount) * 100 * 10) / 10, color: '#10b981' },
+          { category: 'Equipment', amount: equipmentAmount, percentage: Math.round((equipmentAmount / totalAmount) * 100 * 10) / 10, color: '#f59e0b' },
+          { category: 'Utilities', amount: utilitiesAmount, percentage: Math.round((utilitiesAmount / totalAmount) * 100 * 10) / 10, color: '#ef4444' },
+          { category: 'Maintenance', amount: maintenanceAmount, percentage: Math.round((maintenanceAmount / totalAmount) * 100 * 10) / 10, color: '#8b5cf6' },
+          { category: 'Other', amount: otherAmount, percentage: Math.round((otherAmount / totalAmount) * 100 * 10) / 10, color: '#6b7280' }
+        ];
+      })(),
       cashFlowData: [
         {
           date: `${year}-01`,
@@ -374,7 +430,27 @@ hospitals.forEach(hospital => {
   });
 });
 
-// Helper function to get data for specific hospital and year
+/**
+ * Retrieves hospital financial data for a specific hospital and year.
+ * 
+ * @description This function searches through the generated hospital data to find
+ * matching records for a specific hospital ID and year combination. The data includes
+ * financial metrics, revenue data, department finances, patient metrics, expense breakdown,
+ * and cash flow data.
+ * 
+ * @param {string} hospitalId - The unique identifier of the hospital
+ * @param {number} year - The year for which to retrieve data (e.g., 2024)
+ * @returns {HospitalData | undefined} The hospital data object if found, undefined otherwise
+ * 
+ * @example
+ * ```typescript
+ * const hospitalData = getHospitalData('general-1', 2024);
+ * if (hospitalData) {
+ *   console.log('Total Revenue:', hospitalData.financialMetrics[0].value);
+ *   console.log('Last Updated:', hospitalData.lastUpdated);
+ * }
+ * ```
+ */
 export const getHospitalData = (hospitalId: string, year: number): HospitalData | undefined => {
   return hospitalDataByYear.find(data => data.hospitalId === hospitalId && data.year === year);
 };
