@@ -47,11 +47,7 @@ const SignInPage: React.FC<SignInPageProps> = ({ onSwitchToSignUp }: SignInPageP
       <div className="max-w-md w-full">
         <div className="text-center mb-8 animate-fade-in-down">
           <div className="mx-auto w-16 h-16 bg-primary-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
-            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2v10m0-10l3 3m-3-3l-3 3" />
-              <path d="M12 18v2" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
-              <path d="M4 12h2m8 0h2m-4 0h-2" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
-            </svg>
+            <span className="text-white font-bold text-4xl">H</span>
           </div>
           <h2 className="text-3xl font-bold tracking-tight">Welcome back</h2>
           <p className="mt-2 text-gray-600 dark:text-dark-muted">Sign in to your Hospital Finance Dashboard</p>
