@@ -51,7 +51,7 @@ const Header: React.FC<HeaderProps> = ({
   const selectedHospital = hospitals.find(h => h.id === selectedHospitalId);
 
   return (
-    <header className="bg-white dark:bg-dark-surface border-b border-gray-200 dark:border-dark-border transition-colors duration-200 sticky top-0 z-30">
+    <header data-testid="header" className="bg-white dark:bg-dark-surface border-b border-gray-200 dark:border-dark-border transition-colors duration-200 sticky top-0 z-30">
       <div className="px-4 sm:px-6 lg:px-8 max-w-screen-2xl mx-auto">
         {/* Desktop Header */}
         <div className="flex items-center justify-between min-h-16 py-4">

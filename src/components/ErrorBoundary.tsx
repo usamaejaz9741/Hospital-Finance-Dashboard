@@ -1,5 +1,6 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { logger } from '../utils/logger';
+import { sanitizeError } from '../utils/security';
 import Button from './Button';
 
 interface Props {
@@ -28,14 +29,11 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    const sanitizedError = sanitizeError(error);
     logger.error('Uncaught error in component', {
       context: 'ErrorBoundary',
       data: {
-        error: {
-          name: error.name,
-          message: error.message,
-          stack: error.stack
-        },
+        error: sanitizedError,
         componentStack: errorInfo.componentStack
       }
     });
@@ -93,7 +91,7 @@ class ErrorBoundary extends Component<Props, State> {
                   </summary>
                   <div className="bg-gray-100 dark:bg-gray-700 rounded p-3 text-xs overflow-auto">
                     <pre className="whitespace-pre-wrap text-danger-600 dark:text-danger-400">
-                      {this.state.error.toString()}
+                      {sanitizeError(this.state.error).message}
                       {this.state.errorInfo?.componentStack}
                     </pre>
                   </div>

@@ -48,6 +48,9 @@ export interface User {
   
   /** ISO timestamp of the user's last successful login */
   lastLogin?: string;
+  
+  /** Hashed password for authentication (internal use only) */
+  passwordHash?: string;
 }
 
 /**

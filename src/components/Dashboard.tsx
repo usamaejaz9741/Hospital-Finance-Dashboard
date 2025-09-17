@@ -22,17 +22,35 @@ const PatientMetricsCard = lazy(() => import('./PatientMetricsCard'));
 const DepartmentTable = lazy(() => import('./DepartmentTable'));
 
 /**
- * Main dashboard component for displaying hospital financial data.
+ * Main dashboard component for displaying hospital financial data and analytics.
  * 
- * @returns {React.ReactElement} The rendered dashboard component.
+ * This component serves as the central hub for hospital financial management, providing:
+ * - Role-based access control for multi-hospital environments
+ * - Interactive financial metrics and KPIs
+ * - Dynamic data visualization with charts and tables
+ * - Responsive design with mobile-friendly filters
+ * - Lazy-loaded components for optimal performance
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * // Used within the main App component after authentication
+ * <Dashboard />
+ * ```
+ * 
+ * @returns {React.ReactElement} The complete dashboard interface with financial data
  */
 const Dashboard: React.FC = () => {
+  // Authentication and access control
   const { user, signOut, getAccessibleHospitals, canAccessHospital } = useAuth();
   const accessibleHospitals = getAccessibleHospitals();
+  
+  // Filter hospitals based on user permissions
   const filteredHospitals = useMemo(() => {
     return hospitals.filter(h => accessibleHospitals.includes(h.id));
   }, [accessibleHospitals]);
   
+  // Dashboard state management
   const [selectedHospitalId, setSelectedHospitalId] = useState<string>(
     accessibleHospitals[0] || ''
   );
@@ -41,7 +59,10 @@ const Dashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showFilters, setShowFilters] = useState(false);
 
-  // Update data when hospital or year changes
+  /**
+   * Effect to load dashboard data when hospital or year selection changes.
+   * Includes loading state management and error handling.
+   */
   useEffect(() => {
     let timeout: NodeJS.Timeout;
     
@@ -52,7 +73,7 @@ const Dashboard: React.FC = () => {
         data: { hospitalId: selectedHospitalId, year: selectedYear }
       });
       
-      // Simulate loading delay for better UX
+      // Simulate loading delay for better UX and to show loading states
       timeout = setTimeout(() => {
         const data = getHospitalData(selectedHospitalId, selectedYear);
         if (!data) {
@@ -66,6 +87,7 @@ const Dashboard: React.FC = () => {
       }, 500);
     }
 
+    // Cleanup timeout on unmount or dependency change
     return () => {
       if (timeout) {
         clearTimeout(timeout);
@@ -73,8 +95,14 @@ const Dashboard: React.FC = () => {
     };
   }, [selectedHospitalId, selectedYear]);
 
+  /**
+   * Handles hospital selection change with access control validation.
+   * Only allows users to select hospitals they have permission to access.
+   * 
+   * @param hospitalId - The ID of the hospital to select
+   */
   const handleHospitalChange = useCallback((hospitalId: string) => {
-    // Check if user has access to the selected hospital
+    // Validate user access before allowing hospital change
     if (canAccessHospital(hospitalId)) {
       logger.info('Hospital selection changed', {
         context: 'Dashboard',
@@ -84,11 +112,16 @@ const Dashboard: React.FC = () => {
     } else {
       logger.warn('Unauthorized hospital access attempt', {
         context: 'Dashboard',
-        data: { hospitalId }
+        data: { hospitalId, userId: user?.id }
       });
     }
-  }, [canAccessHospital]);
+  }, [canAccessHospital, user?.id]);
 
+  /**
+   * Handles year selection change for financial data filtering.
+   * 
+   * @param year - The year to select for data display
+   */
   const handleYearChange = useCallback((year: number) => {
     logger.info('Year selection changed', {
       context: 'Dashboard',

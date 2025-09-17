@@ -147,10 +147,10 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
               placeholder="Confirm your password"
             />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+            <fieldset>
+              <legend className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 Account Type
-              </label>
+              </legend>
               <div className="space-y-3">
                 {(Object.keys(roleDescriptions) as UserRole[]).map((role) => (
                   <div key={role} className="flex items-start">
@@ -176,7 +176,7 @@ const SignUpPage: React.FC<SignUpPageProps> = ({ onSwitchToSignIn }) => {
                   </div>
                 ))}
               </div>
-            </div>
+            </fieldset>
 
             {formData.role === 'branch_owner' && (
               <div>

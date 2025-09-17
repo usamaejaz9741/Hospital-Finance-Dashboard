@@ -11,15 +11,41 @@ interface AuthProviderProps {
 }
 
 /**
- * Provides authentication state and functions to its children components.
- * This component manages the user's authentication status, including sign-in,
- * sign-out, and access control checks.
+ * Authentication Provider Component
+ * 
+ * Provides comprehensive authentication state and functionality throughout the application.
+ * This context manages user sessions, role-based access control, and persistent authentication.
+ * 
+ * Features:
+ * - User authentication (sign-in/sign-up/sign-out)
+ * - Persistent sessions with localStorage
+ * - Role-based access control (Admin, Hospital Owner, Branch Manager)
+ * - Multi-hospital access management
+ * - Automatic session validation and cleanup
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * // Wrap your app with the AuthProvider
+ * <AuthProvider>
+ *   <App />
+ * </AuthProvider>
+ * 
+ * // Use in components via useAuth hook
+ * const { user, signIn, signOut, canAccessHospital } = useAuth();
+ * ```
+ * 
+ * @param children - Child components that will have access to auth context
  */
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  // Authentication state
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check for stored authentication on app start
+  /**
+   * Initialize authentication state from localStorage on app start.
+   * Validates stored user data and handles corrupted/invalid sessions.
+   */
   useEffect(() => {
     const storedUser = localStorage.getItem('hospitalFinanceUser');
     if (storedUser) {

@@ -19,15 +19,11 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
-import { splitVendorChunkPlugin } from 'vite';
 
 export default defineConfig({
   plugins: [
     // React plugin with fast refresh for development
     react(),
-    
-    // Automatically split vendor libraries into separate chunk for better caching
-    splitVendorChunkPlugin(),
     
     // Bundle analyzer - generates dist/stats.html with bundle visualization
     visualizer({
