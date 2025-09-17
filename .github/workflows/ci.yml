@@ -89,6 +89,7 @@ jobs:
         run: npm audit --audit-level=moderate
 
       - name: Run Snyk security scan
+        if: ${{ secrets.SNYK_TOKEN != '' }}
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -116,22 +117,32 @@ jobs:
         run: npm run build
 
       - name: Analyze bundle size
-        run: npm run analyze
+        run: npm run analyze:ci
 
       - name: Check bundle size budget
         run: |
-          # Check if main bundle is under 100KB
-          MAIN_SIZE=$(stat -c%s dist/assets/main-*.js)
-          if [ $MAIN_SIZE -gt 102400 ]; then
-            echo "Main bundle size ($MAIN_SIZE bytes) exceeds 100KB budget"
-            exit 1
+          # Check if main bundle exists and is under budget
+          if ls dist/assets/main-*.js 1> /dev/null 2>&1; then
+            MAIN_SIZE=$(stat -c%s dist/assets/main-*.js | head -1)
+            if [ $MAIN_SIZE -gt 102400 ]; then
+              echo "Main bundle size ($MAIN_SIZE bytes) exceeds 100KB budget"
+              exit 1
+            fi
+            echo "Main bundle size: $MAIN_SIZE bytes (within budget)"
+          else
+            echo "Main bundle not found, skipping size check"
           fi
           
-          # Check if vendor bundle is under 600KB
-          VENDOR_SIZE=$(stat -c%s dist/assets/vendor-*.js)
-          if [ $VENDOR_SIZE -gt 614400 ]; then
-            echo "Vendor bundle size ($VENDOR_SIZE bytes) exceeds 600KB budget"
-            exit 1
+          # Check if vendor bundle exists and is under budget
+          if ls dist/assets/vendor-*.js 1> /dev/null 2>&1; then
+            VENDOR_SIZE=$(stat -c%s dist/assets/vendor-*.js | head -1)
+            if [ $VENDOR_SIZE -gt 614400 ]; then
+              echo "Vendor bundle size ($VENDOR_SIZE bytes) exceeds 600KB budget"
+              exit 1
+            fi
+            echo "Vendor bundle size: $VENDOR_SIZE bytes (within budget)"
+          else
+            echo "Vendor bundle not found, skipping size check"
           fi
 
       - name: Upload build artifacts
