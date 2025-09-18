@@ -10,7 +10,6 @@ import {
 import { HospitalData } from '../types/finance';
 import { useAuth } from '../hooks/useAuth';
 import Dropdown from './Dropdown';
-import Button from './Button';
 import DashboardLoading from './DashboardLoading';
 import DashboardNoData from './DashboardNoData';
 import LoadingSpinner from './LoadingSpinner';
@@ -22,23 +21,7 @@ const PatientMetricsCard = lazy(() => import('./PatientMetricsCard'));
 const DepartmentTable = lazy(() => import('./DepartmentTable'));
 
 /**
- * Main dashboard component for displaying hospital financial data and analytics.
- * 
- * This component serves as the central hub for hospital financial management, providing:
- * - Role-based access control for multi-hospital environments
- * - Interactive financial metrics and KPIs
- * - Dynamic data visualization with charts and tables
- * - Responsive design with mobile-friendly filters
- * - Lazy-loaded components for optimal performance
- * 
- * @component
- * @example
- * ```tsx
- * // Used within the main App component after authentication
- * <Dashboard />
- * ```
- * 
- * @returns {React.ReactElement} The complete dashboard interface with financial data
+ * Main dashboard component with modern glassmorphism design
  */
 const Dashboard: React.FC = () => {
   // Authentication and access control
@@ -61,7 +44,6 @@ const Dashboard: React.FC = () => {
 
   /**
    * Effect to load dashboard data when hospital or year selection changes.
-   * Includes loading state management and error handling.
    */
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -73,7 +55,6 @@ const Dashboard: React.FC = () => {
         data: { hospitalId: selectedHospitalId, year: selectedYear }
       });
       
-      // Simulate loading delay for better UX and to show loading states
       timeout = setTimeout(() => {
         const data = getHospitalData(selectedHospitalId, selectedYear);
         if (!data) {
@@ -87,7 +68,6 @@ const Dashboard: React.FC = () => {
       }, 500);
     }
 
-    // Cleanup timeout on unmount or dependency change
     return () => {
       if (timeout) {
         clearTimeout(timeout);
@@ -97,12 +77,8 @@ const Dashboard: React.FC = () => {
 
   /**
    * Handles hospital selection change with access control validation.
-   * Only allows users to select hospitals they have permission to access.
-   * 
-   * @param hospitalId - The ID of the hospital to select
    */
   const handleHospitalChange = useCallback((hospitalId: string) => {
-    // Validate user access before allowing hospital change
     if (canAccessHospital(hospitalId)) {
       logger.info('Hospital selection changed', {
         context: 'Dashboard',
@@ -119,8 +95,6 @@ const Dashboard: React.FC = () => {
 
   /**
    * Handles year selection change for financial data filtering.
-   * 
-   * @param year - The year to select for data display
    */
   const handleYearChange = useCallback((year: number) => {
     logger.info('Year selection changed', {
@@ -176,7 +150,7 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="text-gray-900 dark:text-dark-primary relative">
+    <div className="min-h-screen text-white dark:text-white relative">
       <Header
         hospitals={filteredHospitals}
         selectedHospitalId={selectedHospitalId}
@@ -186,26 +160,29 @@ const Dashboard: React.FC = () => {
         onYearChange={handleYearChange}
       />
       
-      <main className="p-3 sm:p-4 lg:p-6 xl:p-8 max-w-screen-2xl mx-auto">
-        {/* Responsive Filter Bar */}
-        <div className="xl:hidden mb-4">
-          <Button 
+      <main className="mobile-safe-area">
+        <div className="page-container">
+          {/* Enhanced Mobile Filter Bar */}
+        <div className="xl:hidden mb-4 relative z-20" style={{ overflow: 'visible' }}>
+          <button 
             onClick={() => setShowFilters(!showFilters)}
-            className="w-full"
+            className="btn-base btn-primary btn-md w-full flex items-center justify-center gap-3"
             aria-expanded={showFilters}
             aria-controls="mobile-filter-panel"
           >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
             </svg>
-            {showFilters ? 'Hide' : 'Show'} Filters
-          </Button>
+            <span className="font-medium" style={{ lineHeight: 'var(--line-height-snug)' }}>
+              {showFilters ? 'Hide' : 'Show'} Filters
+            </span>
+          </button>
 
           {showFilters && (
-            <div id="mobile-filter-panel" className="mt-4 p-4 bg-white dark:bg-dark-surface rounded-lg shadow-md border border-gray-200 dark:border-dark-border">
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <div id="mobile-filter-panel" className="mt-4 glass-card-elevated rounded-2xl component-spacing relative z-20" style={{ overflow: 'visible' }}>
+              <div className="flex flex-col gap-6 relative z-20" style={{ overflow: 'visible' }}>
+                <div className="relative z-30" style={{ overflow: 'visible' }}>
+                  <label className="text-label" style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--space-3)', display: 'block' }}>
                     Hospital
                   </label>
                   <Dropdown
@@ -217,8 +194,8 @@ const Dashboard: React.FC = () => {
                   />
                 </div>
                 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <div className="relative z-20" style={{ overflow: 'visible' }}>
+                  <label className="text-label" style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--space-3)', display: 'block' }}>
                     Year
                   </label>
                   <Dropdown
@@ -234,47 +211,73 @@ const Dashboard: React.FC = () => {
           )}
         </div>
         
-        {/* Key Metrics */}
-        <div className="mb-6 lg:mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Key Financial Metrics</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        {/* Enhanced Key Performance Indicators Section */}
+        <section aria-labelledby="kpi-heading" className="section-spacing">
+          <h2 
+            id="kpi-heading"
+            className="heading-2 text-center mb-10"
+          >
+            Key Performance Indicators
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-responsive-md">
             {currentData.financialMetrics.map((metric) => (
               <MetricCard key={metric.id} metric={metric} />
             ))}
           </div>
-        </div>
+        </section>
 
         <Suspense fallback={<LoadingSpinner text="Loading charts..." />}>
-          {/* Charts Section */}
-          <div className="space-y-6 lg:space-y-8 mb-6 lg:mb-8">
+          {/* Enhanced Charts Section */}
+          <section className="section-spacing" aria-labelledby="charts-heading">
+            <h2 id="charts-heading" className="sr-only">Financial Data Visualization</h2>
+            
             {/* Revenue Chart - Full Width */}
-            <div className="w-full">
-              <RevenueChart data={currentData.revenueData} />
+            <div className="w-full mb-8">
+              <RevenueChart data={currentData.revenueData} availableYears={availableYears} />
             </div>
 
-            {/* Side-by-side charts on larger screens */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
+            {/* Responsive charts - stacked on mobile, side-by-side on larger screens */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-responsive-md">
               <ExpensePieChart data={currentData.expenseBreakdown} />
               <CashFlowChart data={currentData.cashFlowData} />
             </div>
-          </div>
+          </section>
 
-          {/* Patient Metrics */}
-          <div className="mb-6 lg:mb-8">
+          {/* Patient Metrics Section */}
+          <section className="section-spacing" aria-labelledby="patient-metrics-heading">
+            <h2 id="patient-metrics-heading" className="sr-only">Patient Metrics</h2>
             <PatientMetricsCard metrics={currentData.patientMetrics} />
-          </div>
+          </section>
 
-          {/* Department Performance */}
-          <div className="mb-6 lg:mb-8">
+          {/* Department Performance Section */}
+          <section className="section-spacing" aria-labelledby="department-performance-heading">
+            <h2 id="department-performance-heading" className="sr-only">Department Performance</h2>
             <DepartmentTable departments={currentData.departmentFinances} />
-          </div>
+          </section>
         </Suspense>
 
-        {/* Footer */}
-        <footer className="text-center text-sm text-gray-500 dark:text-gray-400 mt-12 py-6 border-t border-gray-200 dark:border-gray-700">
-          <p>© 2024 Hospital Finance Dashboard. All rights reserved.</p>
-          <p className="mt-1">Last updated: {currentData.lastUpdated}</p>
-        </footer>
+          {/* Enhanced Footer */}
+          <footer className="section-spacing">
+            <div className="chart-container footer-card" style={{ borderRadius: 'var(--radius-lg)' }}>
+              <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-4 text-center sm:text-left">
+                <p className="text-tertiary font-medium" style={{ 
+                  fontSize: 'var(--text-base)', 
+                  lineHeight: '1.4',
+                  margin: 0 
+                }}>
+                  © 2024 Hospital Finance Dashboard.<br />All rights reserved.
+                </p>
+                <p className="text-tertiary font-medium sm:text-right sm:whitespace-nowrap" style={{ 
+                  fontSize: 'var(--text-sm)', 
+                  lineHeight: '1.4',
+                  margin: 0 
+                }}>
+                  Last updated: {currentData.lastUpdated}
+                </p>
+              </div>
+            </div>
+          </footer>
+        </div>
       </main>
     </div>
   );

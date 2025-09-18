@@ -49,18 +49,18 @@ export const financialMetrics: FinancialMetric[] = [
 ];
 
 export const revenueData: RevenueData[] = [
-  { month: 'Jan', revenue: 11200000, expenses: 8900000, netIncome: 2300000 },
-  { month: 'Feb', revenue: 10800000, expenses: 8600000, netIncome: 2200000 },
-  { month: 'Mar', revenue: 12100000, expenses: 9200000, netIncome: 2900000 },
-  { month: 'Apr', revenue: 11800000, expenses: 9000000, netIncome: 2800000 },
-  { month: 'May', revenue: 12800000, expenses: 9600000, netIncome: 3200000 },
-  { month: 'Jun', revenue: 12500000, expenses: 9800000, netIncome: 2700000 },
-  { month: 'Jul', revenue: 13200000, expenses: 10100000, netIncome: 3100000 },
-  { month: 'Aug', revenue: 12900000, expenses: 9900000, netIncome: 3000000 },
-  { month: 'Sep', revenue: 13500000, expenses: 10300000, netIncome: 3200000 },
-  { month: 'Oct', revenue: 13100000, expenses: 10000000, netIncome: 3100000 },
-  { month: 'Nov', revenue: 12700000, expenses: 9700000, netIncome: 3000000 },
-  { month: 'Dec', revenue: 14200000, expenses: 10800000, netIncome: 3400000 }
+  { month: 'Jan', revenue: 8500000, expenses: 6200000, netIncome: 2300000 },
+  { month: 'Feb', revenue: 9200000, expenses: 7100000, netIncome: 2100000 },
+  { month: 'Mar', revenue: 15600000, expenses: 11800000, netIncome: 3800000 },
+  { month: 'Apr', revenue: 7800000, expenses: 5900000, netIncome: 1900000 },
+  { month: 'May', revenue: 18200000, expenses: 13500000, netIncome: 4700000 },
+  { month: 'Jun', revenue: 6900000, expenses: 5400000, netIncome: 1500000 },
+  { month: 'Jul', revenue: 21400000, expenses: 15800000, netIncome: 5600000 },
+  { month: 'Aug', revenue: 11200000, expenses: 8600000, netIncome: 2600000 },
+  { month: 'Sep', revenue: 16800000, expenses: 12200000, netIncome: 4600000 },
+  { month: 'Oct', revenue: 9600000, expenses: 7300000, netIncome: 2300000 },
+  { month: 'Nov', revenue: 19500000, expenses: 14100000, netIncome: 5400000 },
+  { month: 'Dec', revenue: 13700000, expenses: 10200000, netIncome: 3500000 }
 ];
 
 export const departmentFinances: DepartmentFinance[] = [
@@ -111,12 +111,12 @@ export const patientMetrics: PatientMetrics = {
 };
 
 export const expenseBreakdown: ExpenseBreakdown[] = [
-  { category: 'Salaries & Benefits', amount: 5200000, percentage: 53.1, color: '#3b82f6' },
-  { category: 'Medical Supplies', amount: 1800000, percentage: 18.4, color: '#10b981' },
-  { category: 'Equipment', amount: 1200000, percentage: 12.2, color: '#f59e0b' },
-  { category: 'Utilities', amount: 600000, percentage: 6.1, color: '#ef4444' },
-  { category: 'Maintenance', amount: 500000, percentage: 5.1, color: '#8b5cf6' },
-  { category: 'Other', amount: 500000, percentage: 5.1, color: '#6b7280' }
+  { category: 'Salaries & Benefits', amount: 5200000, percentage: 53.1, color: '#f59e0b' }, // Amber - main expense
+  { category: 'Medical Supplies', amount: 1800000, percentage: 18.4, color: '#3b82f6' }, // Blue - medical
+  { category: 'Equipment', amount: 1200000, percentage: 12.2, color: '#22c55e' }, // Green - equipment
+  { category: 'Utilities', amount: 600000, percentage: 6.1, color: '#06b6d4' }, // Cyan - utilities
+  { category: 'Maintenance', amount: 500000, percentage: 5.1, color: '#ef4444' }, // Red - maintenance
+  { category: 'Other', amount: 500000, percentage: 5.1, color: '#14b8a6' } // Teal - other
 ];
 
 export const cashFlowData: CashFlowData[] = [
@@ -274,18 +274,18 @@ hospitals.forEach(hospital => {
         }
       ],
       revenueData: [
-        { month: 'Jan', revenue: generateVariation(11200000 * baseMultiplier), expenses: generateVariation(8900000 * baseMultiplier), netIncome: generateVariation(2300000 * baseMultiplier) },
-        { month: 'Feb', revenue: generateVariation(10800000 * baseMultiplier), expenses: generateVariation(8600000 * baseMultiplier), netIncome: generateVariation(2200000 * baseMultiplier) },
-        { month: 'Mar', revenue: generateVariation(12100000 * baseMultiplier), expenses: generateVariation(9200000 * baseMultiplier), netIncome: generateVariation(2900000 * baseMultiplier) },
-        { month: 'Apr', revenue: generateVariation(11800000 * baseMultiplier), expenses: generateVariation(9000000 * baseMultiplier), netIncome: generateVariation(2800000 * baseMultiplier) },
-        { month: 'May', revenue: generateVariation(12800000 * baseMultiplier), expenses: generateVariation(9600000 * baseMultiplier), netIncome: generateVariation(3200000 * baseMultiplier) },
-        { month: 'Jun', revenue: generateVariation(12500000 * baseMultiplier), expenses: generateVariation(9800000 * baseMultiplier), netIncome: generateVariation(2700000 * baseMultiplier) },
-        { month: 'Jul', revenue: generateVariation(13200000 * baseMultiplier), expenses: generateVariation(10100000 * baseMultiplier), netIncome: generateVariation(3100000 * baseMultiplier) },
-        { month: 'Aug', revenue: generateVariation(12900000 * baseMultiplier), expenses: generateVariation(9900000 * baseMultiplier), netIncome: generateVariation(3000000 * baseMultiplier) },
-        { month: 'Sep', revenue: generateVariation(13500000 * baseMultiplier), expenses: generateVariation(10300000 * baseMultiplier), netIncome: generateVariation(3200000 * baseMultiplier) },
-        { month: 'Oct', revenue: generateVariation(13100000 * baseMultiplier), expenses: generateVariation(10000000 * baseMultiplier), netIncome: generateVariation(3100000 * baseMultiplier) },
-        { month: 'Nov', revenue: generateVariation(12700000 * baseMultiplier), expenses: generateVariation(9700000 * baseMultiplier), netIncome: generateVariation(3000000 * baseMultiplier) },
-        { month: 'Dec', revenue: generateVariation(14200000 * baseMultiplier), expenses: generateVariation(10800000 * baseMultiplier), netIncome: generateVariation(3400000 * baseMultiplier) }
+        { month: 'Jan', revenue: generateVariation(8500000 * baseMultiplier), expenses: generateVariation(6200000 * baseMultiplier), netIncome: generateVariation(2300000 * baseMultiplier) },
+        { month: 'Feb', revenue: generateVariation(9200000 * baseMultiplier), expenses: generateVariation(7100000 * baseMultiplier), netIncome: generateVariation(2100000 * baseMultiplier) },
+        { month: 'Mar', revenue: generateVariation(15600000 * baseMultiplier), expenses: generateVariation(11800000 * baseMultiplier), netIncome: generateVariation(3800000 * baseMultiplier) },
+        { month: 'Apr', revenue: generateVariation(7800000 * baseMultiplier), expenses: generateVariation(5900000 * baseMultiplier), netIncome: generateVariation(1900000 * baseMultiplier) },
+        { month: 'May', revenue: generateVariation(18200000 * baseMultiplier), expenses: generateVariation(13500000 * baseMultiplier), netIncome: generateVariation(4700000 * baseMultiplier) },
+        { month: 'Jun', revenue: generateVariation(6900000 * baseMultiplier), expenses: generateVariation(5400000 * baseMultiplier), netIncome: generateVariation(1500000 * baseMultiplier) },
+        { month: 'Jul', revenue: generateVariation(21400000 * baseMultiplier), expenses: generateVariation(15800000 * baseMultiplier), netIncome: generateVariation(5600000 * baseMultiplier) },
+        { month: 'Aug', revenue: generateVariation(11200000 * baseMultiplier), expenses: generateVariation(8600000 * baseMultiplier), netIncome: generateVariation(2600000 * baseMultiplier) },
+        { month: 'Sep', revenue: generateVariation(16800000 * baseMultiplier), expenses: generateVariation(12200000 * baseMultiplier), netIncome: generateVariation(4600000 * baseMultiplier) },
+        { month: 'Oct', revenue: generateVariation(9600000 * baseMultiplier), expenses: generateVariation(7300000 * baseMultiplier), netIncome: generateVariation(2300000 * baseMultiplier) },
+        { month: 'Nov', revenue: generateVariation(19500000 * baseMultiplier), expenses: generateVariation(14100000 * baseMultiplier), netIncome: generateVariation(5400000 * baseMultiplier) },
+        { month: 'Dec', revenue: generateVariation(13700000 * baseMultiplier), expenses: generateVariation(10200000 * baseMultiplier), netIncome: generateVariation(3500000 * baseMultiplier) }
       ],
       departmentFinances: (() => {
         const emergencyRevenue = generateVariation(3200000 * baseMultiplier);
@@ -372,12 +372,12 @@ hospitals.forEach(hospital => {
         const totalAmount = salariesAmount + suppliesAmount + equipmentAmount + utilitiesAmount + maintenanceAmount + otherAmount;
         
         return [
-          { category: 'Salaries & Benefits', amount: salariesAmount, percentage: Math.round((salariesAmount / totalAmount) * 100 * 10) / 10, color: '#3b82f6' },
-          { category: 'Medical Supplies', amount: suppliesAmount, percentage: Math.round((suppliesAmount / totalAmount) * 100 * 10) / 10, color: '#10b981' },
-          { category: 'Equipment', amount: equipmentAmount, percentage: Math.round((equipmentAmount / totalAmount) * 100 * 10) / 10, color: '#f59e0b' },
-          { category: 'Utilities', amount: utilitiesAmount, percentage: Math.round((utilitiesAmount / totalAmount) * 100 * 10) / 10, color: '#ef4444' },
-          { category: 'Maintenance', amount: maintenanceAmount, percentage: Math.round((maintenanceAmount / totalAmount) * 100 * 10) / 10, color: '#8b5cf6' },
-          { category: 'Other', amount: otherAmount, percentage: Math.round((otherAmount / totalAmount) * 100 * 10) / 10, color: '#6b7280' }
+          { category: 'Salaries & Benefits', amount: salariesAmount, percentage: Math.round((salariesAmount / totalAmount) * 100 * 10) / 10, color: '#f59e0b' },
+          { category: 'Medical Supplies', amount: suppliesAmount, percentage: Math.round((suppliesAmount / totalAmount) * 100 * 10) / 10, color: '#3b82f6' },
+          { category: 'Equipment', amount: equipmentAmount, percentage: Math.round((equipmentAmount / totalAmount) * 100 * 10) / 10, color: '#22c55e' },
+          { category: 'Utilities', amount: utilitiesAmount, percentage: Math.round((utilitiesAmount / totalAmount) * 100 * 10) / 10, color: '#06b6d4' },
+          { category: 'Maintenance', amount: maintenanceAmount, percentage: Math.round((maintenanceAmount / totalAmount) * 100 * 10) / 10, color: '#ef4444' },
+          { category: 'Other', amount: otherAmount, percentage: Math.round((otherAmount / totalAmount) * 100 * 10) / 10, color: '#14b8a6' }
         ];
       })(),
       cashFlowData: [

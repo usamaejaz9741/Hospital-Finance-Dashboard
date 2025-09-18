@@ -99,6 +99,7 @@ export class MockIntersectionObserverImpl implements MockIntersectionObserver {
 export const mockThemeContextValue: ThemeContextType = {
   theme: 'light',           // Default to light theme
   resolvedTheme: 'light',   // Resolved theme matches preference
+  isTransitioning: false,   // Not transitioning in tests
   toggleTheme: jest.fn(),   // Mock toggle function
   setTheme: jest.fn(),      // Mock setTheme function
 };

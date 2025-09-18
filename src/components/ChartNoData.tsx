@@ -9,7 +9,7 @@ interface ChartNoDataProps {
 const ChartNoData: React.FC<ChartNoDataProps> = ({ title, message, icon }) => {
   return (
     <div className="h-80 flex items-center justify-center">
-      <div className="text-center text-gray-500 dark:text-gray-400">
+      <div className="text-center" style={{ color: 'var(--color-text-muted)' }}>
         {icon && (
           <div className="w-16 h-16 mx-auto mb-4">
             {icon}

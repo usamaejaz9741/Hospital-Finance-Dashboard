@@ -149,7 +149,7 @@ export interface PatientMetrics {
  *   category: 'Staffing',
  *   amount: 850000,
  *   percentage: 45.2,
- *   color: '#3b82f6'
+ *   color: '#a855f7'
  * };
  * ```
  */
