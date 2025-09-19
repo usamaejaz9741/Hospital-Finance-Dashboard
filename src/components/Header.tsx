@@ -130,13 +130,10 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <header 
-      className="header-glass sticky top-0 z-40 border-b-0" 
-      style={{ 
-        overflow: 'visible'
-      }}
+      className="header-glass sticky top-0 z-40 border-b-0 relative" 
     >
-      <div className="page-container" style={{ overflow: 'visible', paddingTop: 0, paddingBottom: 0 }}>
-        <div className="flex items-center justify-between min-h-16 py-4 gap-4" style={{ overflow: 'visible' }}>
+      <div className="page-container relative" style={{ paddingTop: 0, paddingBottom: 0 }}>
+        <div className="flex items-center justify-between min-h-16 py-4 gap-4 relative">
           {/* Logo and Brand Name - Left Side */}
           <div className="flex items-center min-w-0 flex-shrink">
             <div className="flex items-center gap-3 min-w-0">

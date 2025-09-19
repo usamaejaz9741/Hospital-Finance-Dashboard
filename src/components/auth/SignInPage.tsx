@@ -125,7 +125,7 @@ const SignInPage: React.FC<SignInPageProps> = ({ onSwitchToSignUp }: SignInPageP
             
             <div className="flex flex-col gap-4">
               <div>
-                <label className="text-label" style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--space-2)', display: 'block' }}>
+                <label htmlFor="email" className="text-label" style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--space-2)', display: 'block' }}>
                   Email Address
                 </label>
                 <input
@@ -143,7 +143,7 @@ const SignInPage: React.FC<SignInPageProps> = ({ onSwitchToSignUp }: SignInPageP
               </div>
               
               <div>
-                <label className="text-label" style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--space-2)', display: 'block' }}>
+                <label htmlFor="password" className="text-label" style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--space-2)', display: 'block' }}>
                   Password
                 </label>
                 <div className="relative">

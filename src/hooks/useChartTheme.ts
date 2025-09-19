@@ -70,8 +70,7 @@ export const useChartTheme = () => {
   const { resolvedTheme } = useTheme();
   
   // Access Tailwind color configuration (TypeScript type issue with complex config structure)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // const themeColors: any = fullConfig.theme.colors;
+  // const themeColors = fullConfig.theme.colors;
 
   // Enhanced theme-aware color palette for chart elements with diverse colors
   const colors = {

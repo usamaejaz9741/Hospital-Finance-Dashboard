@@ -30,6 +30,9 @@
     "pre-commit": "lint-staged"
   },
   "dependencies": {
+    "@sentry/browser": "^10.12.0",
+    "@sentry/react": "^10.12.0",
+    "@sentry/tracing": "^7.120.4",
     "clsx": "^2.0.0",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.284.0",
@@ -41,10 +44,10 @@
   "devDependencies": {
     "@axe-core/cli": "^4.8.0",
     "@playwright/test": "^1.40.0",
+    "@sentry/types": "^10.12.0",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^14.3.1",
     "@testing-library/user-event": "^14.6.1",
-    "@types/bcryptjs": "^2.4.6",
     "@types/jest": "^29.5.14",
     "@types/node": "^20.19.14",
     "@types/react": "^18.2.37",
@@ -54,7 +57,6 @@
     "@typescript-eslint/parser": "^6.10.0",
     "@vitejs/plugin-react": "^4.1.1",
     "autoprefixer": "^10.4.16",
-    "bcryptjs": "^2.4.3",
     "eslint": "^8.53.0",
     "eslint-plugin-jest": "^27.4.2",
     "eslint-plugin-jest-dom": "^5.1.0",

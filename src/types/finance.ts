@@ -3,7 +3,11 @@
  * Contains the metric value, change indicators, and formatting information.
  * 
  * @interface FinancialMetric
+ * @category Financial Data
+ * @since 1.0.0
+ * 
  * @example
+ * Basic usage with currency format:
  * ```typescript
  * const revenueMetric: FinancialMetric = {
  *   id: 'total-revenue',
@@ -15,27 +19,67 @@
  *   format: 'currency'
  * };
  * ```
+ * 
+ * @example
+ * Percentage metric for profit margin:
+ * ```typescript
+ * const marginMetric: FinancialMetric = {
+ *   id: 'profit-margin',
+ *   title: 'Profit Margin',
+ *   value: 0.235,
+ *   change: -0.02,
+ *   changeType: 'decrease',
+ *   period: 'vs last quarter',
+ *   format: 'percentage'
+ * };
+ * ```
  */
 export interface FinancialMetric {
-  /** Unique identifier for the metric */
+  /** 
+   * Unique identifier for the metric. Should be kebab-case and descriptive.
+   * @example 'total-revenue', 'operating-expenses', 'net-profit-margin'
+   */
   id: string;
   
-  /** Display title for the metric card */
+  /** 
+   * Display title for the metric card. Should be human-readable and concise.
+   * @example 'Total Revenue', 'Operating Expenses', 'Net Profit Margin'
+   */
   title: string;
   
-  /** Numeric value of the metric */
+  /** 
+   * Numeric value of the metric. 
+   * - For currency: Raw number in base units (e.g., 1500000 for $1.5M)
+   * - For percentage: Decimal between 0 and 1 (e.g., 0.235 for 23.5%)
+   * - For numbers: Any numeric value
+   */
   value: number;
   
-  /** Percentage change from previous period (positive or negative) */
+  /** 
+   * Percentage change from previous period (positive or negative).
+   * Expressed as a decimal (e.g., 0.125 for 12.5% increase)
+   */
   change: number;
   
-  /** Whether the change represents an increase or decrease */
+  /** 
+   * Whether the change represents an increase or decrease.
+   * Used for color-coding and trend indicators.
+   */
   changeType: 'increase' | 'decrease';
   
-  /** Time period description for the change (e.g., "vs last month") */
+  /** 
+   * Time period description for the change.
+   * Should be clear and consistent across metrics.
+   * @example 'vs last month', 'vs last quarter', 'year over year'
+   */
   period: string;
   
-  /** How the value should be formatted for display */
+  /** 
+   * How the value should be formatted for display.
+   * - 'currency': Formatted with locale-specific currency symbol and grouping
+   * - 'percentage': Multiplied by 100 and displayed with % symbol
+   * - 'number': Formatted with locale-specific number formatting
+   */
   format: 'currency' | 'percentage' | 'number';
 }
 

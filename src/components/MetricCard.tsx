@@ -3,18 +3,76 @@ import { FinancialMetric } from '../types/finance';
 import { formatCurrency, formatPercentage, formatNumber, getChangeIcon } from '../utils/formatters';
 
 /**
- * Props for the MetricCard component.
+ * Props interface for the MetricCard component.
  * 
  * @interface MetricCardProps
+ * @category Component Props
+ * @since 1.0.0
+ * 
+ * @example
+ * ```typescript
+ * const props: MetricCardProps = {
+ *   metric: {
+ *     id: 'total-revenue',
+ *     title: 'Total Revenue',
+ *     value: 1500000,
+ *     change: 12.5,
+ *     changeType: 'increase',
+ *     period: 'vs last month',
+ *     format: 'currency'
+ *   }
+ * };
+ * ```
  */
 interface MetricCardProps {
-  /** Financial metric data to display in the card */
+  /** 
+   * Financial metric data to display in the card.
+   * @see FinancialMetric for detailed type information
+   */
   metric: FinancialMetric;
 }
 
 /**
- * Financial metric card component with glassmorphism design.
+ * A visually appealing card component for displaying financial metrics with modern design elements.
  * 
+ * @component MetricCard
+ * @category UI Components
+ * @subcategory Data Display
+ * @since 1.0.0
+ * 
+ * @example
+ * Basic usage:
+ * ```tsx
+ * <MetricCard 
+ *   metric={{
+ *     id: 'total-revenue',
+ *     title: 'Total Revenue',
+ *     value: 1500000,
+ *     change: 12.5,
+ *     changeType: 'increase',
+ *     period: 'vs last month',
+ *     format: 'currency'
+ *   }}
+ * />
+ * ```
+ * 
+ * @example
+ * With percentage format:
+ * ```tsx
+ * <MetricCard 
+ *   metric={{
+ *     id: 'profit-margin',
+ *     title: 'Profit Margin',
+ *     value: 0.235,
+ *     change: -0.02,
+ *     changeType: 'decrease',
+ *     period: 'vs last quarter',
+ *     format: 'percentage'
+ *   }}
+ * />
+ * ```
+ * 
+ * @remarks
  * Features:
  * - Modern glassmorphism styling with backdrop blur
  * - Gradient backgrounds and glass effects
@@ -22,8 +80,21 @@ interface MetricCardProps {
  * - Enhanced visual hierarchy with better typography
  * - Improved accessibility with proper ARIA labels
  * - Responsive design for all screen sizes
+ * - Dark mode support
+ * - Automatic formatting based on metric type
+ * - Trend indicators with color coding
  * 
- * @component
+ * Accessibility:
+ * - Uses semantic HTML structure
+ * - Includes proper ARIA labels and roles
+ * - Supports keyboard navigation
+ * - Color contrast meets WCAG guidelines
+ * - Screen reader optimized content structure
+ * 
+ * Performance:
+ * - Memoized value formatting
+ * - CSS-based animations for smooth performance
+ * - Optimized re-renders using React.memo
  */
 const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
   /**

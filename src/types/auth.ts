@@ -3,7 +3,16 @@
  * Contains user identification, role information, and hospital access permissions.
  * 
  * @interface User
+ * @category Authentication
+ * @since 1.0.0
+ * 
+ * @remarks
+ * The User interface is central to the application's authentication and authorization system.
+ * It supports role-based access control (RBAC) and multi-hospital management through the
+ * role and hospitalIds properties.
+ * 
  * @example
+ * System Administrator with full access:
  * ```typescript
  * const adminUser: User = {
  *   id: 'user-001',
@@ -13,7 +22,11 @@
  *   createdAt: '2024-01-15T08:30:00Z',
  *   lastLogin: '2024-03-15T14:22:00Z'
  * };
+ * ```
  * 
+ * @example
+ * Hospital Owner with access to multiple facilities:
+ * ```typescript
  * const hospitalOwner: User = {
  *   id: 'user-002',
  *   email: 'owner@metrogeneral.com',
@@ -23,30 +36,78 @@
  *   createdAt: '2024-01-20T10:15:00Z'
  * };
  * ```
+ * 
+ * @example
+ * Branch Manager with single hospital access:
+ * ```typescript
+ * const branchManager: User = {
+ *   id: 'user-003',
+ *   email: 'manager@pediatric.com',
+ *   name: 'John Smith',
+ *   role: 'branch_manager',
+ *   hospitalIds: ['pediatric-001'],
+ *   createdAt: '2024-02-01T09:00:00Z'
+ * };
+ * ```
  */
 export interface User {
-  /** Unique identifier for the user */
+  /** 
+   * Unique identifier for the user.
+   * Format: 'user-{sequential-number}'
+   * @example 'user-001', 'user-002'
+   */
   id: string;
   
-  /** User's email address (used for authentication) */
+  /** 
+   * User's email address (used for authentication).
+   * Must be a valid email format and unique in the system.
+   * @example 'admin@hospitalfinance.com'
+   */
   email: string;
   
-  /** Full display name of the user */
+  /** 
+   * Full display name of the user.
+   * Should be properly capitalized and include title if applicable.
+   * @example 'Dr. Sarah Johnson', 'John Smith'
+   */
   name: string;
   
-  /** User's role determining access permissions */
+  /** 
+   * User's role determining access permissions.
+   * - admin: Full system access
+   * - hospital_owner: Access to multiple assigned hospitals
+   * - branch_manager: Access to single assigned hospital
+   * @see UserRole
+   */
   role: UserRole;
   
-  /** Single hospital ID for branch owners (deprecated in favor of hospitalIds) */
+  /** 
+   * Single hospital ID for branch owners.
+   * @deprecated Use hospitalIds array instead
+   * @example 'general-001'
+   */
   hospitalId?: string;
   
-  /** Array of hospital IDs the user can access (for hospital owners and branch owners) */
+  /** 
+   * Array of hospital IDs the user can access.
+   * - Required for hospital_owner and branch_manager roles
+   * - Optional for admin (has implicit access to all hospitals)
+   * @example ['general-001', 'specialty-002']
+   */
   hospitalIds?: string[];
   
-  /** ISO timestamp of when the user account was created */
+  /** 
+   * ISO timestamp of when the user account was created.
+   * System-generated, immutable field.
+   * @example '2024-01-15T08:30:00Z'
+   */
   createdAt: string;
   
-  /** ISO timestamp of the user's last successful login */
+  /** 
+   * ISO timestamp of the user's last successful login.
+   * Updated automatically by the authentication system.
+   * @example '2024-03-15T14:22:00Z'
+   */
   lastLogin?: string;
   
   /** Hashed password for authentication (internal use only) */

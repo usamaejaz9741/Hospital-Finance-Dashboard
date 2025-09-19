@@ -21,7 +21,41 @@ const PatientMetricsCard = lazy(() => import('./PatientMetricsCard'));
 const DepartmentTable = lazy(() => import('./DepartmentTable'));
 
 /**
- * Main dashboard component with modern glassmorphism design
+ * Main dashboard component providing a comprehensive financial overview for hospitals.
+ * Features a modern glassmorphism design with responsive layout and role-based data access.
+ * 
+ * @component
+ * @category Core Components
+ * @since 1.0.0
+ * 
+ * @example
+ * Basic usage within router:
+ * ```tsx
+ * <Route path="/dashboard">
+ *   <Dashboard />
+ * </Route>
+ * ```
+ * 
+ * @remarks
+ * This component serves as the main interface for the Hospital Finance Dashboard.
+ * It manages:
+ * - Hospital selection based on user permissions
+ * - Year-based data filtering
+ * - Dynamic loading of financial metrics and charts
+ * - Responsive layout with mobile-friendly filters
+ * - Error handling and loading states
+ * 
+ * Performance optimizations:
+ * - Lazy loading of heavy chart components
+ * - Memoization of filtered hospital list
+ * - Debounced data loading
+ * - Suspense boundaries for code splitting
+ * 
+ * Accessibility features:
+ * - ARIA labels for interactive elements
+ * - Keyboard navigation support
+ * - Screen reader announcements for data updates
+ * - High contrast mode compatibility
  */
 const Dashboard: React.FC = () => {
   // Authentication and access control
@@ -163,7 +197,7 @@ const Dashboard: React.FC = () => {
       <main className="mobile-safe-area">
         <div className="page-container">
           {/* Enhanced Mobile Filter Bar */}
-        <div className="xl:hidden mb-4 relative z-20" style={{ overflow: 'visible' }}>
+        <div className="xl:hidden mb-4 relative z-20">
           <button 
             onClick={() => setShowFilters(!showFilters)}
             className="btn-base btn-primary btn-md w-full flex items-center justify-center gap-3"
@@ -179,9 +213,9 @@ const Dashboard: React.FC = () => {
           </button>
 
           {showFilters && (
-            <div id="mobile-filter-panel" className="mt-4 glass-card-elevated rounded-2xl component-spacing relative z-20" style={{ overflow: 'visible' }}>
-              <div className="flex flex-col gap-6 relative z-20" style={{ overflow: 'visible' }}>
-                <div className="relative z-30" style={{ overflow: 'visible' }}>
+            <div id="mobile-filter-panel" className="mt-4 glass-card-elevated rounded-2xl component-spacing relative z-20">
+              <div className="flex flex-col gap-6 relative z-20">
+                <div className="relative z-30">
                   <label className="text-label" style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--space-3)', display: 'block' }}>
                     Hospital
                   </label>
