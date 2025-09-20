@@ -1,0 +1,385 @@
+/**
+ * Web Vitals monitoring module
+ * 
+ * This module implements PerformanceObserver to track Core Web Vitals and
+ * other key performance metrics with optimized, debounced reporting to reduce overhead.
+ */
+
+import { logger } from './logger';
+import { performanceMonitor, debounce } from './performance';
+
+// Performance Entry Types
+interface LayoutShift extends PerformanceEntry {
+  value: number;
+  hadRecentInput: boolean;
+}
+
+interface PerformanceEventTiming extends PerformanceEntry {
+  processingStart?: number;
+}
+
+/**
+ * Web Vitals metric types
+ */
+export type WebVitalMetricType = 
+  | 'CLS'  // Cumulative Layout Shift
+  | 'FID'  // First Input Delay
+  | 'LCP'  // Largest Contentful Paint
+  | 'FCP'  // First Contentful Paint
+  | 'TTFB' // Time to First Byte
+  | 'INP'; // Interaction to Next Paint
+
+/**
+ * Web Vitals metric value with optional navigation timing
+ */
+export interface WebVitalMetric {
+  name: WebVitalMetricType;
+  value: number;
+  rating: 'good' | 'needs-improvement' | 'poor';
+  navigationType?: NavigationTimingType | undefined;
+}
+
+/**
+ * Thresholds for Web Vitals metrics
+ */
+const thresholds = {
+  CLS: { good: 0.1, poor: 0.25 },
+  FID: { good: 100, poor: 300 },
+  LCP: { good: 2500, poor: 4000 },
+  FCP: { good: 1800, poor: 3000 },
+  TTFB: { good: 800, poor: 1800 },
+  INP: { good: 200, poor: 500 }
+};
+
+/**
+ * Gets the rating for a metric value based on thresholds
+ */
+function getRating(name: WebVitalMetricType, value: number): WebVitalMetric['rating'] {
+  const threshold = thresholds[name];
+  if (value <= threshold.good) return 'good';
+  if (value <= threshold.poor) return 'needs-improvement';
+  return 'poor';
+}
+
+/**
+ * Web Vitals monitor that implements debounced reporting and metric aggregation
+ */
+export class WebVitalsMonitor {
+  private observers: PerformanceObserver[] = [];
+  private metrics: Map<WebVitalMetricType, WebVitalMetric> = new Map();
+  private aggregatedMetrics: Map<WebVitalMetricType, number[]> = new Map();
+  private debouncedProcessMetrics: ((value: WebVitalMetric) => void) & { cancel(): void };
+  
+  constructor() {
+    // Initialize debounced processing - aggregate over 5 second windows
+    this.debouncedProcessMetrics = debounce(
+      (value: WebVitalMetric) => this.processMetric(value),
+      5000,
+      { leading: false, trailing: true }
+    );
+  }
+
+  /**
+   * Updates and processes a Web Vital metric
+   */
+  private updateMetric(name: WebVitalMetricType, value: number): void {
+    // Create new metric with navigation timing
+    let navigationType: NavigationTimingType | undefined;
+    
+    try {
+      if (typeof window !== 'undefined' && window.performance) {
+        const entries = window.performance.getEntriesByType('navigation');
+        if (entries?.[0]) {
+          const navEntry = entries[0] as PerformanceNavigationTiming;
+          navigationType = navEntry.type;
+        }
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV !== 'test') {
+        logger.warn('Failed to get navigation timing', {
+          context: 'WebVitalsMonitor',
+          data: { error }
+        });
+      }
+    }
+
+    // Create metric object
+    const metric: WebVitalMetric = {
+      name,
+      value,
+      rating: getRating(name, value),
+      navigationType
+    };
+
+    // Store raw value in aggregation buffer
+    const values = this.aggregatedMetrics.get(name) ?? [];
+    values.push(value);
+    this.aggregatedMetrics.set(name, values);
+
+    // Update current metrics
+    this.metrics.set(name, metric);
+    
+    // Track timing and trigger debounced processing
+    const timingKey = `webvital-${name.toLowerCase()}`;
+    performanceMonitor.startTiming(timingKey);
+    this.debouncedProcessMetrics(metric);
+    performanceMonitor.endTiming(timingKey);
+
+    // Log individual update
+    logger.info('Web Vital metric updated', {
+      context: 'WebVitalsMonitor',
+      data: {
+        name,
+        value,
+        rating: metric.rating
+      }
+    });
+  }
+  
+  /**
+   * Processes aggregated metrics for the collection window
+   */
+  private processMetric(metric: WebVitalMetric): void {
+    const values = this.aggregatedMetrics.get(metric.name);
+    if (!values?.length) return;
+    
+    // Calculate aggregated statistics
+    const avg = values.reduce((a, b) => a + b, 0) / values.length;
+    const max = Math.max(...values);
+    const min = Math.min(...values);
+    
+    // Track timing metrics for the aggregation window
+    const metricBase = `webvital-${metric.name.toLowerCase()}-window`;
+    performanceMonitor.startTiming(metricBase);
+    
+    // Log the aggregated metrics
+    logger.info('Web Vital metrics aggregated', {
+      context: 'WebVitalsMonitor',
+      data: {
+        metric: metric.name,
+        currentValue: metric.value,
+        average: avg,
+        maximum: max,
+        minimum: min,
+        sampleCount: values.length,
+        rating: getRating(metric.name, avg)
+      }
+    });
+    
+    performanceMonitor.endTiming(metricBase);
+    
+    // Clear the aggregation buffer for the next window
+    this.aggregatedMetrics.set(metric.name, []);
+  }
+
+  /**
+   * Starts monitoring Web Vitals
+   */
+  startMonitoring(): void {
+    // Clear old metrics and start fresh
+    this.metrics.clear();
+    this.aggregatedMetrics.clear();
+    
+    // Layout Shifts (CLS)
+    this.observe(['layout-shift'], (entries) => {
+      for (const entry of entries) {
+        const layoutShift = entry as LayoutShift;
+        if (!layoutShift.hadRecentInput && layoutShift.value) {
+          const rawValue = layoutShift.value;
+          const displayValue = rawValue * 1000; // Convert to ms
+          this.updateMetric('CLS', displayValue);
+        }
+      }
+    });
+
+    // First Input Delay (FID)
+    this.observe(['first-input'], (entries) => {
+      const firstInput = entries[0] as PerformanceEventTiming;
+      if (firstInput?.processingStart && firstInput?.startTime) {
+        const value = firstInput.processingStart - firstInput.startTime;
+        this.updateMetric('FID', value);
+      }
+    });
+
+    // Largest Contentful Paint (LCP)
+    this.observe(['largest-contentful-paint'], (entries) => {
+      const lastEntry = entries[entries.length - 1];
+      if (lastEntry) {
+        this.updateMetric('LCP', lastEntry.startTime);
+      }
+    });
+
+    // First Contentful Paint (FCP)
+    this.observe(['paint'], (entries) => {
+      for (const entry of entries) {
+        if (entry.name === 'first-contentful-paint') {
+          this.updateMetric('FCP', entry.startTime);
+        }
+      }
+    });
+
+    // Time to First Byte (TTFB)
+    this.observe(['navigation'], (entries) => {
+      const navigationEntry = entries[0] as PerformanceNavigationTiming;
+      if (navigationEntry) {
+        this.updateMetric('TTFB', navigationEntry.responseStart);
+      }
+    });
+
+    // Interaction to Next Paint (INP)
+    this.observe(['event'], (entries) => {
+      let maxDuration = 0;
+      for (const entry of entries) {
+        maxDuration = Math.max(maxDuration, entry.duration);
+      }
+      this.updateMetric('INP', maxDuration);
+    });
+
+    logger.info('Web Vitals monitoring started', {
+      context: 'WebVitalsMonitor'
+    });
+  }
+
+  /**
+   * Stops monitoring Web Vitals
+   */
+  stopMonitoring(): void {
+    this.observers.forEach(observer => observer.disconnect());
+    this.observers = [];
+    this.metrics.clear();
+
+    logger.info('Web Vitals monitoring stopped', {
+      context: 'WebVitalsMonitor'
+    });
+  }
+
+  /**
+   * Gets all collected metrics
+   */
+  getMetrics(): WebVitalMetric[] {
+    return Array.from(this.metrics.values());
+  }
+
+  /**
+   * Helper to safely create PerformanceObserver
+   */
+  private observe(
+    entryTypes: string[],
+    callback: (entries: PerformanceEntry[]) => void
+  ): void {
+    try {
+      const observer = new PerformanceObserver((list) => {
+        callback(list.getEntries());
+      });
+
+      observer.observe({ entryTypes, buffered: true });
+      this.observers.push(observer);
+    } catch (error) {
+      logger.warn(`Failed to create PerformanceObserver for ${entryTypes.join(', ')}`, {
+        context: 'WebVitalsMonitor',
+        data: { error }
+      });
+    }
+  }
+
+  /**
+   * Updates a metric and triggers debounced processing
+   */
+  private updateMetric(name: WebVitalMetricType, value: number): void {
+    // Create new metric object with navigation timing
+    const metric = {
+      name,
+      value,
+      rating: getRating(name, value),
+      navigationType: undefined as NavigationTimingType | undefined
+    };
+
+    try {
+      if (typeof window !== 'undefined' && window.performance) {
+        const entries = window.performance.getEntriesByType('navigation');
+        if (entries?.[0]) {
+          const navEntry = entries[0] as PerformanceNavigationTiming;
+          metric.navigationType = navEntry.type;
+        }
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV !== 'test') {
+        logger.warn('Failed to get navigation timing', {
+          context: 'WebVitalsMonitor',
+          data: { error }
+        });
+      }
+    }
+
+    // Store raw value in aggregation buffer
+    const values = this.aggregatedMetrics.get(name) ?? [];
+    values.push(value);
+    this.aggregatedMetrics.set(name, values);
+
+    // Update the current metric state
+    this.metrics.set(name, metric);
+    
+    // Track timing and trigger debounced processing
+    const timingKey = `webvital-${name.toLowerCase()}`;
+    performanceMonitor.startTiming(timingKey);
+    this.debouncedProcessMetrics(metric);
+    performanceMonitor.endTiming(timingKey);
+  }
+  
+  /**
+   * Processes aggregated metrics for the collection window
+   */
+  private processMetric(metric: WebVitalMetric): void {
+    const values = this.aggregatedMetrics.get(metric.name);
+    if (!values?.length) return;
+    
+    // Calculate aggregated statistics
+    const avg = values.reduce((a, b) => a + b, 0) / values.length;
+    const max = Math.max(...values);
+    const min = Math.min(...values);
+    
+    // Track timing metrics for the aggregation window
+    const metricBase = `webvital-${metric.name.toLowerCase()}-window`;
+    performanceMonitor.startTiming(metricBase);
+    
+    // Log the aggregated metrics
+    logger.info('Web Vital metrics aggregated', {
+      context: 'WebVitalsMonitor',
+      data: {
+        metric: metric.name,
+        currentValue: metric.value,
+        average: avg,
+        maximum: max,
+        minimum: min,
+        sampleCount: values.length,
+        rating: getRating(metric.name, avg)
+      }
+    });
+    
+    performanceMonitor.endTiming(metricBase);
+    
+    // Clear the aggregation buffer for the next window
+    this.aggregatedMetrics.set(metric.name, []);
+  }
+  }
+        });
+      }
+    }
+
+    // Store metric in map
+    this.metrics.set(name, metric);
+
+    // Report to performance monitor
+    performanceMonitor.startTiming(`web-vital-${name}`);
+    performanceMonitor.endTiming(`web-vital-${name}`);
+
+    // Log the metric
+    logger.info(`Web Vital measured: ${name}`, {
+      context: 'WebVitalsMonitor',
+      data: metric
+    });
+  }
+}
+
+// Export singleton instance
+export const webVitals = new WebVitalsMonitor();

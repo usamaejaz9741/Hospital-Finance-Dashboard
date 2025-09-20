@@ -43,48 +43,49 @@ const PatientMetricsCard: React.FC<PatientMetricsCardProps> = ({ metrics }) => {
       label: 'Avg Stay Duration',
       value: `${metrics.averageStayDuration} days`,
       icon: '📅',
-      color: 'text-purple-600'
+      color: 'text-blue-500'
     },
     {
       label: 'Occupancy Rate',
       value: formatPercentage(metrics.occupancyRate),
       icon: '📊',
-      color: 'text-indigo-600'
+      color: 'text-blue-500'
     }
   ];
 
   return (
-    <div className="bg-white dark:bg-dark-surface p-4 sm:p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 dark:border-dark-border">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Patient Metrics</h2>
+    <div className="chart-container">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3">
+        <h2 className="mobile-heading-scale font-bold gradient-text">Patient Metrics</h2>
         <button 
-          className="btn-secondary text-sm"
+          className="btn-base btn-secondary btn-sm w-full sm:w-auto"
           aria-label="View detailed patient metrics report"
         >
           View Report
         </button>
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4" role="grid" aria-label="Patient metrics overview">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4" role="grid" aria-label="Patient metrics overview">
         {metricItems.map((item, index) => (
           <div 
             key={index} 
-            className="text-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+            className="text-center glass-card interactive"
+            style={{ padding: 'var(--space-4)' }}
             role="gridcell"
             aria-labelledby={`metric-label-${index}`}
             aria-describedby={`metric-value-${index}`}
           >
-            <div className="text-2xl mb-2" aria-hidden="true">{item.icon}</div>
+            <div className="text-xl sm:text-2xl mb-2" aria-hidden="true">{item.icon}</div>
             <div 
               id={`metric-value-${index}`}
-              className={`text-lg font-bold ${item.color}`}
+              className="text-base sm:text-lg font-bold text-white"
               aria-label={`${item.label}: ${item.value}`}
             >
               {item.value}
             </div>
             <div 
               id={`metric-label-${index}`}
-              className="text-sm text-gray-600 dark:text-gray-400 mt-1"
+              className="text-xs sm:text-sm text-white/70 mt-1"
             >
               {item.label}
             </div>

@@ -7,14 +7,16 @@
  * @module security
  */
 
-import bcrypt from 'bcryptjs';
 import { z } from 'zod';
+import { 
+  hashPassword as browserHashPassword, 
+  verifyPassword as browserVerifyPassword 
+} from './browserCrypto';
 
 /**
- * Password hashing configuration
+ * Password configuration
  */
 const PASSWORD_CONFIG = {
-  saltRounds: 12,
   minLength: 8,
   maxLength: 128
 } as const;
@@ -53,7 +55,7 @@ export const hashPassword = async (password: string): Promise<string> => {
     throw new Error(`Password must be no more than ${PASSWORD_CONFIG.maxLength} characters long`);
   }
   
-  return bcrypt.hash(password, PASSWORD_CONFIG.saltRounds);
+  return browserHashPassword(password);
 };
 
 /**
@@ -75,7 +77,7 @@ export const verifyPassword = async (password: string, hash: string): Promise<bo
   }
   
   try {
-    return bcrypt.compare(password, hash);
+    return browserVerifyPassword(password, hash);
   } catch (error) {
     console.error('Password verification error:', error);
     return false;

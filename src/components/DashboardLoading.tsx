@@ -26,7 +26,7 @@ const DashboardLoading: React.FC<DashboardLoadingProps> = ({
   const selectedHospital = hospitals.find(h => h.id === selectedHospitalId);
 
   return (
-    <div className="text-gray-900 dark:text-gray-100">
+    <div className="text-white dark:text-white">
       <Header
         hospitals={hospitals}
         selectedHospitalId={selectedHospitalId}
@@ -36,7 +36,7 @@ const DashboardLoading: React.FC<DashboardLoadingProps> = ({
         onYearChange={onYearChange}
       />
       
-      <main className="p-4 sm:p-6">
+      <main>
         <LoadingSpinner
           size="md"
           text="Loading dashboard data..."

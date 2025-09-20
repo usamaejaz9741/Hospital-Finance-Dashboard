@@ -31,10 +31,16 @@
 - **Dev Server:** `npm run dev` (Vite, port 3000, auto-opens browser)
 - **Build:** `npm run build` (outputs to `dist/`, chunk-optimized)
 - **Preview:** `npm run preview` (preview production build)
-- **Tests:** `npm test` (Jest + React Testing Library)
-- **Type Check:** `npm run type-check`
-- **Lint:** `npm run lint`
-- **Bundle Analysis:** Review `dist/stats.html` after build
+- **Tests:** 
+  - Unit/Integration: `npm test` or `npm run test:watch` 
+  - E2E: `npm run test:e2e` (Playwright)
+  - Coverage: `npm run test:coverage` (threshold config in jest.config.js)
+- **Code Quality:**
+  - Type Check: `npm run type-check`
+  - Lint: `npm run lint`
+  - Format: `npm run format`
+  - Bundle Analysis: `npm run analyze` (review `dist/stats.html`)
+  - Security: `npm run security:audit`
 
 ## Key Patterns & Conventions
 - **Component Structure:**

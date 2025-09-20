@@ -31,20 +31,20 @@ export default {
     },
     
     extend: {
-      // Extended color palette for the dashboard
+      // Extended color palette for the dashboard - Purple main with indicative colors
       colors: {
-        // Primary brand color (blue) - used for main actions and branding
+        // Primary brand color (purple) - used for main actions and branding
         primary: {
-          50: '#eff6ff',   // Very light blue for backgrounds
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa', // Used in dark mode
-          500: '#3b82f6', // Main brand color
-          600: '#2563eb', // Default button color
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a', // Darkest shade
+          50: '#faf5ff',   // Very light purple for backgrounds
+          100: '#f3e8ff',
+          200: '#e9d5ff',
+          300: '#d8b4fe',
+          400: '#c084fc', // Used in dark mode
+          500: '#a855f7', // Main brand color
+          600: '#9333ea', // Default button color
+          700: '#7c3aed',
+          800: '#6b21a8',
+          900: '#581c87', // Darkest shade
         },
         // Success/positive color (green) - for positive metrics, success states
         success: {
@@ -52,21 +52,22 @@ export default {
           100: '#dcfce7',
           200: '#bbf7d0',
           300: '#86efac',
-          400: '#4ade80', // Used in dark mode
+          400: '#4ade80',
           500: '#22c55e', // Main success color
           600: '#16a34a', // Default success actions
           700: '#15803d',
           800: '#166534',
           900: '#14532d',
         },
+        // Warning color (amber/orange) - for warnings and alerts
         warning: {
           50: '#fffbeb',
           100: '#fef3c7',
-          200: '#fed7aa',
-          300: '#fdba74',
-          400: '#fb923c',
-          500: '#f59e0b',
-          600: '#d97706',
+          200: '#fde68a',
+          300: '#fcd34d',
+          400: '#fbbf24',
+          500: '#f59e0b', // Main warning color
+          600: '#d97706', // Default warning actions
           700: '#b45309',
           800: '#92400e',
           900: '#78350f',
@@ -77,13 +78,27 @@ export default {
           100: '#fee2e2',
           200: '#fecaca',
           300: '#fca5a5',
-          400: '#f87171', // Used in dark mode
+          400: '#f87171',
           500: '#ef4444', // Main error color
           600: '#dc2626', // Default error actions
           700: '#b91c1c',
           800: '#991b1b',
           900: '#7f1d1d',
         },
+        // Info color (blue) - for informational content and neutral states
+        info: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6', // Main info color
+          600: '#2563eb', // Default info actions
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+        },
+        // Core purple palette
         purple: {
           50: '#faf5ff',
           100: '#f3e8ff',
@@ -96,40 +111,41 @@ export default {
           800: '#6b21a8',
           900: '#581c87',
         },
+        // Purple indigo variants for richer tones
         indigo: {
-          50: '#eef2ff',
-          100: '#e0e7ff',
-          200: '#c7d2fe',
-          300: '#a5b4fc',
-          400: '#818cf8',
-          500: '#6366f1',
-          600: '#4f46e5',
-          700: '#4338ca',
-          800: '#3730a3',
-          900: '#312e81',
+          50: '#faf5ff',
+          100: '#f3e8ff',
+          200: '#e9d5ff',
+          300: '#d8b4fe',
+          400: '#c084fc',
+          500: '#a855f7',
+          600: '#9333ea',
+          700: '#7c3aed',
+          800: '#6b21a8',
+          900: '#581c87',
         },
         // Dark mode specific colors - carefully chosen for optimal contrast and readability
         dark: {
-          background: '#0f172a',    // Deep navy for main background
-          surface: '#1e293b',       // Lighter navy for cards and surfaces
-          card: '#334155',          // Card backgrounds
-          border: '#475569',        // Border color with subtle contrast
+          background: '#1a0b2e',    // Deep purple for main background
+          surface: '#2d1b69',       // Lighter purple for cards and surfaces
+          card: '#3b2a6b',          // Card backgrounds
+          border: '#4c3d7a',        // Border color with subtle contrast
           text: {
             primary: '#f8fafc',     // High contrast white for headings
             secondary: '#e2e8f0',   // Slightly muted for body text
-            muted: '#94a3b8',       // Muted text for secondary info
+            muted: '#c4b5fd',       // Purple-tinted muted text
           },
           hover: {
-            surface: '#374151',     // Hover states for interactive elements
-            card: '#475569',
+            surface: '#3b2a6b',     // Hover states for interactive elements
+            card: '#4c3d7a',
           }
         }
       },
       // Utility classes for dark mode (legacy support)
       backgroundColor: {
-        'dark-bg': '#0f172a',      // Main dark background
-        'dark-surface': '#1e293b', // Dark surface background
-        'dark-card': '#334155',    // Dark card background
+        'dark-bg': '#1a0b2e',      // Main dark purple background
+        'dark-surface': '#2d1b69', // Dark purple surface background
+        'dark-card': '#3b2a6b',    // Dark purple card background
       },
       textColor: {
         'dark-primary': '#f1f5f9',   // Primary dark mode text
@@ -139,11 +155,24 @@ export default {
       borderColor: {
         'dark-border': '#475569',    // Dark mode border color
       },
+      // Enhanced backdrop blur utilities
+      backdropBlur: {
+        'xs': '2px',
+        'sm': '4px',
+        'md': '8px',
+        'lg': '12px',
+        'xl': '16px',
+        '2xl': '24px',
+        '3xl': '32px',
+      },
       // Custom animations for enhanced user experience
       animation: {
         'fade-in-up': 'fadeInUp 0.5s ease-out forwards',        // Slide up with fade
         'fade-in-down': 'fadeInDown 0.5s ease-out forwards',    // Slide down with fade  
         'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both', // Shake for error states
+        'float': 'float 6s ease-in-out infinite',               // Floating animation
+        'pulse-glow': 'pulse-glow 3s ease-in-out infinite alternate', // Enhanced pulse glow
+        'gradient-shift': 'gradientShift 8s ease-in-out infinite', // Gradient text animation
       },
       // Custom keyframe definitions for animations
       keyframes: {
@@ -163,6 +192,25 @@ export default {
           '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
           '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
           '40%, 60%': { transform: 'translate3d(4px, 0, 0)' },
+        },
+        // Floating animation
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        // Enhanced pulse glow animation
+        'pulse-glow': {
+          'from': {
+            boxShadow: '0 0 20px rgba(102, 126, 234, 0.4), 0 0 10px rgba(118, 75, 162, 0.3)',
+          },
+          'to': {
+            boxShadow: '0 0 30px rgba(102, 126, 234, 0.6), 0 0 40px rgba(118, 75, 162, 0.4), 0 0 20px rgba(240, 147, 251, 0.3)',
+          },
+        },
+        // Gradient text animation
+        gradientShift: {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
         },
       },
     },

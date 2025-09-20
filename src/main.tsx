@@ -3,9 +3,28 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+// Import Web Vitals monitoring
+import { performanceMonitor } from './utils/performance'
+
+const rootElement = document.getElementById('root');
+
+if (!rootElement) {
+  throw new Error('Failed to find root element. Check if the HTML includes a div with id="root"');
+}
+
+// Initialize React app
+const root = ReactDOM.createRoot(rootElement);
+
+root.render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);
 
+// Start Web Vitals monitoring after app initialization
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
+  // Small delay to ensure DOM is ready
+  setTimeout(async () => {
+    await performanceMonitor.startWebVitalsMonitoring();
+  }, 100);
+}

@@ -1,0 +1,2 @@
+import{j as e}from"./vendor-BKCzIg0M.js";const s=({title:s,message:t,icon:c})=>e.jsx("div",{className:"h-80 flex items-center justify-center",children:e.jsxs("div",{className:"text-center",style:{color:"var(--color-text-muted)"},children:[c&&e.jsx("div",{className:"w-16 h-16 mx-auto mb-4",children:c}),e.jsx("p",{className:"text-lg font-medium mb-2",children:s}),e.jsx("p",{className:"text-sm",children:t})]})});export{s as C};
+//# sourceMappingURL=ChartNoData-DvjNDMw_.js.map

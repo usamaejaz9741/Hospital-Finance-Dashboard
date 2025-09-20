@@ -1,3 +1,14 @@
+import { captureError, addBreadcrumb } from './sentry';
+
+// Sentry severity levels
+export enum Severity {
+  Debug = 'debug',
+  Info = 'info',
+  Warning = 'warning',
+  Error = 'error',
+  Fatal = 'fatal'
+}
+
 /**
  * Available logging levels for the application.
  * 
@@ -87,28 +98,31 @@ class Logger {
    * @param options - Additional logging options
    */
   private log(level: LogLevel, message: string, options?: LogOptions): void {
-    // Only log in development unless it's an error
-    if (!this.isDev && level !== 'error') return;
+    // Always send to error tracking in production
+    if (!this.isDev) {
+      if (level === 'error') {
+        this.handleProductionError(message, options?.data);
+      } else {
+        // Add breadcrumb for non-error logs in production
+        addBreadcrumb(message, options?.context, options?.data as Record<string, unknown>);
+      }
+      return;
+    }
 
     const formattedMessage = this.formatMessage(level, message, options);
 
     switch (level) {
       case 'info':
-        // Info logs only in development
-        if (this.isDev) console.log(formattedMessage, options?.data || '');
+        console.log(formattedMessage, options?.data || '');
         break;
       case 'warn':
-        // Warning logs only in development
-        if (this.isDev) console.warn(formattedMessage, options?.data || '');
+        console.warn(formattedMessage, options?.data || '');
+        // Add warning breadcrumb in development too
+        addBreadcrumb(message, options?.context, options?.data as Record<string, unknown>);
         break;
       case 'error':
-        // Always log errors, but handle them appropriately in production
-        if (this.isDev) {
-          console.error(formattedMessage, options?.data || '');
-        } else {
-          // In production, send to error tracking service
-          this.handleProductionError(message, options?.data);
-        }
+        console.error(formattedMessage, options?.data || '');
+        this.handleProductionError(message, options?.data);
         break;
     }
   }
@@ -122,8 +136,14 @@ class Logger {
    * @param data - Additional error data
    */
   private handleProductionError(message: string, data?: unknown): void {
-    // TODO: Integrate with error tracking service (Sentry, LogRocket, etc.)
-    // For now, log in structured format suitable for log aggregators
+    // Send error to Sentry
+    if (data instanceof Error) {
+      captureError(data, { message });
+    } else {
+      captureError(new Error(message), { data });
+    }
+
+    // Also log in structured format for log aggregators
     console.error({
       message,
       timestamp: new Date().toISOString(),

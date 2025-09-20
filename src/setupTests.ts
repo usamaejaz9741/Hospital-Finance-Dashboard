@@ -2,7 +2,7 @@
  * Jest Test Setup Configuration
  * 
  * This file configures the testing environment for the Hospital Finance Dashboard.
- * It sets up necessary mocks, cleanup procedures, and global test utilities.
+ * jest.mock('@sentry/react', () => mockSentryFunctions);ary mocks, cleanup procedures, and global test utilities.
  * 
  * Key Features:
  * - Jest DOM matchers for improved assertions
@@ -15,6 +15,10 @@
 import '@testing-library/jest-dom';
 import { cleanup } from '@testing-library/react';
 import { afterEach, jest } from '@jest/globals';
+import { mockSentryFunctions } from './test/mockSentry';
+
+// Mock Sentry
+jest.mock('@sentry/react', () => mockSentryFunctions);
 
 /**
  * Cleanup function that runs after each test to ensure test isolation.
@@ -128,6 +132,30 @@ Object.defineProperties(window, {
  * Filter console errors to reduce noise in test output.
  * Suppresses React's "not wrapped in act" warnings which are often unavoidable in tests.
  */
+// Mock Sentry for error tracking tests
+jest.mock('@sentry/react', () => ({
+  init: jest.fn(),
+  captureError: jest.fn(),
+  captureException: jest.fn(),
+  withScope: jest.fn((callback: (scope: { 
+    setTag: jest.Mock; 
+    setExtra: jest.Mock; 
+    setExtras: jest.Mock; 
+    setLevel: jest.Mock; 
+  }) => void) => callback({
+    setTag: jest.fn(),
+    setExtra: jest.fn(),
+    setExtras: jest.fn(),
+    setLevel: jest.fn()
+  })),
+  addBreadcrumb: jest.fn(),
+  Severity: {
+    Info: 'info',
+    Warning: 'warning',
+    Error: 'error'
+  }
+}));
+
 const originalError = console.error;
 console.error = (...args) => {
   // Suppress React Testing Library act() warnings during tests

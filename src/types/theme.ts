@@ -54,6 +54,9 @@ export interface ThemeContextType {
   /** Actual resolved theme being used ('light' or 'dark') */
   resolvedTheme: ResolvedTheme;
   
+  /** Whether a theme transition is currently in progress */
+  isTransitioning: boolean;
+  
   /** Toggle between light and dark themes (ignores 'auto') */
   toggleTheme: () => void;
   
@@ -74,10 +77,10 @@ export interface ThemeContextType {
  * const lightColors: ThemeColors = {
  *   background: '#ffffff',
  *   surface: '#f8fafc',
- *   primary: '#3b82f6',
+ *   primary: '#a855f7',
  *   secondary: '#6b7280',
  *   text: {
- *     primary: '#111827',
+ *     primary: '#2d1b69',
  *     secondary: '#6b7280',
  *     muted: '#9ca3af'
  *   },

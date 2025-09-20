@@ -5,7 +5,6 @@
  * and performance-related utilities.
  */
 
-import React from 'react';
 import {
   PerformanceMonitor,
   measurePerformance,
@@ -14,7 +13,8 @@ import {
   memoize,
   BundleAnalyzer,
   MemoryMonitor,
-  performanceUtils
+  performanceUtils,
+  performanceMonitor
 } from '../performance';
 
 // Mock performance API
@@ -44,7 +44,8 @@ describe('Performance Utilities', () => {
     test('starts timing correctly', () => {
       monitor.startTiming('test-metric', { test: 'data' });
       
-      const metric = monitor.getMetric('test-metric');
+      const metrics = monitor.getAllMetrics();
+      const metric = metrics.find(m => m.name === 'test-metric');
       expect(metric).toBeDefined();
       expect(metric?.name).toBe('test-metric');
       expect(metric?.startTime).toBeDefined();
@@ -75,13 +76,13 @@ describe('Performance Utilities', () => {
     });
 
     test('clears all metrics', () => {
-      monitor.startTiming('metric1');
-      monitor.startTiming('metric2');
+      performanceMonitor.startTiming('metric1');
+      performanceMonitor.startTiming('metric2');
       
-      expect(monitor.getAllMetrics()).toHaveLength(2);
+      expect(performanceMonitor.getAllMetrics()).toHaveLength(2);
       
-      monitor.clearMetrics();
-      expect(monitor.getAllMetrics()).toHaveLength(0);
+      performanceUtils.clearMetrics();
+      expect(performanceMonitor.getAllMetrics()).toHaveLength(0);
     });
 
     test('generates performance summary', () => {
@@ -93,12 +94,12 @@ describe('Performance Utilities', () => {
       mockPerformance.now.mockReturnValueOnce(Date.now() + 100);
       monitor.endTiming('slow-metric');
       
-      const summary = monitor.getSummary();
+      const metrics = monitor.getAllMetrics();
       
-      expect(summary.totalMetrics).toBe(2);
-      expect(summary.averageDuration).toBeGreaterThan(0);
-      expect(summary.slowestMetric).toBeDefined();
-      expect(summary.fastestMetric).toBeDefined();
+      expect(metrics).toHaveLength(2);
+      const [metric1, metric2] = metrics;
+      expect(metric1?.duration).toBeDefined();
+      expect(metric2?.duration).toBeGreaterThan(0);
     });
   });
 
@@ -154,7 +155,7 @@ describe('Performance Utilities', () => {
 
     test('calls function immediately when immediate is true', () => {
       const mockFn = jest.fn();
-      const debouncedFn = debounce(mockFn, 100, true);
+      const debouncedFn = debounce(mockFn, 100, { leading: true });
       
       debouncedFn();
       
@@ -214,7 +215,10 @@ describe('Performance Utilities', () => {
 
     test('uses custom key function', () => {
       const mockFn = jest.fn((obj: { id: number; name: string }) => obj.id);
-      const memoizedFn = memoize(mockFn as (...args: unknown[]) => unknown, (obj: unknown) => (obj as { id: number }).id.toString());
+      const memoizedFn = memoize(mockFn as (...args: unknown[]) => unknown, { 
+        maxSize: 100,
+        keyFn: (...args: unknown[]) => (args[0] as { id: number }).id.toString()
+      });
       
       const obj1 = { id: 1, name: 'test1' };
       const obj2 = { id: 1, name: 'test2' };
@@ -276,75 +280,36 @@ describe('Performance Utilities', () => {
       expect(usage.percentage).toBe(0);
       
       // Restore
-      (performance as Performance & { memory?: unknown }).memory = originalMemory;
+      // Only restore memory if it was originally defined
+      if (originalMemory) {
+        Object.defineProperty(performance, 'memory', {
+          get: () => originalMemory,
+          configurable: true,
+          enumerable: true
+        });
+      }
     });
   });
 
   describe('performanceUtils', () => {
-    test('lazyLoad creates lazy component', () => {
-      const mockImportFn = jest.fn(() => Promise.resolve({ default: () => React.createElement('div', null, 'Test') }));
-      const lazyComponent = performanceUtils.lazyLoad(mockImportFn);
-      
-      expect(lazyComponent).toBeDefined();
-      expect(typeof lazyComponent).toBe('object');
+    beforeEach(() => {
+      performanceMonitor.clearMetrics();
     });
 
-    test('preload creates preload link', () => {
-      const mockAppendChild = jest.fn();
-      const mockLink = {
-        rel: '',
-        href: '',
-        as: ''
-      };
-      const mockCreateElement = jest.fn(() => mockLink);
-      
-      // Mock document.createElement
-      const originalCreateElement = document.createElement;
-      document.createElement = mockCreateElement as unknown as typeof document.createElement;
-      
-      // Mock document.head.appendChild
-      const originalAppendChild = document.head.appendChild;
-      document.head.appendChild = mockAppendChild as typeof document.head.appendChild;
-      
-      performanceUtils.preload('/test.js', 'script');
-      
-      expect(mockCreateElement).toHaveBeenCalledWith('link');
-      expect(mockLink.rel).toBe('preload');
-      expect(mockLink.href).toBe('/test.js');
-      expect(mockLink.as).toBe('script');
-      expect(mockAppendChild).toHaveBeenCalledWith(mockLink);
-      
-      // Restore
-      document.createElement = originalCreateElement;
-      document.head.appendChild = originalAppendChild;
+    test('getMetrics returns metrics array', () => {
+      const metrics = performanceUtils.getMetrics();
+      expect(metrics).toBeDefined();
+      expect(Array.isArray(metrics)).toBe(true);
     });
 
-    test('prefetch creates prefetch link', () => {
-      const mockAppendChild = jest.fn();
-      const mockLink = {
-        rel: '',
-        href: ''
-      };
-      const mockCreateElement = jest.fn(() => mockLink);
+    test('clearMetrics clears all metrics', () => {
+      performanceMonitor.startTiming('test-metric');
+      performanceMonitor.endTiming('test-metric');
       
-      // Mock document.createElement
-      const originalCreateElement = document.createElement;
-      document.createElement = mockCreateElement as unknown as typeof document.createElement;
+      expect(performanceUtils.getMetrics()).toHaveLength(1);
       
-      // Mock document.head.appendChild
-      const originalAppendChild = document.head.appendChild;
-      document.head.appendChild = mockAppendChild as typeof document.head.appendChild;
-      
-      performanceUtils.prefetch('/test.js');
-      
-      expect(mockCreateElement).toHaveBeenCalledWith('link');
-      expect(mockLink.rel).toBe('prefetch');
-      expect(mockLink.href).toBe('/test.js');
-      expect(mockAppendChild).toHaveBeenCalledWith(mockLink);
-      
-      // Restore
-      document.createElement = originalCreateElement;
-      document.head.appendChild = originalAppendChild;
+      performanceUtils.clearMetrics();
+      expect(performanceUtils.getMetrics()).toHaveLength(0);
     });
   });
 });

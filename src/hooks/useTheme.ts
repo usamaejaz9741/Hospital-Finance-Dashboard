@@ -52,7 +52,7 @@ import { ThemeContextType } from '../types/theme';
  * function ConditionalStyling() {
  *   const { resolvedTheme } = useTheme();
  *   
- *   const iconColor = resolvedTheme === 'dark' ? '#ffffff' : '#000000';
+ *   const iconColor = resolvedTheme === 'dark' ? '#ffffff' : '#2d1b69';
  *   
  *   return (
  *     <div className={resolvedTheme === 'dark' ? 'dark-styles' : 'light-styles'}>

@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">37.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/6</span>
+                <span class='fraction'>3/8</span>
             </div>
         
             
@@ -182,31 +182,10 @@
 <a name='L117'></a><a href='#L117'>117</a>
 <a name='L118'></a><a href='#L118'>118</a>
 <a name='L119'></a><a href='#L119'>119</a>
-<a name='L120'></a><a href='#L120'>120</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -235,10 +214,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -253,6 +228,33 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -303,7 +305,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from 'react';
 import { FinancialMetric } from '../types/finance';
-import { formatCurrency, formatPercentage, formatNumber, getChangeColor, getChangeIcon } from '../utils/formatters';
+import { formatCurrency, formatPercentage, formatNumber, getChangeIcon } from '../utils/formatters';
 &nbsp;
 /**
  * Props for the MetricCard component.
@@ -316,104 +318,105 @@ interface MetricCardProps {
 }
 &nbsp;
 /**
- * Financial metric card component that displays key performance indicators.
+ * Financial metric card component with glassmorphism design.
  * 
  * Features:
- * - Displays metric title, value, and change indicator
- * - Supports multiple value formats (currency, percentage, number)
- * - Visual change indicators with icons and colors
- * - Responsive typography and layout
- * - Dark mode support
- * - Full accessibility compliance with ARIA labels
- * - Hover effects for better interactivity
- * 
- * The card automatically formats values based on the metric's format type
- * and displays trend indicators with appropriate colors and icons.
+ * - Modern glassmorphism styling with backdrop blur
+ * - Gradient backgrounds and glass effects
+ * - Smooth hover animations and scaling
+ * - Enhanced visual hierarchy with better typography
+ * - Improved accessibility with proper ARIA labels
+ * - Responsive design for all screen sizes
  * 
  * @component
- * @example
- * ```tsx
- * const revenueMetric: FinancialMetric = {
- *   id: 'total-revenue',
- *   title: 'Total Revenue',
- *   value: 1500000,
- *   change: 12.5,
- *   changeType: 'increase',
- *   period: 'vs last month',
- *   format: 'currency'
- * };
- * 
- * &lt;MetricCard metric={revenueMetric} /&gt;
- * ```
- * 
- * @param props - Component props
- * @param props.metric - Financial metric data to display
- * @returns React functional component rendering the metric card
  */
 const MetricCard: React.FC&lt;MetricCardProps&gt; = ({ metric }) =&gt; {
   /**
    * Formats the metric value based on the specified format type.
-   * 
-   * @param value - Numeric value to format
-   * @param format - Format type (currency, percentage, number)
-   * @returns Formatted string representation of the value
    */
   const formatValue = (value: number, format: string) =&gt; {
     switch (format) {
       case 'currency':
-        return formatCurrency(value); // Format as USD currency (e.g., "$1,500,000")
+        return formatCurrency(value);
 <span class="branch-1 cbranch-no" title="branch not covered" >      case 'percentage':</span>
-<span class="cstat-no" title="statement not covered" >        return formatPercentage(value); </span>// Format as percentage (e.g., "12.5%")
+<span class="cstat-no" title="statement not covered" >        return formatPercentage(value);</span>
 <span class="branch-2 cbranch-no" title="branch not covered" >      case 'number':</span>
-<span class="cstat-no" title="statement not covered" >        return formatNumber(value); </span>// Format with thousand separators (e.g., "1,500")
+<span class="cstat-no" title="statement not covered" >        return formatNumber(value);</span>
 <span class="branch-3 cbranch-no" title="branch not covered" >      default:</span>
-<span class="cstat-no" title="statement not covered" >        return value.toString(); </span>// Fallback to simple string conversion
+<span class="cstat-no" title="statement not covered" >        return value.toString();</span>
     }
   };
 &nbsp;
   return (
     &lt;div 
-      className="bg-white dark:bg-dark-surface p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 dark:border-dark-border"
-      role="article" // Semantic role for accessibility
-      aria-labelledby={`metric-title-${metric.id}`} // Associate with title for screen readers
-      aria-describedby={`metric-change-${metric.id}`} // Associate with change indicator
+      className="glass-card interactive animate-float group"
+      style={{ padding: 'var(--space-4) var(--space-5)' }}
+      role="article"
+      aria-labelledby={`metric-title-${metric.id}`}
+      aria-describedby={`metric-change-${metric.id}`}
     &gt;
       {/* Card Header: Metric Title */}
-      &lt;div className="flex items-center justify-between mb-2"&gt;
+      &lt;div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-4)' }}&gt;
         &lt;h3 
-          id={`metric-title-${metric.id}`} // Unique ID for accessibility linking
-          className="text-sm font-medium text-gray-600 dark:text-gray-400"
+          id={`metric-title-${metric.id}`}
+          className="text-secondary font-semibold uppercase tracking-wider"
+          style={{ fontSize: 'var(--text-sm)' }}
         &gt;
           {metric.title}
         &lt;/h3&gt;
-        {/* Future enhancement: Add info icon/tooltip for metric descriptions */}
       &lt;/div&gt;
       
       {/* Main Value Display */}
-      &lt;div className="mb-2"&gt;
+      &lt;div style={{ marginBottom: 'var(--space-4)' }}&gt;
         &lt;p 
-          className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white"
-          aria-label={`${metric.title} value: ${formatValue(metric.value, metric.format)}`} // Descriptive label for screen readers
+          className="text-primary font-bold group-hover:scale-105 transition-transform duration-300"
+          style={{ 
+            fontSize: 'clamp(1.25rem, 3vw, 2rem)',
+            lineHeight: 'var(--line-height-tight)',
+            marginBottom: 'var(--space-1)',
+            wordSpacing: '-0.05em',
+            letterSpacing: '-0.025em'
+          }}
+          aria-label={`${metric.title} value: ${formatValue(metric.value, metric.format)}`}
         &gt;
           {formatValue(metric.value, metric.format)}
         &lt;/p&gt;
       &lt;/div&gt;
       
       {/* Change Indicator and Period */}
-      &lt;div className="flex items-center justify-between text-sm"&gt;
+      &lt;div className="flex items-center justify-between flex-wrap" style={{ gap: 'var(--space-2)' }}&gt;
         {/* Change percentage with trend indicator */}
-        &lt;span 
-          id={`metric-change-${metric.id}`} // Unique ID for accessibility linking
-          className={`flex items-center ${getChangeColor(metric.changeType)}`} // Dynamic color based on change type
-          aria-label={`${metric.changeType === 'increase' ? 'Increased' : <span class="branch-1 cbranch-no" title="branch not covered" >'Decreased'}</span> by ${formatPercentage(metric.change)} ${metric.period}`}
-        &gt;
-          &lt;span className="mr-1" aria-hidden="true"&gt;{getChangeIcon(metric.changeType)}&lt;/span&gt; {/* Decorative icon */}
-          {formatPercentage(metric.change)}
-        &lt;/span&gt;
+        &lt;div className="flex items-center"&gt;
+          &lt;span 
+            id={`metric-change-${metric.id}`}
+            className={`flex items-center font-medium transition-colors ${
+              metric.changeType === 'increase' 
+                ? 'text-green-400 hover:text-green-300' 
+                : <span class="branch-1 cbranch-no" title="branch not covered" >'text-red-400 hover:text-red-300'</span>
+            }`}
+            style={{ fontSize: 'var(--text-base)' }}
+            aria-label={`${metric.changeType === 'increase' ? 'Increased' : <span class="branch-1 cbranch-no" title="branch not covered" >'Decreased'}</span> by ${formatPercentage(metric.change)} ${metric.period}`}
+          &gt;
+            &lt;span 
+              className="transform group-hover:scale-110 transition-transform" 
+              style={{ marginRight: 'var(--space-2)' }}
+              aria-hidden="true"
+            &gt;
+              {getChangeIcon(metric.changeType)}
+            &lt;/span&gt;
+            {formatPercentage(metric.change)}
+          &lt;/span&gt;
+        &lt;/div&gt;
         
         {/* Time period reference */}
-        &lt;span className="text-gray-500 dark:text-dark-muted"&gt;{metric.period}&lt;/span&gt;
+        &lt;span 
+          className="text-tertiary font-medium uppercase tracking-wide"
+          style={{ fontSize: 'var(--text-sm)' }}
+        &gt;
+          {metric.period}
+        &lt;/span&gt;
       &lt;/div&gt;
+&nbsp;
     &lt;/div&gt;
   );
 };
@@ -427,7 +430,7 @@ export default MetricCard;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-17T07:29:53.001Z
+                at 2025-09-18T12:54:39.087Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

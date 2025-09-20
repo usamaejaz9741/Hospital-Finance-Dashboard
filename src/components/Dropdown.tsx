@@ -52,10 +52,15 @@ const Dropdown: React.FC<DropdownProps> = ({
     <div 
       ref={dropdownRef} 
       className={`relative ${className}`}
+      style={{ overflow: 'visible' }}
     >
       <button
         type="button"
-        className="w-full bg-white dark:bg-dark-surface border border-gray-300 dark:border-dark-border rounded-lg px-4 py-3 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200 transform hover:-translate-y-0.5"
+        className="w-full dropdown-button text-secondary hover:text-primary text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-400/50 interactive"
+        style={{
+          borderRadius: 'var(--radius-md)',
+          padding: 'var(--space-2) var(--space-4)'
+        }}
         onClick={handleToggle}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
@@ -64,18 +69,18 @@ const Dropdown: React.FC<DropdownProps> = ({
           <div className="min-w-0 flex-1">
             {selectedOption ? (
               <div className="min-w-0">
-                <div className="font-medium text-gray-900 dark:text-white truncate">{selectedOption.label}</div>
+                <div className="body-base font-medium text-primary truncate" style={{ marginBottom: '0' }}>{selectedOption.label}</div>
                 {selectedOption.subtitle && (
-                  <div className="text-sm text-gray-500 dark:text-gray-400 truncate">{selectedOption.subtitle}</div>
+                  <div className="text-caption text-tertiary truncate" style={{ marginTop: 'var(--space-1)', marginBottom: '0' }}>{selectedOption.subtitle}</div>
                 )}
               </div>
             ) : (
-              <span className="text-gray-500 dark:text-gray-400 truncate">{placeholder}</span>
+              <span className="body-base text-tertiary truncate">{placeholder}</span>
             )}
           </div>
           <div className="ml-2 flex-shrink-0">
             <svg
-              className={`w-4 h-4 text-gray-400 dark:text-gray-500 transition-transform duration-200 ${
+              className={`w-4 h-4 text-white/60 transition-transform duration-200 ${
                 isOpen ? 'transform rotate-180' : ''
               }`}
               fill="none"
@@ -89,29 +94,44 @@ const Dropdown: React.FC<DropdownProps> = ({
       </button>
 
       <div 
-        className={`absolute w-full mt-1 bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-lg shadow-2xl max-h-60 overflow-auto transition-all duration-300 ease-in-out z-50 ${
+        className={`dropdown-options gradient-bg-primary absolute w-full overflow-hidden transition-all duration-300 ease-in-out ${
           isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
         }`}
         role="listbox"
+        style={{ 
+          zIndex: 99999,
+          position: 'absolute',
+          top: '100%',
+          left: 0,
+          right: 0,
+          maxHeight: options.length > 4 ? '300px' : 'auto',
+          marginTop: 'var(--space-2)',
+          borderRadius: 'var(--radius-md)'
+        }}
       >
-        {options.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              className={`w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 transition-colors duration-150 ${
-                option.value === value ? 'bg-primary-50 dark:bg-primary-900/20 border-r-2 border-primary-500' : ''
-              }`}
-              onClick={() => handleOptionClick(option.value)}
-            >
+        <div className={options.length > 4 ? 'overflow-y-auto' : ''} style={{ maxHeight: options.length > 4 ? '300px' : 'auto' }}>
+          {options.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                className={`dropdown-option w-full text-left focus:outline-none transition-colors duration-150 interactive ${
+                  option.value === value ? 'selected' : ''
+                }`}
+                style={{ padding: 'var(--space-2) var(--space-4)' }}
+                onClick={() => handleOptionClick(option.value)}
+                role="option"
+                aria-selected={option.value === value}
+              >
               <div className="min-w-0">
-                <div className="font-medium text-gray-900 dark:text-white truncate">{option.label}</div>
+                <div className="font-medium truncate text-primary" style={{ fontSize: 'var(--text-base)' }}>{option.label}</div>
                 {option.subtitle && (
-                  <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">{option.subtitle}</div>
+                  <div className="text-tertiary truncate" style={{ fontSize: 'var(--text-xs)', marginTop: 'var(--space-1)' }}>{option.subtitle}</div>
                 )}
               </div>
             </button>
           ))}
         </div>
+      </div>
     </div>
   );
 };

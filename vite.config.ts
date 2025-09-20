@@ -31,7 +31,34 @@ export default defineConfig({
       gzipSize: true,               // Show gzipped sizes
       brotliSize: true,             // Show brotli compressed sizes
       open: false                   // Don't auto-open in browser
-    })
+    }),
+    
+    // Security headers plugin for development and production
+    {
+      name: 'security-headers',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          // Content Security Policy
+          res.setHeader('Content-Security-Policy', 
+            "default-src 'self'; " +
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+            "style-src 'self' 'unsafe-inline'; " +
+            "img-src 'self' data: blob: https://ui-avatars.com; " +
+            "font-src 'self' data:; " +
+            "connect-src 'self'; " +
+            "frame-ancestors 'none';"
+          );
+          
+          // Security headers
+          res.setHeader('X-Frame-Options', 'DENY');
+          res.setHeader('X-Content-Type-Options', 'nosniff');
+          res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+          res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+          
+          next();
+        });
+      }
+    }
   ],
   
   // Development server configuration

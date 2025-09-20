@@ -74,7 +74,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
  * </Button>
  * 
  * // Ghost button with custom styling
- * <Button variant="ghost" className="text-blue-600">
+ * <Button variant="ghost" className="text-purple-600">
  *   Learn More
  * </Button>
  * 
@@ -97,41 +97,59 @@ const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  // Base styling applied to all button variants (typography, transitions, focus states)
-  const baseClasses = 'font-medium rounded-lg transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5 active:translate-y-0';
+  // Design System Button Implementation
+  const baseClasses = `
+    btn-base
+    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent
+    disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+  `;
   
-  // Variant-specific styling with dark mode support
+  // Design System Variant Classes
   const variantClasses = {
-    primary: 'bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white focus:ring-primary-500 shadow-md hover:shadow-lg',
-    secondary: 'bg-gray-200 hover:bg-gray-300 dark:bg-dark-surface dark:hover:bg-dark-hover-surface text-gray-800 dark:text-dark-primary focus:ring-gray-500 border border-gray-300 dark:border-dark-border shadow-sm hover:shadow-md',
-    danger: 'bg-danger-600 hover:bg-danger-700 disabled:bg-danger-400 text-white focus:ring-danger-500 shadow-md hover:shadow-lg',
-    ghost: 'bg-transparent hover:bg-gray-100 dark:hover:bg-dark-surface text-gray-700 dark:text-dark-primary focus:ring-gray-500'
+    primary: `
+      btn-primary
+      focus:ring-purple-400/50
+    `,
+    secondary: `
+      btn-secondary
+      focus:ring-purple-300/50
+    `,
+    danger: `
+      btn-danger
+      focus:ring-purple-500/50
+    `,
+    ghost: `
+      btn-ghost
+      focus:ring-purple-300/50
+    `
   };
 
-  // Size-specific padding and text scaling
+  // Design System Size Classes
   const sizeClasses = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base'
+    sm: 'btn-sm',
+    md: 'btn-md',
+    lg: 'btn-lg'
   };
 
-  // Optional full width styling
+  // Optional full width styling with proper responsive behavior
   const widthClass = fullWidth ? 'w-full' : '';
 
   // Combine all CSS classes for the button element
-  const combinedClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${widthClass} ${className}`;
+  const combinedClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${widthClass} ${className}`.trim();
 
   return (
     <button
       className={combinedClasses}
       disabled={disabled || isLoading} // Disable during loading or when explicitly disabled
+      aria-busy={isLoading}
+      aria-disabled={disabled || isLoading}
       {...props} // Spread remaining HTML button attributes
     >
       {isLoading ? (
-        // Loading state: show spinner and loading text
+        // Enhanced loading state: show improved spinner and loading text
         <>
-          <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
-          Loading...
+          <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white mr-3" />
+          <span style={{ color: 'white' }}>Loading...</span>
         </>
       ) : (
         // Normal state: show provided children content

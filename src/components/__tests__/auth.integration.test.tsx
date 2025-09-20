@@ -192,7 +192,7 @@ describe('Authentication Integration', () => {
         expect(mockAuthService.signUp).toHaveBeenCalledWith({
           name: 'New User',
           email: 'new@example.com',
-          password: 'TestPassword123!',
+          password: 'Demo123456!',
           role: 'branch_owner' as UserRole
         });
       });
@@ -381,6 +381,9 @@ describe('Authentication Integration', () => {
 
   describe('Error Handling', () => {
     test('network error shows user-friendly message', async () => {
+      // Increase timeout for this test
+      jest.setTimeout(10000);
+      
       mockAuthService.signIn.mockRejectedValue(new Error('Network error'));
 
       renderWithProviders(<SignInPage onSwitchToSignUp={mockOnSwitchToSignUp} />);

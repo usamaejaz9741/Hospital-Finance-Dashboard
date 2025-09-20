@@ -173,7 +173,26 @@
 <a name='L108'></a><a href='#L108'>108</a>
 <a name='L109'></a><a href='#L109'>109</a>
 <a name='L110'></a><a href='#L110'>110</a>
-<a name='L111'></a><a href='#L111'>111</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -244,6 +263,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -252,6 +287,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -335,20 +373,36 @@ class ErrorBoundary extends Component&lt;Props, State&gt; {
       }
 &nbsp;
       return (
-        &lt;div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-gray-100"&gt;
-          &lt;div className="max-w-md w-full mx-4"&gt;
-            &lt;div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center"&gt;
-              &lt;div className="w-16 h-16 bg-danger-100 dark:bg-danger-900/20 rounded-full flex items-center justify-center mx-auto mb-4"&gt;
-                &lt;svg className="w-8 h-8 text-danger-600 dark:text-danger-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;
+        &lt;div className="min-h-screen flex items-center justify-center" style={{ 
+          background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)'
+        }}&gt;
+          {/* Animated Blob Background */}
+          &lt;div className="animated-blob-bg"&gt;
+            &lt;div className="blob blob-center"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          
+          &lt;div className="max-w-md w-full mx-4 relative z-10"&gt;
+            &lt;div className="glass-card rounded-xl p-8 text-center" style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+            }}&gt;
+              &lt;div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{
+                background: 'rgba(239, 68, 68, 0.1)',
+                border: '1px solid rgba(239, 68, 68, 0.2)'
+              }}&gt;
+                &lt;svg className="w-8 h-8" style={{ color: '#ef4444' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;
                   &lt;path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" /&gt;
                 &lt;/svg&gt;
               &lt;/div&gt;
               
-              &lt;h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2"&gt;
+              &lt;h2 className="text-xl font-bold text-white mb-2"&gt;
                 Something went wrong
               &lt;/h2&gt;
               
-              &lt;p className="text-gray-600 dark:text-gray-300 mb-6"&gt;
+              &lt;p className="text-white/70 mb-6"&gt;
                 We encountered an unexpected error. Please try refreshing the page or contact support if the problem persists.
               &lt;/p&gt;
               
@@ -371,11 +425,14 @@ class ErrorBoundary extends Component&lt;Props, State&gt; {
 &nbsp;
               {import.meta.env.DEV &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >this.state.error </span>&amp;&amp; (
 <span class="branch-2 cbranch-no" title="branch not covered" >                &lt;details className="mt-6 text-left"&gt;</span>
-                  &lt;summary className="cursor-pointer text-sm text-gray-500 dark:text-gray-400 mb-2"&gt;
+                  &lt;summary className="cursor-pointer text-sm text-white/50 mb-2 hover:text-white/70 transition-colors"&gt;
                     Error Details (Development)
                   &lt;/summary&gt;
-                  &lt;div className="bg-gray-100 dark:bg-gray-700 rounded p-3 text-xs overflow-auto"&gt;
-                    &lt;pre className="whitespace-pre-wrap text-danger-600 dark:text-danger-400"&gt;
+                  &lt;div className="rounded-lg p-3 text-xs overflow-auto" style={{
+                    background: 'rgba(0, 0, 0, 0.2)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)'
+                  }}&gt;
+                    &lt;pre className="whitespace-pre-wrap text-red-400 font-mono"&gt;
                       {sanitizeError(this.state.error).message}
                       {this.state.errorInfo?.componentStack}
                     &lt;/pre&gt;
@@ -400,7 +457,7 @@ export default ErrorBoundary;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-17T07:29:53.001Z
+                at 2025-09-18T12:54:39.087Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

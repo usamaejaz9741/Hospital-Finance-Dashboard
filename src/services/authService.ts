@@ -21,7 +21,7 @@ const mockUsers: User[] = [
     role: 'admin',
     createdAt: '2024-01-15T08:00:00Z',
     lastLogin: '2024-12-15T10:30:00Z',
-    passwordHash: '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/8KzKz2' // UsamaHF2024!
+    passwordHash: '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/8KzKz2' // Demo password hash
   },
   {
     id: 'owner-1',
@@ -31,7 +31,7 @@ const mockUsers: User[] = [
     hospitalIds: ['general-1', 'cardio-1'],
     createdAt: '2024-02-01T09:00:00Z',
     lastLogin: '2024-12-14T15:45:00Z',
-    passwordHash: '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/8KzKz2' // OwnerMG2024!
+    passwordHash: '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/8KzKz2' // Demo password hash
   },
   {
     id: 'branch-1',
@@ -41,7 +41,7 @@ const mockUsers: User[] = [
     hospitalId: 'general-1',
     createdAt: '2024-03-01T11:00:00Z',
     lastLogin: '2024-12-15T08:15:00Z',
-    passwordHash: '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/8KzKz2' // ManagerMG2024!
+    passwordHash: '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/8KzKz2' // Demo password hash
   }
 ];
 
