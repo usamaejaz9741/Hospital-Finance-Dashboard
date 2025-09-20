@@ -194,7 +194,7 @@ const Dashboard: React.FC = () => {
         onYearChange={handleYearChange}
       />
       
-      <main className="mobile-safe-area">
+      <main id="main-content" className="mobile-safe-area">
         <div className="page-container">
           {/* Enhanced Mobile Filter Bar */}
         <div className="xl:hidden mb-4 relative z-20">

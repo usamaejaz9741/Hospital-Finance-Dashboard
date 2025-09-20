@@ -8,8 +8,8 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [theme, setThemeState] = useState<Theme>('auto');
-  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>('light');
+  const [theme, setThemeState] = useState<Theme>('dark');
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>('dark');
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Get system preference
@@ -150,7 +150,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       
       setTimeout(() => {
         const storedTheme = localStorage.getItem('hospitalFinanceTheme') as Theme;
-        const initialTheme = storedTheme || 'auto';
+        const initialTheme = storedTheme || 'dark'; // Default to dark mode
         const initialResolvedTheme = resolveTheme(initialTheme);
         
         // Apply initial theme without transition

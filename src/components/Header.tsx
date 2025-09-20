@@ -4,6 +4,7 @@ import ThemeToggle from './ThemeToggle';
 import { Hospital } from '../types/finance';
 import { useAuth } from '../hooks/useAuth';
 import { roleDescriptions } from '../data/mockUsers';
+import { getAvatarUrl, generateLocalAvatar } from '../utils/avatarGenerator';
 
 // Generate consistent background colors for users - Purple only
 const getUserAvatarColor = (name: string): string => {
@@ -311,9 +312,14 @@ const Header: React.FC<HeaderProps> = ({
                   >
                     <div className="avatar-circle w-8 h-8 border-2 shadow-lg bg-white/10 backdrop-blur-sm" style={{ borderColor: 'var(--border-secondary)' }}>
                       <img 
-                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&size=32&background=${getUserAvatarColor(user.name)}&color=ffffff&bold=true&format=png`}
+                        src={getAvatarUrl(user.name, 32, { backgroundColor: getUserAvatarColor(user.name) })}
                         alt={`${user.name} profile picture`}
                         loading="lazy"
+                        onError={(e) => {
+                          // Fallback to local avatar on error
+                          const target = e.target as HTMLImageElement;
+                          target.src = generateLocalAvatar(user.name, 32);
+                        }}
                       />
                     </div>
                     
@@ -483,10 +489,15 @@ const Header: React.FC<HeaderProps> = ({
                   <div className="avatar-gradient-border w-16 h-16 rounded-full p-0.5 shadow-2xl">
                     <div className="avatar-circle w-full h-full rounded-full" style={{ backgroundColor: '#ffffff' }}>
                       <img 
-                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || '')}&size=60&background=${getUserAvatarColor(user?.name || '')}&color=ffffff&bold=true&format=png`}
+                        src={getAvatarUrl(user?.name || '', 60, { backgroundColor: getUserAvatarColor(user?.name || '') })}
                         alt={`${user?.name} profile picture`}
                         loading="lazy"
                         className="rounded-full"
+                        onError={(e) => {
+                          // Fallback to local avatar on error
+                          const target = e.target as HTMLImageElement;
+                          target.src = generateLocalAvatar(user?.name || '', 60);
+                        }}
                       />
                     </div>
                   </div>

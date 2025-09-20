@@ -1,6 +1,7 @@
 import React from 'react';
 import { FinancialMetric } from '../types/finance';
 import { formatCurrency, formatPercentage, formatNumber, getChangeIcon } from '../utils/formatters';
+import { generateMetricAriaLabel, screenReader } from '../utils/accessibility';
 
 /**
  * Props interface for the MetricCard component.
@@ -113,13 +114,27 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
     }
   };
 
+  // Generate comprehensive ARIA label
+  const ariaLabel = generateMetricAriaLabel(
+    metric.title,
+    formatValue(metric.value, metric.format),
+    metric.change,
+    metric.changeType,
+    metric.period
+  );
+
   return (
     <div 
       className="glass-card interactive animate-float group"
       style={{ padding: 'var(--space-4) var(--space-5)' }}
       role="article"
-      aria-labelledby={`metric-title-${metric.id}`}
-      aria-describedby={`metric-change-${metric.id}`}
+      aria-label={ariaLabel}
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          screenReader.announce(ariaLabel, 'polite');
+        }
+      }}
     >
       {/* Card Header: Metric Title */}
       <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-4)' }}>
