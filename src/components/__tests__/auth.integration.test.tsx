@@ -192,7 +192,7 @@ describe('Authentication Integration', () => {
         expect(mockAuthService.signUp).toHaveBeenCalledWith({
           name: 'New User',
           email: 'new@example.com',
-          password: 'TestPassword123!',
+          password: 'Demo123456!',
           role: 'branch_owner' as UserRole
         });
       });

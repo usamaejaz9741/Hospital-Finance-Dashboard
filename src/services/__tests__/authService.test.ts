@@ -39,7 +39,7 @@ describe('authService', () => {
   describe('signIn', () => {
     const validCredentials = {
       email: 'admin@hospitalfinance.com',
-      password: 'UsamaHF2024!'
+      password: 'demo123'
     };
 
     test('signs in successfully with valid credentials', async () => {
@@ -94,7 +94,7 @@ describe('authService', () => {
     const validUserData = {
       name: 'Test User',
       email: 'test@hospitalfinance.com',
-      password: 'TestPassword123!',
+      password: 'Demo123456!',
       role: 'branch_owner' as const,
       hospitalId: 'test-hospital-1'
     };
@@ -141,8 +141,8 @@ describe('authService', () => {
   describe('changePassword', () => {
     test('changes password successfully', async () => {
       const userId = 'admin-1';
-      const currentPassword = 'UsamaHF2024!';
-      const newPassword = 'NewPassword123!';
+      const currentPassword = 'demo123456';
+      const newPassword = 'NewDemo123456!';
 
       await authService.changePassword(userId, currentPassword, newPassword);
 
@@ -172,7 +172,7 @@ describe('authService', () => {
   describe('resetPassword', () => {
     test('resets password successfully', async () => {
       const userId = 'admin-1';
-      const newPassword = 'NewPassword123!';
+      const newPassword = 'NewDemo123456!';
 
       await authService.resetPassword(userId, newPassword);
 

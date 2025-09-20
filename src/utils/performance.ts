@@ -135,35 +135,23 @@ export class PerformanceMonitor {
   /**
    * Starts web vitals monitoring
    */
-  startWebVitalsMonitoring(): void {
+  async startWebVitalsMonitoring(): Promise<void> {
     if (this.webVitalsStarted) return;
 
-    import('./webVitals').then(({ webVitals }) => {
-      webVitals.startMonitoring();
-      this.webVitalsStarted = true;
-    }).catch(error => {
-      logger.error('Failed to start web vitals monitoring', {
-        context: 'PerformanceMonitor',
-        data: { error }
-      });
-    });
+    const { startWebVitalsMonitoring } = await import('./webVitalsLauncher');
+    await startWebVitalsMonitoring();
+    this.webVitalsStarted = true;
   }
 
   /**
    * Stops web vitals monitoring
    */
-  stopWebVitalsMonitoring(): void {
+  async stopWebVitalsMonitoring(): Promise<void> {
     if (!this.webVitalsStarted) return;
 
-    import('./webVitals').then(({ webVitals }) => {
-      webVitals.stopMonitoring();
-      this.webVitalsStarted = false;
-    }).catch(error => {
-      logger.error('Failed to stop web vitals monitoring', {
-        context: 'PerformanceMonitor',
-        data: { error }
-      });
-    });
+    const { stopWebVitalsMonitoring } = await import('./webVitalsLauncher');
+    await stopWebVitalsMonitoring();
+    this.webVitalsStarted = false;
   }
 }
 

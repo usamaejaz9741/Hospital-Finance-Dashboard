@@ -70,18 +70,25 @@ beforeAll(() => {
     return [];
   });
 
-  Object.defineProperty(global, 'window', {
-    value: {
-      ...global.window,
-      performance: {
-        getEntriesByType: mockGetEntriesByType,
-        timing: {},
-        navigation: {}
-      }
-    },
-    writable: true,
-    configurable: true
-  });
+  if (typeof global.window === 'undefined') {
+    Object.defineProperty(global, 'window', {
+      value: {
+        performance: {
+          getEntriesByType: mockGetEntriesByType,
+          timing: {},
+          navigation: {}
+        }
+      },
+      writable: true,
+      configurable: true
+    });
+  } else {
+    global.window.performance = {
+      getEntriesByType: mockGetEntriesByType,
+      timing: {},
+      navigation: {}
+    } as unknown as Performance;
+  }
 });
 
 describe('WebVitalsMonitor', () => {
@@ -93,7 +100,11 @@ describe('WebVitalsMonitor', () => {
   });
 
   afterEach(() => {
-    monitor.stopMonitoring();
+    try {
+      monitor.stopMonitoring();
+    } catch (error) {
+      // Ignore errors during cleanup
+    }
     jest.clearAllMocks();
     jest.clearAllTimers();
     jest.useRealTimers();

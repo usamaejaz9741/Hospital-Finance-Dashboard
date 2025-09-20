@@ -4,7 +4,7 @@ import App from './App.tsx'
 import './index.css'
 
 // Import Web Vitals monitoring
-import { webVitals } from './utils/webVitals'
+import { performanceMonitor } from './utils/performance'
 
 const rootElement = document.getElementById('root');
 
@@ -24,7 +24,7 @@ root.render(
 // Start Web Vitals monitoring after app initialization
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
   // Small delay to ensure DOM is ready
-  setTimeout(() => {
-    webVitals.startMonitoring();
+  setTimeout(async () => {
+    await performanceMonitor.startWebVitalsMonitoring();
   }, 100);
 }
