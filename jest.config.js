@@ -20,7 +20,10 @@ const config = {
   testEnvironment: 'jsdom',
   
   // Setup files to run after Jest environment is set up
-  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
+  setupFilesAfterEnv: [
+    '<rootDir>/src/setupTests.ts',
+    '<rootDir>/src/test/browserCryptoMock.ts'
+  ],
   // Module name mapping for imports and assets
   moduleNameMapper: {
     // Mock CSS imports (return proxy object for className access)

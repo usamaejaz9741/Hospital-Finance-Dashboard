@@ -63,6 +63,14 @@ export const mockUsers: User[] = [
     hospitalId: 'trauma-1',
     createdAt: '2024-04-01T14:00:00Z',
     lastLogin: '2024-12-11T11:20:00Z'
+  },
+  {
+    id: 'admin-2',
+    email: 'usama@alviglobal.com',
+    name: 'Usama',
+    role: 'admin',
+    createdAt: '2024-01-10T08:00:00Z',
+    lastLogin: '2024-12-18T10:00:00Z'
   }
 ];
 

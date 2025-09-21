@@ -15,6 +15,20 @@ import { AuthContextType } from "../types/auth";
 import { ThemeContextType } from "../types/theme";
 
 /**
+ * Mock Sentry implementation for testing error tracking functionality
+ */
+export const Sentry = {
+  Severity: {
+    Info: 'info',
+    Warning: 'warning',
+    Error: 'error'
+  },
+  captureError: jest.fn(),
+  addBreadcrumb: jest.fn(),
+  init: jest.fn()
+};
+
+/**
  * Mock interface for ResizeObserver used in tests.
  * Provides type safety for ResizeObserver mock implementations.
  */
@@ -99,6 +113,7 @@ export class MockIntersectionObserverImpl implements MockIntersectionObserver {
 export const mockThemeContextValue: ThemeContextType = {
   theme: 'light',           // Default to light theme
   resolvedTheme: 'light',   // Resolved theme matches preference
+  isTransitioning: false,   // Not transitioning in tests
   toggleTheme: jest.fn(),   // Mock toggle function
   setTheme: jest.fn(),      // Mock setTheme function
 };

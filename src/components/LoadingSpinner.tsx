@@ -85,20 +85,26 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
       <div className="text-center">
         {/* Animated spinner circle */}
         <div 
-          className={`animate-spin rounded-full ${spinnerSize} border-b-2 border-primary-600 mx-auto mb-4`}
+          className={`animate-spin rounded-full ${spinnerSize} mx-auto mb-4`}
+          style={{
+            borderWidth: '2px',
+            borderStyle: 'solid',
+            borderColor: 'transparent',
+            borderBottomColor: 'rgba(255, 255, 255, 0.8)'
+          }}
           aria-hidden="true" // Decorative element, screen readers will use the text
         />
         
         {/* Main loading text */}
         {text && (
-          <p className="text-gray-600 dark:text-gray-300 font-medium text-sm sm:text-base">
+          <p className="font-medium text-sm sm:text-base" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
             {text}
           </p>
         )}
         
         {/* Optional secondary text for additional context */}
         {subtext && (
-          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1 max-w-xs mx-auto">
+          <p className="text-xs sm:text-sm mt-1 max-w-xs mx-auto" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
             {subtext}
           </p>
         )}

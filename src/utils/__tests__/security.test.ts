@@ -21,7 +21,7 @@ import {
 describe('Security Utilities', () => {
   describe('Password Hashing', () => {
     test('hashes password correctly', async () => {
-      const password = 'TestPassword123!';
+      const password = 'Demo123456!';
       const hash = await hashPassword(password);
       
       expect(hash).toBeDefined();
@@ -30,7 +30,7 @@ describe('Security Utilities', () => {
     });
 
     test('verifies correct password', async () => {
-      const password = 'TestPassword123!';
+      const password = 'Demo123456!';
       const hash = await hashPassword(password);
       
       const isValid = await verifyPassword(password, hash);
@@ -38,8 +38,8 @@ describe('Security Utilities', () => {
     });
 
     test('rejects incorrect password', async () => {
-      const password = 'TestPassword123!';
-      const wrongPassword = 'WrongPassword456!';
+      const password = 'Demo123456!';
+      const wrongPassword = 'wrongdemo456';
       const hash = await hashPassword(password);
       
       const isValid = await verifyPassword(wrongPassword, hash);
@@ -223,7 +223,7 @@ describe('Security Utilities', () => {
     });
 
     test('validates password correctly', () => {
-      const validPassword = 'TestPassword123!';
+      const validPassword = 'Demo123456!';
       const result = validateInput(validPassword, validationSchemas.password);
       
       expect(result.success).toBe(true);
@@ -242,7 +242,7 @@ describe('Security Utilities', () => {
     test('validates user object correctly', () => {
       const validUser = {
         email: 'test@example.com',
-        password: 'TestPassword123!',
+        password: 'Demo123456!',
         name: 'Test User',
         role: 'admin' as const
       };

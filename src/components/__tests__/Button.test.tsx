@@ -9,27 +9,27 @@ describe('Button Component', () => {
 
   test('applies correct variant classes', () => {
     const { rerender } = render(<Button variant="primary">Primary</Button>);
-    expect(screen.getByRole('button')).toHaveClass('bg-primary-600');
+    expect(screen.getByRole('button')).toHaveClass('btn-primary');
 
     rerender(<Button variant="secondary">Secondary</Button>);
-    expect(screen.getByRole('button')).toHaveClass('bg-gray-200');
+    expect(screen.getByRole('button')).toHaveClass('btn-secondary');
 
     rerender(<Button variant="danger">Danger</Button>);
-    expect(screen.getByRole('button')).toHaveClass('bg-danger-600');
+    expect(screen.getByRole('button')).toHaveClass('btn-danger');
 
     rerender(<Button variant="ghost">Ghost</Button>);
-    expect(screen.getByRole('button')).toHaveClass('bg-transparent');
+    expect(screen.getByRole('button')).toHaveClass('btn-ghost');
   });
 
   test('applies correct size classes', () => {
     const { rerender } = render(<Button size="sm">Small</Button>);
-    expect(screen.getByRole('button')).toHaveClass('px-3', 'py-1.5', 'text-sm');
+    expect(screen.getByRole('button')).toHaveClass('btn-sm');
 
     rerender(<Button size="md">Medium</Button>);
-    expect(screen.getByRole('button')).toHaveClass('px-4', 'py-2', 'text-sm');
+    expect(screen.getByRole('button')).toHaveClass('btn-md');
 
     rerender(<Button size="lg">Large</Button>);
-    expect(screen.getByRole('button')).toHaveClass('px-6', 'py-3', 'text-base');
+    expect(screen.getByRole('button')).toHaveClass('btn-lg');
   });
 
   test('handles click events', () => {
@@ -71,5 +71,34 @@ describe('Button Component', () => {
     expect(button).toBeDisabled();
     // HTML disabled attribute provides proper accessibility
     expect(button).toHaveAttribute('disabled');
+    expect(button).toHaveAttribute('aria-disabled', 'true');
+  });
+
+  test('shows loading state correctly', () => {
+    render(<Button isLoading>Loading Button</Button>);
+    const button = screen.getByRole('button');
+    
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute('aria-busy', 'true');
+    expect(button).toHaveAttribute('aria-disabled', 'true');
+    
+    // Loading spinner should be visible
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    const spinner = document.querySelector('.animate-spin');
+    expect(spinner).toBeInTheDocument();
+  });
+
+  test('applies full width class when fullWidth prop is true', () => {
+    render(<Button fullWidth>Full Width Button</Button>);
+    expect(screen.getByRole('button')).toHaveClass('w-full');
+  });
+
+  test('applies base classes with variants and preserves custom classes', () => {
+    render(<Button variant="primary" className="my-custom-class">Test</Button>);
+    const button = screen.getByRole('button');
+    
+    expect(button).toHaveClass('btn-base');
+    expect(button).toHaveClass('btn-primary');
+    expect(button).toHaveClass('my-custom-class');
   });
 });

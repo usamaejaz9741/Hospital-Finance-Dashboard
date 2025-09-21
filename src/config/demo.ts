@@ -1,5 +1,6 @@
 // NOTE: These credentials are for demo purposes only
 // In a real application, these would be managed through a secure backend
+// Default passwords are used only as fallback - set environment variables for security
 export const demoAccounts = [
   { 
     role: 'Admin',

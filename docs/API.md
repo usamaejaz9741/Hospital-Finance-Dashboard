@@ -1,43 +1,390 @@
-# Hospital Finance Dashboard API Documentation
+# API Documentation
 
-## Overview
-
-The Hospital Finance Dashboard is a React-based application built with TypeScript that provides comprehensive financial analytics for hospital management. This document outlines all public APIs, components, and utilities available in the system.
+This document provides comprehensive documentation for all APIs, services, and utilities in the Hospital Finance Dashboard.
 
 ## Table of Contents
 
-- [Authentication System](#authentication-system)
-- [Data Types](#data-types)
-- [Components](#components)
-- [Hooks](#hooks)
-- [Utilities](#utilities)
-- [Context Providers](#context-providers)
+- [Authentication API](#authentication-api)
+- [Data Services](#data-services)
+- [Utility Functions](#utility-functions)
+- [Hooks API](#hooks-api)
+- [Context APIs](#context-apis)
+- [Type Definitions](#type-definitions)
 - [Error Handling](#error-handling)
 
-## Authentication System
+## Authentication API
 
-### AuthContext
+### AuthService
 
-The authentication context provides user management and access control throughout the application.
+The authentication service handles user authentication, registration, and session management.
 
-#### Properties
+#### `signIn(email: string, password: string): Promise<User>`
 
-- `user: User | null` - Current authenticated user
-- `isAuthenticated: boolean` - Authentication status
-- `isLoading: boolean` - Loading state for auth operations
-- `signIn: (email: string, password: string) => Promise<void>` - Sign in method
-- `signUp: (userData: SignUpData) => Promise<void>` - Sign up method
-- `signOut: () => void` - Sign out method
-- `canAccessHospital: (hospitalId: string) => boolean` - Check hospital access
-- `getAccessibleHospitals: () => string[]` - Get accessible hospitals
+Authenticates a user with email and password credentials.
 
-#### Example Usage
+**Parameters:**
+- `email` (string): User's email address
+- `password` (string): User's password
 
-```tsx
-import { useAuth } from './hooks/useAuth';
+**Returns:** `Promise<User>` - User object on successful authentication
+
+**Throws:** `Error` - If credentials are invalid or account is locked
+
+**Example:**
+```typescript
+import { authService } from '../data/mockUsers';
+
+try {
+  const user = await authService.signIn('admin@hospitalfinance.com', 'UsamaHF2024!');
+  console.log('Welcome,', user.name);
+} catch (error) {
+  console.error('Authentication failed:', error.message);
+}
+```
+
+**Error Cases:**
+- Invalid email format
+- Incorrect password
+- Account locked (5 failed attempts)
+- Rate limiting exceeded
+
+#### `signUp(userData: SignUpData): Promise<User>`
+
+Registers a new user account with the provided information.
+
+**Parameters:**
+- `userData` (SignUpData): User registration data
+
+**Returns:** `Promise<User>` - Created user object
+
+**Throws:** `Error` - If registration fails or email already exists
+
+**Example:**
+```typescript
+const newUser = await authService.signUp({
+  name: 'Dr. Jane Smith',
+  email: 'jane.smith@hospital.com',
+  password: 'SecurePass123!',
+  role: 'hospital_owner',
+  hospitalIds: ['general-1', 'specialty-1']
+});
+```
+
+### Role-Based Access Control
+
+#### `canAccessHospital(hospitalId: string): boolean`
+
+Checks if the current user can access a specific hospital.
+
+**Parameters:**
+- `hospitalId` (string): Hospital identifier
+
+**Returns:** `boolean` - True if user has access
+
+**Access Rules:**
+- **Admin**: Access to all hospitals
+- **Hospital Owner**: Access to owned hospitals only
+- **Branch Manager**: Access to assigned hospital only
+
+**Example:**
+```typescript
+const { canAccessHospital } = useAuth();
+
+if (canAccessHospital('general-1')) {
+  // Load hospital data
+  loadHospitalData('general-1');
+} else {
+  // Show access denied message
+  showAccessDenied();
+}
+```
+
+#### `getAccessibleHospitals(): string[]`
+
+Returns array of hospital IDs the current user can access.
+
+**Returns:** `string[]` - Array of accessible hospital IDs
+
+**Example:**
+```typescript
+const { getAccessibleHospitals } = useAuth();
+const accessibleHospitals = getAccessibleHospitals();
+
+// Filter hospital dropdown options
+const hospitalOptions = hospitals.filter(h => 
+  accessibleHospitals.includes(h.id)
+);
+```
+
+## Data Services
+
+### Mock Data Service
+
+#### `getHospitalData(hospitalId: string, year: number): HospitalData | undefined`
+
+Retrieves comprehensive financial data for a specific hospital and year.
+
+**Parameters:**
+- `hospitalId` (string): Hospital identifier
+- `year` (number): Year for data retrieval (2021-2024)
+
+**Returns:** `HospitalData | undefined` - Complete hospital data or undefined if not found
+
+**Example:**
+```typescript
+import { getHospitalData } from '../data/mockData';
+
+const hospitalData = getHospitalData('general-1', 2024);
+if (hospitalData) {
+  console.log('Total Revenue:', hospitalData.financialMetrics[0].value);
+  console.log('Departments:', hospitalData.departmentFinances.length);
+}
+```
+
+**Data Structure:**
+```typescript
+interface HospitalData {
+  hospitalId: string;
+  year: number;
+  financialMetrics: FinancialMetric[];
+  revenueData: RevenueData[];
+  departmentFinances: DepartmentFinance[];
+  patientMetrics: PatientMetrics;
+  expenseBreakdown: ExpenseBreakdown[];
+  cashFlowData: CashFlowData[];
+  lastUpdated: string;
+}
+```
+
+#### `generateVariation(baseValue: number, variationPercent?: number): number`
+
+Generates realistic variations in financial data for simulation purposes.
+
+**Parameters:**
+- `baseValue` (number): Base value to vary
+- `variationPercent` (number, optional): Maximum percentage variation (default: 15%)
+
+**Returns:** `number` - Varied value with random fluctuation
+
+**Example:**
+```typescript
+const baseRevenue = 1000000;
+const variedRevenue = generateVariation(baseRevenue, 20);
+// Result: between 800,000 and 1,200,000
+```
+
+## Utility Functions
+
+### Formatters
+
+#### `formatCurrency(value: number): string`
+
+Formats a number as US currency with proper localization.
+
+**Parameters:**
+- `value` (number): Numeric value to format
+
+**Returns:** `string` - Formatted currency string
+
+**Example:**
+```typescript
+import { formatCurrency } from '../utils/formatters';
+
+formatCurrency(1500000); // "$1,500,000"
+formatCurrency(1250.50); // "$1,251"
+```
+
+#### `formatPercentage(value: number): string`
+
+Formats a number as a percentage with one decimal place.
+
+**Parameters:**
+- `value` (number): Numeric value to format
+
+**Returns:** `string` - Formatted percentage string
+
+**Example:**
+```typescript
+formatPercentage(0.235); // "23.5%"
+formatPercentage(12.345); // "12.3%"
+```
+
+#### `formatNumber(value: number): string`
+
+Formats a number with locale-specific thousands separators.
+
+**Parameters:**
+- `value` (number): Numeric value to format
+
+**Returns:** `string` - Formatted number string
+
+**Example:**
+```typescript
+formatNumber(1500000); // "1,500,000"
+formatNumber(12345.67); // "12,345.67"
+```
+
+#### `formatCompactCurrency(value: number): string`
+
+Formats large numbers in compact notation (K, M).
+
+**Parameters:**
+- `value` (number): Numeric value to format
+
+**Returns:** `string` - Compact currency string
+
+**Example:**
+```typescript
+formatCompactCurrency(1500000); // "$1.5M"
+formatCompactCurrency(1500); // "$1.5K"
+formatCompactCurrency(500); // "$500"
+```
+
+### Logging System
+
+#### `logger.info(message: string, options?: LogOptions): void`
+
+Logs informational messages with optional context.
+
+**Parameters:**
+- `message` (string): Log message
+- `options` (LogOptions, optional): Additional logging context
+
+**Example:**
+```typescript
+import { logger } from '../utils/logger';
+
+logger.info('User signed in successfully');
+logger.info('Dashboard data loaded', {
+  context: 'Dashboard',
+  data: { hospitalId: 'general-1', recordCount: 150 }
+});
+```
+
+#### `logger.warn(message: string, options?: LogOptions): void`
+
+Logs warning messages for potential issues.
+
+**Example:**
+```typescript
+logger.warn('API response time is slow', {
+  context: 'DataService',
+  data: { endpoint: '/api/data', duration: '5.2s' }
+});
+```
+
+#### `logger.error(message: string, options?: LogOptions): void`
+
+Logs error messages with context for debugging.
+
+**Example:**
+```typescript
+logger.error('Failed to load hospital data', {
+  context: 'DataService',
+  data: { hospitalId: 'general-1', error: 'Network timeout' }
+});
+```
+
+### Performance Utilities
+
+#### `measurePerformance<T>(fn: () => T, label: string): T`
+
+Measures and logs the performance of a function execution.
+
+**Parameters:**
+- `fn` (function): Function to measure
+- `label` (string): Performance measurement label
+
+**Returns:** `T` - Result of the function execution
+
+**Example:**
+```typescript
+import { measurePerformance } from '../utils/performance';
+
+const processedData = measurePerformance(() => {
+  return data.map(item => ({
+    ...item,
+    revenue: Math.round(item.revenue),
+    expenses: Math.round(item.expenses)
+  }));
+}, 'dataProcessing');
+```
+
+### Accessibility Utilities
+
+#### `generateMetricAriaLabel(title: string, value: string, change: number, changeType: string, period: string): string`
+
+Generates accessible ARIA labels for financial metrics.
+
+**Parameters:**
+- `title` (string): Metric title
+- `value` (string): Formatted metric value
+- `change` (number): Change percentage
+- `changeType` (string): Type of change (increase/decrease)
+- `period` (string): Time period for change
+
+**Returns:** `string` - Accessible ARIA label
+
+**Example:**
+```typescript
+import { generateMetricAriaLabel } from '../utils/accessibility';
+
+const ariaLabel = generateMetricAriaLabel(
+  'Total Revenue',
+  '$1,500,000',
+  12.5,
+  'increase',
+  'vs last month'
+);
+// Result: "Total Revenue: $1,500,000. increased by 12.5% vs last month"
+```
+
+#### `screenReader.announce(message: string, priority?: 'polite' | 'assertive'): void`
+
+Announces messages to screen readers.
+
+**Parameters:**
+- `message` (string): Message to announce
+- `priority` (string, optional): Announcement priority
+
+**Example:**
+```typescript
+import { screenReader } from '../utils/accessibility';
+
+// Polite announcement
+screenReader.announce('Dashboard data updated', 'polite');
+
+// Assertive announcement for errors
+screenReader.announce('Error: Failed to load data', 'assertive');
+```
+
+## Hooks API
+
+### useAuth Hook
+
+Provides authentication state and methods throughout the application.
+
+#### Returns
+
+```typescript
+interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (userData: SignUpData) => Promise<void>;
+  signOut: () => void;
+  canAccessHospital: (hospitalId: string) => boolean;
+  getAccessibleHospitals: () => string[];
+}
+```
+
+**Example:**
+```typescript
+import { useAuth } from '../hooks/useAuth';
 
 function MyComponent() {
-  const { user, isAuthenticated, signOut } = useAuth();
+  const { user, isAuthenticated, signOut, canAccessHospital } = useAuth();
   
   if (!isAuthenticated) {
     return <div>Please sign in</div>;
@@ -45,16 +392,173 @@ function MyComponent() {
   
   return (
     <div>
-      Welcome, {user?.name}!
+      <h1>Welcome, {user?.name}!</h1>
+      {canAccessHospital('general-1') && (
+        <button onClick={() => loadHospitalData('general-1')}>
+          Load Hospital Data
+        </button>
+      )}
       <button onClick={signOut}>Sign Out</button>
     </div>
   );
 }
 ```
 
-### User Types
+### useTheme Hook
 
-#### User
+Provides theme management functionality.
+
+#### Returns
+
+```typescript
+interface ThemeContextType {
+  theme: Theme;
+  resolvedTheme: 'light' | 'dark';
+  isTransitioning: boolean;
+  toggleTheme: () => void;
+  setTheme: (theme: Theme) => void;
+}
+```
+
+**Example:**
+```typescript
+import { useTheme } from '../hooks/useTheme';
+
+function ThemeControls() {
+  const { theme, resolvedTheme, toggleTheme, setTheme } = useTheme();
+  
+  return (
+    <div>
+      <p>Current theme: {resolvedTheme}</p>
+      <button onClick={toggleTheme}>Toggle Theme</button>
+      <button onClick={() => setTheme('light')}>Light Mode</button>
+      <button onClick={() => setTheme('dark')}>Dark Mode</button>
+    </div>
+  );
+}
+```
+
+### useChartTheme Hook
+
+Provides chart-specific theming utilities.
+
+#### Returns
+
+```typescript
+interface ChartTheme {
+  colors: {
+    primary: string;
+    secondary: string;
+    success: string;
+    warning: string;
+    error: string;
+  };
+  grid: {
+    stroke: string;
+    strokeDasharray: string;
+  };
+  axis: {
+    stroke: string;
+  };
+  cursor: {
+    fill: string;
+    stroke: string;
+  };
+}
+```
+
+**Example:**
+```typescript
+import { useChartTheme } from '../hooks/useChartTheme';
+
+function ChartComponent() {
+  const { chartTheme } = useChartTheme();
+  
+  return (
+    <LineChart>
+      <Line 
+        stroke={chartTheme.colors.primary}
+        strokeWidth={2}
+      />
+      <CartesianGrid 
+        stroke={chartTheme.grid.stroke}
+        strokeDasharray={chartTheme.grid.strokeDasharray}
+      />
+    </LineChart>
+  );
+}
+```
+
+## Context APIs
+
+### AuthContext
+
+Provides authentication state management throughout the application.
+
+#### Context Value
+
+```typescript
+interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (userData: SignUpData) => Promise<void>;
+  signOut: () => void;
+  canAccessHospital: (hospitalId: string) => boolean;
+  getAccessibleHospitals: () => string[];
+}
+```
+
+#### Provider Usage
+
+```typescript
+import { AuthProvider } from './contexts/AuthContext';
+
+function App() {
+  return (
+    <AuthProvider>
+      <MyApplication />
+    </AuthProvider>
+  );
+}
+```
+
+### ThemeContext
+
+Provides theme management throughout the application.
+
+#### Context Value
+
+```typescript
+interface ThemeContextType {
+  theme: Theme;
+  resolvedTheme: 'light' | 'dark';
+  isTransitioning: boolean;
+  toggleTheme: () => void;
+  setTheme: (theme: Theme) => void;
+}
+```
+
+#### Provider Usage
+
+```typescript
+import { ThemeProvider } from './contexts/ThemeContext';
+
+function App() {
+  return (
+    <ThemeProvider>
+      <MyApplication />
+    </ThemeProvider>
+  );
+}
+```
+
+## Type Definitions
+
+### Core Types
+
+#### User Interface
 
 ```typescript
 interface User {
@@ -62,39 +566,15 @@ interface User {
   email: string;
   name: string;
   role: UserRole;
-  createdAt: string;
-  lastLogin: string;
-  hospitalId?: string;        // For branch_owner role
-  hospitalIds?: string[];     // For hospital_owner role
-}
-```
-
-#### UserRole
-
-```typescript
-type UserRole = 'admin' | 'hospital_owner' | 'branch_owner';
-```
-
-#### SignUpData
-
-```typescript
-interface SignUpData {
-  name: string;
-  email: string;
-  password: string;
-  role: UserRole;
   hospitalId?: string;
   hospitalIds?: string[];
+  createdAt: string;
+  lastLogin?: string;
+  passwordHash?: string;
 }
 ```
 
-## Data Types
-
-### Financial Types
-
-#### FinancialMetric
-
-Represents a financial metric displayed in metric cards.
+#### Financial Metric Interface
 
 ```typescript
 interface FinancialMetric {
@@ -108,91 +588,7 @@ interface FinancialMetric {
 }
 ```
 
-#### RevenueData
-
-Monthly revenue data for trend analysis.
-
-```typescript
-interface RevenueData {
-  month: string;
-  revenue: number;
-  expenses: number;
-  netIncome: number;
-}
-```
-
-#### DepartmentFinance
-
-Financial performance data for hospital departments.
-
-```typescript
-interface DepartmentFinance {
-  department: string;
-  revenue: number;
-  expenses: number;
-  profit: number;
-  profitMargin: number;
-}
-```
-
-#### PatientMetrics
-
-Patient statistics and hospital utilization metrics.
-
-```typescript
-interface PatientMetrics {
-  totalPatients: number;
-  inpatients: number;
-  outpatients: number;
-  emergencyVisits: number;
-  averageStayDuration: number;
-  occupancyRate: number;
-}
-```
-
-#### ExpenseBreakdown
-
-Expense category breakdown for pie chart visualization.
-
-```typescript
-interface ExpenseBreakdown {
-  category: string;
-  amount: number;
-  percentage: number;
-  color: string;
-}
-```
-
-#### CashFlowData
-
-Cash flow data for financial analysis.
-
-```typescript
-interface CashFlowData {
-  date: string;
-  operatingCashFlow: number;
-  investingCashFlow: number;
-  financingCashFlow: number;
-  netCashFlow: number;
-}
-```
-
-#### Hospital
-
-Hospital entity information.
-
-```typescript
-interface Hospital {
-  id: string;
-  name: string;
-  location: string;
-  type: HospitalType;
-}
-```
-
-#### HospitalData
-
-Complete dataset for a hospital's financial and operational data.
+#### Hospital Data Interface
 
 ```typescript
 interface HospitalData {
@@ -208,361 +604,45 @@ interface HospitalData {
 }
 ```
 
-## Components
+### Authentication Types
 
-### Dashboard
-
-Main dashboard component displaying hospital financial data.
-
-#### Props
+#### User Role Type
 
 ```typescript
-// No props - uses context for data
+type UserRole = 'admin' | 'hospital_owner' | 'branch_owner';
 ```
 
-#### Features
+#### Sign Up Data Interface
 
-- Hospital and year selection
-- Financial metrics display
-- Interactive charts and tables
-- Responsive design
-- Loading and error states
-
-#### Example Usage
-
-```tsx
-import Dashboard from './components/Dashboard';
-
-function App() {
-  return (
-    <AuthProvider>
-      <ThemeProvider>
-        <Dashboard />
-      </ThemeProvider>
-    </AuthProvider>
-  );
+```typescript
+interface SignUpData {
+  name: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  hospitalId?: string;
+  hospitalIds?: string[];
 }
 ```
 
-### MetricCard
+### Theme Types
 
-Displays individual financial metrics with change indicators.
-
-#### Props
+#### Theme Type
 
 ```typescript
-interface MetricCardProps {
-  metric: FinancialMetric;
-}
+type Theme = 'light' | 'dark' | 'auto';
+type ResolvedTheme = 'light' | 'dark';
 ```
 
-#### Example Usage
-
-```tsx
-import MetricCard from './components/MetricCard';
-
-const metric = {
-  id: 'revenue',
-  title: 'Total Revenue',
-  value: 1500000,
-  change: 12.5,
-  changeType: 'increase',
-  period: 'vs last month',
-  format: 'currency'
-};
-
-<MetricCard metric={metric} />
-```
-
-### RevenueChart
-
-Line chart displaying revenue and expenses trends.
-
-#### Props
+#### Theme Context Type
 
 ```typescript
-interface RevenueChartProps {
-  data: RevenueData[];
-}
-```
-
-#### Features
-
-- Interactive tooltips
-- Responsive design
-- Dark mode support
-- No data state handling
-
-### ExpensePieChart
-
-Pie chart showing expense breakdown by category.
-
-#### Props
-
-```typescript
-interface ExpensePieChartProps {
-  data: ExpenseBreakdown[];
-}
-```
-
-### CashFlowChart
-
-Bar chart displaying cash flow analysis.
-
-#### Props
-
-```typescript
-interface CashFlowChartProps {
-  data: CashFlowData[];
-}
-```
-
-### DepartmentTable
-
-Table showing department financial performance.
-
-#### Props
-
-```typescript
-interface DepartmentTableProps {
-  departments: DepartmentFinance[];
-}
-```
-
-### PatientMetricsCard
-
-Card displaying patient statistics and utilization metrics.
-
-#### Props
-
-```typescript
-interface PatientMetricsCardProps {
-  metrics: PatientMetrics;
-}
-```
-
-### ErrorBoundary
-
-Catches JavaScript errors and displays fallback UI.
-
-#### Props
-
-```typescript
-interface ErrorBoundaryProps {
-  children: ReactNode;
-  fallback?: ReactNode;
-}
-```
-
-#### Features
-
-- Error logging
-- User-friendly error display
-- Development error details
-- Recovery options
-
-## Hooks
-
-### useAuth
-
-Custom hook for authentication context access.
-
-#### Returns
-
-```typescript
-AuthContextType
-```
-
-#### Throws
-
-- `Error` if used outside AuthProvider
-
-### useChartTheme
-
-Provides chart theming based on current theme.
-
-#### Returns
-
-```typescript
-{
-  chartTheme: ChartTheme;
-}
-```
-
-### useResponsive
-
-Provides responsive breakpoint information.
-
-#### Returns
-
-```typescript
-{
-  isMobile: boolean;
-  isTablet: boolean;
-  isDesktop: boolean;
-  currentBreakpoint: string;
-}
-```
-
-### useTheme
-
-Provides theme context access.
-
-#### Returns
-
-```typescript
-{
-  theme: 'light' | 'dark';
+interface ThemeContextType {
+  theme: Theme;
+  resolvedTheme: ResolvedTheme;
+  isTransitioning: boolean;
   toggleTheme: () => void;
-}
-```
-
-## Utilities
-
-### Formatters
-
-#### formatCurrency
-
-Formats numbers as US currency.
-
-```typescript
-formatCurrency(value: number): string
-```
-
-**Example:**
-```typescript
-formatCurrency(1234567) // "$1,234,567"
-```
-
-#### formatPercentage
-
-Formats numbers as percentages.
-
-```typescript
-formatPercentage(value: number): string
-```
-
-**Example:**
-```typescript
-formatPercentage(15.4) // "15.4%"
-```
-
-#### formatNumber
-
-Formats numbers with thousand separators.
-
-```typescript
-formatNumber(value: number): string
-```
-
-**Example:**
-```typescript
-formatNumber(1234567) // "1,234,567"
-```
-
-#### formatCompactCurrency
-
-Formats large numbers in compact form.
-
-```typescript
-formatCompactCurrency(value: number): string
-```
-
-**Example:**
-```typescript
-formatCompactCurrency(1500000) // "$1.5M"
-formatCompactCurrency(1500) // "$1.5K"
-```
-
-#### getChangeColor
-
-Returns Tailwind CSS color class for change type.
-
-```typescript
-getChangeColor(changeType: 'increase' | 'decrease'): string
-```
-
-#### getChangeIcon
-
-Returns arrow icon for change type.
-
-```typescript
-getChangeIcon(changeType: 'increase' | 'decrease'): string
-```
-
-### Logger
-
-Centralized logging system with environment awareness.
-
-#### Methods
-
-- `info(message: string, options?: LogOptions): void`
-- `warn(message: string, options?: LogOptions): void`
-- `error(message: string, options?: LogOptions): void`
-
-#### LogOptions
-
-```typescript
-interface LogOptions {
-  context?: string;
-  data?: unknown;
-}
-```
-
-#### Example Usage
-
-```typescript
-import { logger } from './utils/logger';
-
-logger.info('User signed in', {
-  context: 'AuthService',
-  data: { userId: '123' }
-});
-```
-
-### Auth Utilities
-
-#### validatePassword
-
-Validates password strength requirements.
-
-```typescript
-validatePassword(password: string): {
-  isValid: boolean;
-  errors: string[];
-}
-```
-
-**Requirements:**
-- Minimum 8 characters
-- At least one uppercase letter
-- At least one lowercase letter
-- At least one number
-- At least one special character
-
-## Context Providers
-
-### AuthProvider
-
-Provides authentication state and methods to child components.
-
-#### Props
-
-```typescript
-interface AuthProviderProps {
-  children: ReactNode;
-}
-```
-
-### ThemeProvider
-
-Provides theme state and toggle functionality.
-
-#### Props
-
-```typescript
-interface ThemeProviderProps {
-  children: ReactNode;
+  setTheme: (theme: Theme) => void;
 }
 ```
 
@@ -570,666 +650,80 @@ interface ThemeProviderProps {
 
 ### Error Types
 
-#### AppError
+#### Authentication Errors
 
 ```typescript
-interface AppError {
+interface AuthError {
+  message: string;
   code: string;
-  message: string;
-  details?: unknown;
-  timestamp: string;
 }
 ```
 
-### Error Handling Strategy
+#### Common Error Codes
 
-1. **Component Level**: ErrorBoundary catches React errors
-2. **Hook Level**: Custom error handling in async operations
-3. **Service Level**: Structured error responses from API calls
-4. **User Level**: User-friendly error messages and recovery options
+- `INVALID_CREDENTIALS`: Email or password is incorrect
+- `ACCOUNT_LOCKED`: Account temporarily locked due to failed attempts
+- `EMAIL_ALREADY_EXISTS`: Email address already registered
+- `WEAK_PASSWORD`: Password doesn't meet complexity requirements
+- `ACCESS_DENIED`: User doesn't have permission for requested resource
 
-### Error Recovery
+### Error Handling Patterns
 
-- Automatic retry for transient errors
-- User-initiated retry options
-- Graceful degradation for non-critical features
-- Comprehensive error logging for debugging
+#### Service Error Handling
 
-## Performance Considerations
-
-### Bundle Optimization
-
-- Code splitting with React.lazy()
-- Tree shaking for unused code
-- Vendor chunk separation
-- Asset compression and optimization
-
-### Runtime Performance
-
-- Memoization for expensive calculations
-- Optimized re-renders with useMemo and useCallback
-- Lazy loading for non-critical components
-- Efficient data structures and algorithms
-
-### Monitoring
-
-- Bundle size analysis with Vite visualizer
-- Performance metrics tracking
-- Error monitoring and alerting
-- User experience metrics
-
-## Security Considerations
-
-### Authentication
-
-- Password strength validation
-- Rate limiting for login attempts
-- Secure token storage
-- Session management
-
-### Data Protection
-
-- Input validation and sanitization
-- XSS prevention
-- CSRF protection
-- Secure data transmission
-
-### Access Control
-
-- Role-based permissions
-- Hospital access restrictions
-- API endpoint protection
-- Audit logging
-
-## Testing
-
-### Test Coverage
-
-- Unit tests for utilities and hooks
-- Component tests with React Testing Library
-- Integration tests for user flows
-- E2E tests for critical paths
-
-### Test Utilities
-
-- Mock data generators
-- Test helpers and utilities
-- Custom render functions
-- Mock service implementations
-
-## Development Guidelines
-
-### Code Style
-
-- TypeScript strict mode
-- ESLint configuration
-- Prettier formatting
-- Consistent naming conventions
-
-### Documentation
-
-- JSDoc comments for all public APIs
-- README files for major components
-- Code examples and usage patterns
-- Architecture decision records
-
-### Git Workflow
-
-- Feature branch development
-- Pull request reviews
-- Automated testing and linting
-- Semantic versioning
-
-## Performance Utilities API
-
-### PerformanceMonitor Class
-
-Provides comprehensive performance monitoring capabilities.
-
-```typescript
-class PerformanceMonitor {
-  startTiming(name: string, metadata?: Record<string, unknown>): void;
-  endTiming(name: string): PerformanceMetrics | undefined;
-  getMetrics(): PerformanceMetrics[];
-  clearMetrics(): void;
-}
-```
-
-**Example Usage**:
-```typescript
-import { performanceMonitor } from '../utils/performance';
-
-// Start monitoring
-performanceMonitor.startTiming('dataProcessing', { itemCount: 1000 });
-
-// Process data...
-
-// End monitoring
-const metrics = performanceMonitor.endTiming('dataProcessing');
-console.log(`Processing took ${metrics?.duration}ms`);
-```
-
-### Performance Functions
-
-#### measurePerformance
-
-Wraps a function with performance monitoring.
-
-```typescript
-function measurePerformance<T extends (...args: unknown[]) => unknown>(
-  fn: T,
-  name: string
-): T;
-```
-
-**Example**:
-```typescript
-const optimizedFunction = measurePerformance(
-  (data: number[]) => data.reduce((sum, n) => sum + n, 0),
-  'arraySum'
-);
-```
-
-#### debounce
-
-Creates a debounced version of a function.
-
-```typescript
-function debounce<T extends (...args: unknown[]) => unknown>(
-  func: T,
-  wait: number,
-  immediate?: boolean
-): (...args: Parameters<T>) => void;
-```
-
-**Example**:
-```typescript
-const debouncedSearch = debounce((query: string) => {
-  // Perform search
-}, 300);
-```
-
-#### throttle
-
-Creates a throttled version of a function.
-
-```typescript
-function throttle<T extends (...args: unknown[]) => unknown>(
-  func: T,
-  limit: number
-): (...args: Parameters<T>) => void;
-```
-
-#### memoize
-
-Creates a memoized version of a function with optional custom key function.
-
-```typescript
-function memoize<T extends (...args: unknown[]) => unknown>(
-  fn: T,
-  keyFn?: (...args: Parameters<T>) => string
-): T;
-```
-
-**Example**:
-```typescript
-const memoizedCalculation = memoize(
-  (data: DataItem[]) => expensiveCalculation(data),
-  (data) => data.map(item => item.id).join(',')
-);
-```
-
-## Security Utilities API
-
-### Password Security
-
-#### hashPassword
-
-Securely hashes a password using bcrypt.
-
-```typescript
-function hashPassword(password: string): Promise<string>;
-```
-
-#### verifyPassword
-
-Verifies a password against its hash.
-
-```typescript
-function verifyPassword(password: string, hash: string): Promise<boolean>;
-```
-
-### Input Validation
-
-#### validateInput
-
-Validates input data against Zod schemas.
-
-```typescript
-function validateInput<T>(
-  schema: z.ZodSchema<T>,
-  data: T
-): { success: boolean; errors: string[] | null };
-```
-
-**Example**:
-```typescript
-const result = validateInput(validationSchemas.user, userData);
-if (!result.success) {
-  console.error('Validation errors:', result.errors);
-}
-```
-
-### Rate Limiting
-
-#### RateLimiter Class
-
-Implements rate limiting for API calls.
-
-```typescript
-class RateLimiter {
-  constructor(windowMs: number = 15 * 60 * 1000, maxAttempts: number = 5);
-  checkLimit(identifier: string): boolean;
-  reset(identifier: string): void;
-}
-```
-
-### Error Sanitization
-
-#### sanitizeError
-
-Sanitizes error objects for safe logging and display.
-
-```typescript
-function sanitizeError(error: unknown): {
-  message: string;
-  stack?: string;
-  timestamp: string;
-};
-```
-
-## Data Formatting API
-
-### Currency Formatting
-
-#### formatCurrency
-
-Formats numbers as currency with proper localization.
-
-```typescript
-function formatCurrency(
-  value: number,
-  options?: {
-    locale?: string;
-    currency?: string;
-    minimumFractionDigits?: number;
-    maximumFractionDigits?: number;
-  }
-): string;
-```
-
-**Example**:
-```typescript
-formatCurrency(1234567.89); // "$1,234,567.89"
-formatCurrency(1234567.89, { currency: 'EUR', locale: 'de-DE' }); // "1.234.567,89 €"
-```
-
-#### formatCompactCurrency
-
-Formats large currency values in compact notation.
-
-```typescript
-function formatCompactCurrency(value: number): string;
-```
-
-**Example**:
-```typescript
-formatCompactCurrency(1234567); // "$1.2M"
-formatCompactCurrency(1234); // "$1.2K"
-```
-
-### Percentage Formatting
-
-#### formatPercentage
-
-Formats numbers as percentages.
-
-```typescript
-function formatPercentage(
-  value: number,
-  options?: {
-    minimumFractionDigits?: number;
-    maximumFractionDigits?: number;
-  }
-): string;
-```
-
-### Change Indicators
-
-#### getChangeColor
-
-Returns appropriate color class for value changes.
-
-```typescript
-function getChangeColor(changeType: 'increase' | 'decrease'): string;
-```
-
-#### getChangeIcon
-
-Returns appropriate icon component for value changes.
-
-```typescript
-function getChangeIcon(changeType: 'increase' | 'decrease'): React.ReactNode;
-```
-
-## Logging API
-
-### Logger Interface
-
-Centralized logging system with environment-aware behavior.
-
-```typescript
-interface Logger {
-  info(message: string, context?: LogContext): void;
-  warn(message: string, context?: LogContext): void;
-  error(message: string, context?: LogContext): void;
-  debug(message: string, context?: LogContext): void;
-}
-```
-
-**LogContext Interface**:
-```typescript
-interface LogContext {
-  context?: string;
-  data?: Record<string, unknown>;
-  userId?: string;
-  sessionId?: string;
-}
-```
-
-**Example Usage**:
-```typescript
-import { logger } from '../utils/logger';
-
-logger.info('User logged in successfully', {
-  context: 'AuthContext',
-  data: { userId: user.id, role: user.role }
-});
-
-logger.error('Failed to load dashboard data', {
-  context: 'Dashboard',
-  data: { hospitalId, year, error: error.message }
-});
-```
-
-## Theme System API
-
-### useTheme Hook
-
-Provides theme management functionality.
-
-```typescript
-interface ThemeHook {
-  theme: Theme;
-  resolvedTheme: 'light' | 'dark';
-  setTheme: (theme: Theme) => void;
-  systemTheme: 'light' | 'dark';
-}
-
-function useTheme(): ThemeHook;
-```
-
-### useChartTheme Hook
-
-Provides chart-specific theming.
-
-```typescript
-interface ChartThemeHook {
-  chartTheme: ChartTheme;
-  resolvedTheme: 'light' | 'dark';
-}
-
-function useChartTheme(): ChartThemeHook;
-```
-
-**ChartTheme Interface**:
-```typescript
-interface ChartTheme {
-  colors: {
-    primary: string;
-    secondary: string;
-    success: string;
-    danger: string;
-    warning: string;
-    info: string;
-  };
-  grid: { stroke: string };
-  axis: { stroke: string };
-  tooltip: {
-    backgroundColor: string;
-    border: string;
-    textColor: string;
-    shadowColor: string;
-  };
-  legend: { color: string };
-}
-```
-
-## Responsive Design API
-
-### useResponsive Hook
-
-Provides responsive design utilities and breakpoint detection.
-
-```typescript
-interface ResponsiveHook {
-  isMobile: boolean;
-  isTablet: boolean;
-  isDesktop: boolean;
-  breakpoint: 'mobile' | 'tablet' | 'desktop';
-  width: number;
-  height: number;
-}
-
-function useResponsive(): ResponsiveHook;
-```
-
-**Example Usage**:
-```typescript
-const { isMobile, breakpoint } = useResponsive();
-
-return (
-  <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-3'} gap-4`}>
-    {/* Responsive content */}
-  </div>
-);
-```
-
-## Error Handling API
-
-### ErrorBoundary Component
-
-React error boundary with comprehensive error handling.
-
-**Props**:
-```typescript
-interface ErrorBoundaryProps {
-  children: React.ReactNode;
-  fallback?: React.ComponentType<ErrorFallbackProps>;
-  onError?: (error: Error, errorInfo: ErrorInfo) => void;
-}
-```
-
-**Error Fallback Props**:
-```typescript
-interface ErrorFallbackProps {
-  error: Error;
-  resetError: () => void;
-  hasError: boolean;
-}
-```
-
-### Error Handler Utility
-
-#### handleError
-
-Centralized error handling function.
-
-```typescript
-function handleError(
-  error: Error,
-  context?: string,
-  additionalData?: Record<string, unknown>
-): void;
-```
-
-## Testing Utilities API
-
-### Test Helpers
-
-#### renderWithProviders
-
-Renders components with necessary context providers for testing.
-
-```typescript
-function renderWithProviders(
-  ui: React.ReactElement,
-  options?: {
-    initialAuthState?: Partial<AuthContextType>;
-    initialTheme?: Theme;
-    route?: string;
-  }
-): RenderResult;
-```
-
-#### mockUser
-
-Creates mock user data for testing.
-
-```typescript
-function mockUser(overrides?: Partial<User>): User;
-```
-
-#### mockHospitalData
-
-Creates mock hospital data for testing.
-
-```typescript
-function mockHospitalData(
-  hospitalId?: string,
-  year?: number
-): HospitalData;
-```
-
-## Configuration API
-
-### Demo Configuration
-
-Access to demo configuration and settings.
-
-```typescript
-interface DemoConfig {
-  hospitals: Hospital[];
-  users: User[];
-  defaultYear: number;
-  availableYears: number[];
-}
-
-const demoConfig: DemoConfig;
-```
-
-### Build Configuration
-
-Access to build-time configuration.
-
-```typescript
-interface BuildConfig {
-  version: string;
-  buildTime: string;
-  environment: 'development' | 'production' | 'test';
-  apiUrl: string;
-}
-
-const buildConfig: BuildConfig;
-```
-
-## Migration Guide
-
-### From v1.0 to v1.1
-
-**Breaking Changes**:
-- `AuthContext.user` now includes `lastLogin` field
-- `ThemeContext.theme` accepts 'system' value
-- Chart components now require `isLoading` prop
-
-**Migration Steps**:
-1. Update AuthContext usage to handle new user fields
-2. Update theme components to support system theme
-3. Add loading props to chart components
-4. Update test mocks with new data structure
-
-**Deprecated APIs**:
-- `formatCurrency` without options parameter (use with options)
-- Direct localStorage access (use auth context methods)
-
-### Upgrading Dependencies
-
-When upgrading major dependencies:
-
-1. **React 18 → 19**: Update concurrent features usage
-2. **TypeScript 4 → 5**: Update type definitions
-3. **Vite 4 → 5**: Update build configuration
-4. **Tailwind 3 → 4**: Update class names and configuration
-
-## Best Practices
-
-### API Usage Guidelines
-
-1. **Error Handling**: Always wrap API calls in try-catch blocks
-2. **Type Safety**: Use TypeScript interfaces for all API responses
-3. **Performance**: Implement proper memoization for expensive operations
-4. **Security**: Validate all inputs and sanitize outputs
-5. **Testing**: Mock all external dependencies in tests
-
-### Code Examples
-
-**Proper Error Handling**:
 ```typescript
 try {
-  const data = await fetchHospitalData(hospitalId, year);
-  setHospitalData(data);
+  const user = await authService.signIn(email, password);
+  // Handle success
 } catch (error) {
-  logger.error('Failed to fetch hospital data', {
-    context: 'Dashboard',
-    data: { hospitalId, year, error }
-  });
-  handleError(error as Error, 'Dashboard');
+  if (error.message.includes('locked')) {
+    showLockoutMessage();
+  } else if (error.message.includes('credentials')) {
+    showInvalidCredentialsMessage();
+  } else {
+    showGenericErrorMessage();
+  }
 }
 ```
 
-**Performance Optimization**:
-```typescript
-const processedData = useMemo(() => {
-  return measurePerformance(() => {
-    return data.map(item => ({
-      ...item,
-      formattedValue: formatCurrency(item.value)
-    }));
-  }, 'dataProcessing');
-}, [data]);
-```
+#### Component Error Handling
 
-**Secure Input Handling**:
 ```typescript
-const handleSubmit = async (formData: FormData) => {
-  const validation = validateInput(schemas.loginForm, formData);
-  if (!validation.success) {
-    setErrors(validation.errors);
-    return;
-  }
+function MyComponent() {
+  const [error, setError] = useState<string | null>(null);
   
-  // Process validated data
-};
+  const handleAction = async () => {
+    try {
+      setError(null);
+      await performAction();
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+  
+  return (
+    <div>
+      {error && <ErrorMessage message={error} />}
+      <button onClick={handleAction}>Perform Action</button>
+    </div>
+  );
+}
 ```
 
-This comprehensive API documentation provides detailed information about all available functions, hooks, and utilities in the Hospital Finance Dashboard application.
+### Error Boundary Usage
+
+```typescript
+import { ErrorBoundary } from './components/ErrorBoundary';
+
+function App() {
+  return (
+    <ErrorBoundary fallback={ErrorFallback}>
+      <MyApplication />
+    </ErrorBoundary>
+  );
+}
+```
+
+---
+
+This API documentation provides comprehensive coverage of all available APIs, services, and utilities in the Hospital Finance Dashboard. For implementation details and examples, refer to the individual source files and their associated test files.

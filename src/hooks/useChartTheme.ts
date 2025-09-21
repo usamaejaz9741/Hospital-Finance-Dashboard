@@ -1,9 +1,9 @@
 import { useTheme } from './useTheme';
-import resolveConfig from 'tailwindcss/resolveConfig';
-import tailwindConfig from '../../tailwind.config.js';
+// import resolveConfig from 'tailwindcss/resolveConfig';
+// import tailwindConfig from '../../tailwind.config.js';
 
 // Resolve Tailwind configuration to access theme colors at runtime
-const fullConfig = resolveConfig(tailwindConfig);
+// const fullConfig = resolveConfig(tailwindConfig);
 
 /**
  * Custom hook for providing theme-aware colors and styling for charts.
@@ -70,45 +70,69 @@ export const useChartTheme = () => {
   const { resolvedTheme } = useTheme();
   
   // Access Tailwind color configuration (TypeScript type issue with complex config structure)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const themeColors: any = fullConfig.theme.colors;
+  // const themeColors = fullConfig.theme.colors;
 
-  // Define theme-aware color palette for chart elements
-  // Dark mode uses lighter shades (400) for better contrast, light mode uses standard shades (500)
+  // Enhanced theme-aware color palette for chart elements with diverse colors
   const colors = {
-    primary: resolvedTheme === 'dark' ? themeColors.primary[400] : themeColors.primary[500],
-    secondary: resolvedTheme === 'dark' ? themeColors.purple[400] : themeColors.purple[500],
-    success: resolvedTheme === 'dark' ? themeColors.success[400] : themeColors.success[500],
-    danger: resolvedTheme === 'dark' ? themeColors.danger[400] : themeColors.danger[500],
-    warning: resolvedTheme === 'dark' ? themeColors.warning[400] : themeColors.warning[500],
-    info: resolvedTheme === 'dark' ? themeColors.indigo[400] : themeColors.indigo[500],
+    primary: resolvedTheme === 'dark' ? '#a855f7' : '#a855f7', // Purple - main brand
+    secondary: resolvedTheme === 'dark' ? '#3b82f6' : '#2563eb', // Blue - secondary actions
+    success: resolvedTheme === 'dark' ? '#22c55e' : '#16a34a', // Green - positive metrics
+    danger: resolvedTheme === 'dark' ? '#ef4444' : '#dc2626', // Red - negative metrics
+    warning: resolvedTheme === 'dark' ? '#f59e0b' : '#d97706', // Amber - warnings
+    info: resolvedTheme === 'dark' ? '#06b6d4' : '#0891b2', // Cyan - info states
+    accent: resolvedTheme === 'dark' ? '#8b5cf6' : '#9333ea', // Purple variant
+    purple: resolvedTheme === 'dark' ? '#c084fc' : '#a855f7', // Purple - charts
+    // Additional chart colors for legends and data series
+    teal: resolvedTheme === 'dark' ? '#14b8a6' : '#0d9488', // Teal - data series
+    emerald: resolvedTheme === 'dark' ? '#10b981' : '#059669', // Emerald - success metrics
+    rose: resolvedTheme === 'dark' ? '#f43f5e' : '#e11d48', // Rose - danger metrics
+    violet: resolvedTheme === 'dark' ? '#8b5cf6' : '#7c3aed', // Violet - accent
+    indigo: resolvedTheme === 'dark' ? '#6366f1' : '#4f46e5', // Indigo - info metrics
+    orange: resolvedTheme === 'dark' ? '#f97316' : '#ea580c', // Orange - warning metrics
   };
 
   // Comprehensive theme configuration for all chart elements
   const chartTheme = {
     colors,
     
-    // Grid line styling for chart backgrounds
+    // Enhanced grid line styling with subtle glassmorphism
     grid: {
-      stroke: resolvedTheme === 'dark' ? themeColors.dark.border : '#f1f5f9',
+      stroke: resolvedTheme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.3)',
     },
     
-    // Axis line and tick styling
+    // Enhanced axis styling with better contrast
     axis: {
-      stroke: resolvedTheme === 'dark' ? themeColors.dark.text.muted : '#64748b',
+      stroke: resolvedTheme === 'dark' ? 'rgba(255, 255, 255, 0.6)' : 'rgba(255, 255, 255, 0.8)',
     },
     
-    // Tooltip appearance and styling
+    // Enhanced tooltip with glassmorphism styling
     tooltip: {
-      backgroundColor: resolvedTheme === 'dark' ? themeColors.dark.surface : '#ffffff',
-      border: resolvedTheme === 'dark' ? themeColors.dark.border : '#e5e7eb',
-      textColor: resolvedTheme === 'dark' ? themeColors.dark.text.primary : '#111827',
-      shadowColor: resolvedTheme === 'dark' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)',
+      backgroundColor: resolvedTheme === 'dark' 
+        ? 'rgba(15, 23, 42, 0.95)' 
+        : 'rgba(255, 255, 255, 0.95)',
+      border: resolvedTheme === 'dark' 
+        ? 'rgba(255, 255, 255, 0.2)' 
+        : 'rgba(255, 255, 255, 0.3)',
+      textColor: resolvedTheme === 'dark' ? '#ffffff' : '#2d1b69',
+      shadowColor: resolvedTheme === 'dark' 
+        ? 'rgba(12, 14, 39, 0.4)' 
+        : 'rgba(102, 126, 234, 0.2)',
+      backdropFilter: 'blur(12px)',
     },
     
-    // Legend text styling
+    // Enhanced legend styling
     legend: {
-      color: resolvedTheme === 'dark' ? themeColors.dark.text.secondary : '#6b7280',
+      color: resolvedTheme === 'dark' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.9)',
+    },
+    
+    // Theme-appropriate cursor styling for chart interactions
+    cursor: {
+      fill: resolvedTheme === 'dark' 
+        ? 'rgba(255, 255, 255, 0.1)' 
+        : 'rgba(255, 255, 255, 0.2)',
+      stroke: resolvedTheme === 'dark' 
+        ? 'rgba(255, 255, 255, 0.2)' 
+        : 'rgba(255, 255, 255, 0.3)',
     },
   };
 

@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/14</span>
+                <span class='fraction'>0/22</span>
             </div>
         
             
@@ -170,7 +170,18 @@
 <a name='L105'></a><a href='#L105'>105</a>
 <a name='L106'></a><a href='#L106'>106</a>
 <a name='L107'></a><a href='#L107'>107</a>
-<a name='L108'></a><a href='#L108'>108</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -239,6 +250,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -294,10 +316,10 @@ interface DepartmentTableProps {
  */
 const DepartmentTable: React.FC&lt;DepartmentTableProps&gt; = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >({</span> departments }) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
-    &lt;div className="bg-white dark:bg-dark-surface p-4 sm:p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 dark:border-dark-border"&gt;
-      &lt;div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4"&gt;
-        &lt;h2 className="text-xl font-semibold text-gray-900 dark:text-white"&gt;Department Performance&lt;/h2&gt;
-        &lt;button className="btn-secondary text-sm w-full sm:w-auto"&gt;
+    &lt;div className="chart-container"&gt;
+      &lt;div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-4"&gt;
+        &lt;h2 className="mobile-heading-scale font-bold gradient-text"&gt;Department Performance&lt;/h2&gt;
+        &lt;button className="btn-base btn-secondary btn-sm w-full sm:w-auto"&gt;
           View Details
         &lt;/button&gt;
       &lt;/div&gt;
@@ -306,33 +328,33 @@ const DepartmentTable: React.FC&lt;DepartmentTableProps&gt; = <span class="cstat
       &lt;div className="hidden lg:block overflow-x-auto -mx-4 sm:mx-0"&gt;
         &lt;table className="min-w-full"&gt;
           &lt;thead&gt;
-            &lt;tr className="border-b border-gray-200 dark:border-dark-border"&gt;
-              &lt;th className="text-left py-3 px-4 font-medium text-gray-600 dark:text-dark-muted"&gt;Department&lt;/th&gt;
-              &lt;th className="text-right py-3 px-4 font-medium text-gray-600 dark:text-dark-muted"&gt;Revenue&lt;/th&gt;
-              &lt;th className="text-right py-3 px-4 font-medium text-gray-600 dark:text-dark-muted"&gt;Expenses&lt;/th&gt;
-              &lt;th className="text-right py-3 px-4 font-medium text-gray-600 dark:text-dark-muted"&gt;Profit&lt;/th&gt;
-              &lt;th className="text-right py-3 px-4 font-medium text-gray-600 dark:text-dark-muted"&gt;Margin&lt;/th&gt;
+            &lt;tr className="border-b border-white/20"&gt;
+              &lt;th className="text-left py-3 px-4 font-medium text-white/80"&gt;Department&lt;/th&gt;
+              &lt;th className="text-right py-3 px-4 font-medium text-white/80"&gt;Revenue&lt;/th&gt;
+              &lt;th className="text-right py-3 px-4 font-medium text-white/80"&gt;Expenses&lt;/th&gt;
+              &lt;th className="text-right py-3 px-4 font-medium text-white/80"&gt;Profit&lt;/th&gt;
+              &lt;th className="text-right py-3 px-4 font-medium text-white/80"&gt;Margin&lt;/th&gt;
             &lt;/tr&gt;
           &lt;/thead&gt;
           &lt;tbody&gt;
             {departments.map(<span class="fstat-no" title="function not covered" >(d</span>ept, index) =&gt; (
-<span class="cstat-no" title="statement not covered" >              &lt;tr key={dept.department} c</span>lassName={`${index !== departments.length - 1 ? 'border-b border-gray-100 dark:border-dark-border' : ''} hover:bg-gray-50 dark:hover:bg-dark-hover-surface`}&gt;
+<span class="cstat-no" title="statement not covered" >              &lt;tr key={dept.department} c</span>lassName={`${index !== departments.length - 1 ? 'border-b border-white/10' : ''} hover:bg-white/10 transition-colors duration-200`}&gt;
                 &lt;td className="py-3 px-4"&gt;
-                  &lt;div className="font-medium"&gt;{dept.department}&lt;/div&gt;
+                  &lt;div className="font-medium text-white"&gt;{dept.department}&lt;/div&gt;
                 &lt;/td&gt;
-                &lt;td className="py-3 px-4 text-right"&gt;
+                &lt;td className="py-3 px-4 text-right text-white"&gt;
                   {formatCurrency(dept.revenue)}
                 &lt;/td&gt;
-                &lt;td className="py-3 px-4 text-right"&gt;
+                &lt;td className="py-3 px-4 text-right text-white"&gt;
                   {formatCurrency(dept.expenses)}
                 &lt;/td&gt;
                 &lt;td className="py-3 px-4 text-right"&gt;
-                  &lt;span className={`font-medium ${dept.profit &gt; 0 ? 'text-success-600' : 'text-danger-600'}`}&gt;
+                  &lt;span className={`font-medium ${dept.profit &gt; 0 ? 'text-green-400' : 'text-red-400'}`}&gt;
                     {formatCurrency(dept.profit)}
                   &lt;/span&gt;
                 &lt;/td&gt;
                 &lt;td className="py-3 px-4 text-right"&gt;
-                  &lt;span className={`font-medium ${dept.profitMargin &gt; 20 ? 'text-success-600' : dept.profitMargin &gt; 10 ? 'text-warning-600' : 'text-danger-600'}`}&gt;
+                  &lt;span className={`font-medium ${dept.profitMargin &gt; 20 ? 'text-green-400' : dept.profitMargin &gt; 10 ? 'text-yellow-400' : 'text-red-400'}`}&gt;
                     {formatPercentage(dept.profitMargin)}
                   &lt;/span&gt;
                 &lt;/td&gt;
@@ -342,36 +364,47 @@ const DepartmentTable: React.FC&lt;DepartmentTableProps&gt; = <span class="cstat
         &lt;/table&gt;
       &lt;/div&gt;
 &nbsp;
-      {/* Mobile Card View */}
-      &lt;div className="lg:hidden space-y-4"&gt;
+      {/* Enhanced Mobile Card View */}
+      &lt;div className="lg:hidden space-y-3 sm:space-y-4"&gt;
         {departments.map(<span class="fstat-no" title="function not covered" >(d</span>ept) =&gt; (
-<span class="cstat-no" title="statement not covered" >          &lt;div key={dept.department} c</span>lassName="bg-gray-50 dark:bg-dark-surface rounded-lg p-4"&gt;
-            &lt;div className="font-medium mb-3 text-lg"&gt;
-              {dept.department}
+<span class="cstat-no" title="statement not covered" >          &lt;div key={dept.department} c</span>lassName="glass-card interactive" style={{ padding: 'var(--space-6)' }}&gt;
+            &lt;div className="flex items-center justify-between mb-3"&gt;
+              &lt;div className="font-bold text-white text-base sm:text-lg"&gt;
+                {dept.department}
+              &lt;/div&gt;
+              &lt;div className={`font-bold text-sm sm:text-base ${dept.profit &gt; 0 ? 'text-green-400' : 'text-red-400'}`}&gt;
+                {formatCurrency(dept.profit)}
+              &lt;/div&gt;
             &lt;/div&gt;
-            &lt;div className="grid grid-cols-2 gap-4"&gt;
+            &lt;div className="grid grid-cols-2 gap-3 sm:gap-4 text-sm"&gt;
               &lt;div&gt;
-                &lt;div className="text-sm text-gray-600 dark:text-dark-muted"&gt;Revenue&lt;/div&gt;
-                &lt;div className="font-medium"&gt;
+                &lt;div className="text-white/60 mb-1"&gt;Revenue&lt;/div&gt;
+                &lt;div className="font-medium text-white"&gt;
                   {formatCurrency(dept.revenue)}
                 &lt;/div&gt;
               &lt;/div&gt;
               &lt;div&gt;
-                &lt;div className="text-sm text-gray-600 dark:text-dark-muted"&gt;Expenses&lt;/div&gt;
-                &lt;div className="font-medium"&gt;
+                &lt;div className="text-white/60 mb-1"&gt;Expenses&lt;/div&gt;
+                &lt;div className="font-medium text-white"&gt;
                   {formatCurrency(dept.expenses)}
                 &lt;/div&gt;
               &lt;/div&gt;
               &lt;div&gt;
-                &lt;div className="text-sm text-gray-600 dark:text-dark-muted"&gt;Profit&lt;/div&gt;
-                &lt;div className={`font-medium ${dept.profit &gt; 0 ? 'text-success-600' : 'text-danger-600'}`}&gt;
-                  {formatCurrency(dept.profit)}
+                &lt;div className="text-white/60 mb-1"&gt;Margin&lt;/div&gt;
+                &lt;div className={`font-medium ${dept.profitMargin &gt; 20 ? 'text-green-400' : dept.profitMargin &gt; 10 ? 'text-yellow-400' : 'text-red-400'}`}&gt;
+                  {formatPercentage(dept.profitMargin)}
                 &lt;/div&gt;
               &lt;/div&gt;
               &lt;div&gt;
-                &lt;div className="text-sm text-gray-600 dark:text-dark-muted"&gt;Margin&lt;/div&gt;
-                &lt;div className={`font-medium ${dept.profitMargin &gt; 20 ? 'text-success-600' : dept.profitMargin &gt; 10 ? 'text-warning-600' : 'text-danger-600'}`}&gt;
-                  {formatPercentage(dept.profitMargin)}
+                &lt;div className="text-white/60 mb-1"&gt;Status&lt;/div&gt;
+                &lt;div className={`text-xs px-2 py-1 rounded-full font-medium ${
+                  dept.profitMargin &gt; 20 
+                    ? 'bg-green-500/20 text-green-400' 
+                    : dept.profitMargin &gt; 10 
+                    ? 'bg-yellow-500/20 text-yellow-400' 
+                    : 'bg-red-500/20 text-red-400'
+                }`}&gt;
+                  {dept.profitMargin &gt; 20 ? 'Excellent' : dept.profitMargin &gt; 10 ? 'Good' : 'Needs Attention'}
                 &lt;/div&gt;
               &lt;/div&gt;
             &lt;/div&gt;
@@ -391,7 +424,7 @@ const DepartmentTable: React.FC&lt;DepartmentTableProps&gt; = <span class="cstat
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-17T07:29:53.001Z
+                at 2025-09-18T12:54:39.087Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
