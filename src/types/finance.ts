@@ -305,6 +305,262 @@ export interface Hospital {
  * };
  * ```
  */
+/**
+ * Enhanced revenue breakdown by payer type as specified in GP Spec Sheet
+ * 
+ * @interface RevenueBreakdown
+ * @category Enhanced Financial Data
+ * @since 2.0.0
+ * 
+ * @example
+ * ```typescript
+ * const revenueBreakdown: RevenueBreakdown = {
+ *   government: 450000,    // Medicare/Medicaid
+ *   commercial: 320000,    // Private insurance
+ *   selfPay: 80000,        // Out-of-pocket
+ *   other: 50000           // Grants, donations, etc.
+ * };
+ * ```
+ */
+export interface RevenueBreakdown {
+  /** Government payer revenue (Medicare, Medicaid) */
+  government: number;
+  
+  /** Commercial payer revenue (Private insurance) */
+  commercial: number;
+  
+  /** Self-pay revenue (Out-of-pocket payments) */
+  selfPay: number;
+  
+  /** Other revenue sources (Grants, donations, etc.) */
+  other: number;
+}
+
+/**
+ * EBIDA (Earnings Before Interest, Depreciation, and Amortization) calculations
+ * 
+ * @interface EBIDAMetrics
+ * @category Enhanced Financial Data
+ * @since 2.0.0
+ */
+export interface EBIDAMetrics {
+  /** Operating income from financial statements */
+  operatingIncome: number;
+  
+  /** Depreciation expense */
+  depreciation: number;
+  
+  /** Interest expense */
+  interest: number;
+  
+  /** Calculated EBIDA (Operating Income + Depreciation + Interest) */
+  ebida: number;
+}
+
+/**
+ * Contextual events that impact financial performance
+ * 
+ * @interface ContextualEvent
+ * @category Enhanced Financial Data
+ * @since 2.0.0
+ */
+export interface ContextualEvent {
+  /** Unique identifier for the event */
+  id: string;
+  
+  /** Event title or description */
+  title: string;
+  
+  /** Detailed description of the event */
+  description: string;
+  
+  /** Date when the event occurred */
+  date: string;
+  
+  /** Type of event */
+  type: 'merger' | 'acquisition' | 'leadership_change' | 'market_change' | 'regulatory' | 'other';
+  
+  /** Impact level on financial performance */
+  impact: 'high' | 'medium' | 'low';
+  
+  /** Related financial metrics affected */
+  affectedMetrics: string[];
+}
+
+/**
+ * Donation tracking with restriction breakdowns
+ * 
+ * @interface DonationData
+ * @category Enhanced Financial Data
+ * @since 2.0.0
+ */
+export interface DonationData {
+  /** Total donations for the year */
+  totalDonations: number;
+  
+  /** New donations (charitable contributions without donor restrictions) */
+  newDonations: number;
+  
+  /** Donations released from restrictions */
+  releasedFromRestrictions: number;
+  
+  /** Year-over-year change in total donations */
+  change: number;
+}
+
+/**
+ * Enhanced expense categorization with inflation overlay
+ * 
+ * @interface EnhancedExpenseBreakdown
+ * @category Enhanced Financial Data
+ * @since 2.0.0
+ */
+export interface EnhancedExpenseBreakdown {
+  /** Detailed expense category */
+  category: string;
+  
+  /** Current year expense amount */
+  currentAmount: number;
+  
+  /** Previous year expense amount for comparison */
+  previousAmount: number;
+  
+  /** Inflation-adjusted amount (current year adjusted for inflation) */
+  inflationAdjustedAmount: number;
+  
+  /** Percentage of total expenses */
+  percentage: number;
+  
+  /** Year-over-year change percentage */
+  changePercentage: number;
+  
+  /** Inflation rate for this category */
+  inflationRate: number;
+  
+  /** Color for visualization */
+  color: string;
+  
+  /** Subcategories within this expense category */
+  subcategories?: ExpenseSubcategory[];
+}
+
+/**
+ * Expense subcategory for detailed breakdown
+ * 
+ * @interface ExpenseSubcategory
+ * @category Enhanced Financial Data
+ * @since 2.0.0
+ */
+export interface ExpenseSubcategory {
+  /** Subcategory name */
+  name: string;
+  
+  /** Amount in this subcategory */
+  amount: number;
+  
+  /** Percentage of parent category */
+  percentage: number;
+  
+  /** Color for visualization */
+  color: string;
+}
+
+/**
+ * Financial assets breakdown by type
+ * 
+ * @interface FinancialAssets
+ * @category Enhanced Financial Data
+ * @since 2.0.0
+ */
+export interface FinancialAssets {
+  /** Cash and cash equivalents */
+  cashAndEquivalents: number;
+  
+  /** Short-term investments */
+  shortTermInvestments: number;
+  
+  /** Long-term investments */
+  longTermInvestments: number;
+  
+  /** Accounts receivable (net) */
+  accountsReceivable: number;
+  
+  /** Inventory and supplies */
+  inventory: number;
+  
+  /** Property, plant, and equipment (net) */
+  propertyPlantEquipment: number;
+  
+  /** Other assets */
+  otherAssets: number;
+  
+  /** Total financial assets */
+  totalAssets: number;
+  
+  /** Days cash on hand calculation */
+  daysCashOnHand: number;
+}
+
+/**
+ * Bond ratings and credit information
+ * 
+ * @interface BondRatings
+ * @category Enhanced Financial Data
+ * @since 2.0.0
+ */
+export interface BondRatings {
+  /** Moody's rating */
+  moodysRating: string;
+  
+  /** S&P rating */
+  spRating: string;
+  
+  /** Fitch rating */
+  fitchRating: string;
+  
+  /** Overall credit outlook */
+  outlook: 'positive' | 'stable' | 'negative';
+  
+  /** Last rating update date */
+  lastUpdated: string;
+  
+  /** Bond debt outstanding */
+  debtOutstanding: number;
+  
+  /** Interest coverage ratio */
+  interestCoverageRatio: number;
+}
+
+/**
+ * State program dependency analysis
+ * 
+ * @interface StateProgramDependency
+ * @category Enhanced Financial Data
+ * @since 2.0.0
+ */
+export interface StateProgramDependency {
+  /** Medicaid revenue percentage */
+  medicaidPercentage: number;
+  
+  /** Medicare revenue percentage */
+  medicarePercentage: number;
+  
+  /** State grants and subsidies */
+  stateGrants: number;
+  
+  /** DSH (Disproportionate Share Hospital) payments */
+  dshPayments: number;
+  
+  /** UPL (Upper Payment Limit) payments */
+  uplPayments: number;
+  
+  /** Total state program dependency percentage */
+  totalDependency: number;
+  
+  /** Risk assessment of state dependency */
+  riskLevel: 'low' | 'medium' | 'high';
+}
+
 export interface HospitalData {
   /** Reference to the hospital this data belongs to */
   hospitalId: string;
@@ -329,6 +585,30 @@ export interface HospitalData {
   
   /** Quarterly or monthly cash flow analysis data */
   cashFlowData: CashFlowData[];
+  
+  /** Enhanced revenue breakdown by payer type */
+  revenueBreakdown: RevenueBreakdown;
+  
+  /** EBIDA calculations and metrics */
+  ebidaMetrics: EBIDAMetrics;
+  
+  /** Contextual events affecting financial performance */
+  contextualEvents: ContextualEvent[];
+  
+  /** Donation tracking and restriction data */
+  donationData: DonationData;
+  
+  /** Enhanced expense categorization with inflation overlay */
+  enhancedExpenseBreakdown: EnhancedExpenseBreakdown[];
+  
+  /** Financial assets breakdown by type */
+  financialAssets: FinancialAssets;
+  
+  /** Bond ratings and credit information */
+  bondRatings: BondRatings;
+  
+  /** State program dependency analysis */
+  stateProgramDependency: StateProgramDependency;
   
   /** ISO timestamp of when this data was last updated */
   lastUpdated: string;

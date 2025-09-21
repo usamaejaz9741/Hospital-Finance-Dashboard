@@ -10,7 +10,7 @@ interface ThemeToggleProps {
  * Modern glassmorphism theme toggle button with smooth animations.
  */
 const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', size = 'md' }) => {
-  const { resolvedTheme, setTheme, isTransitioning } = useTheme();
+  const { resolvedTheme, isTransitioning } = useTheme();
 
   const sizeClasses = {
     sm: 'w-4 h-4',
@@ -22,15 +22,18 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', size = 'md' }
 
   return (
     <button
-      onClick={() => setTheme(resolvedTheme === 'light' ? 'dark' : 'light')}
-      disabled={isTransitioning}
-      className={`
+      onClick={() => {
+        // Temporarily disabled - keeping toggle visible but non-functional
+        console.log('Theme toggle clicked but disabled for development');
+      }}
+      disabled={true} // Always disabled for now
+        className={`
         theme-toggle relative w-12 h-12 rounded-xl
-        text-white/80 hover:text-white
-        focus:outline-none focus:ring-2 focus:ring-white/30 focus:ring-offset-2 
+        text-white/60 cursor-not-allowed opacity-75
+        focus:outline-none focus:ring-2 focus:ring-white/20 focus:ring-offset-2 
         focus:ring-offset-transparent
         group overflow-hidden
-        transition-all duration-300 hover:scale-105
+        transition-all duration-300
         ${isTransitioning ? 'animate-pulse cursor-wait' : ''}
         ${className}
       `}
@@ -41,8 +44,8 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', size = 'md' }
         WebkitBackdropFilter: 'blur(8px)',
         zIndex: '30'
       }}
-      title={isTransitioning ? 'Switching theme...' : (resolvedTheme === 'light' ? 'Switch to dark mode' : 'Switch to light mode')}
-      aria-label={isTransitioning ? 'Switching theme...' : (resolvedTheme === 'light' ? 'Switch to dark mode' : 'Switch to light mode')}
+      title="Theme toggle (temporarily disabled for development)"
+      aria-label="Theme toggle (temporarily disabled for development)"
     >
       
       {/* Icon container with smooth transition and loading state */}

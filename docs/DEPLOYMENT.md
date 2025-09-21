@@ -1,131 +1,180 @@
 # Deployment Guide
 
-This guide provides comprehensive instructions for deploying the Hospital Finance Dashboard to various hosting platforms, including configuration, optimization, and monitoring.
+## Overview
 
-## Table of Contents
+This guide covers the deployment process for the Hospital Finance Dashboard, including build optimization, environment configuration, and deployment strategies for various platforms.
 
-- [Prerequisites](#prerequisites)
-- [Build Process](#build-process)
-- [Deployment Platforms](#deployment-platforms)
-- [Environment Configuration](#environment-configuration)
-- [Performance Optimization](#performance-optimization)
-- [Security Configuration](#security-configuration)
-- [Monitoring & Analytics](#monitoring--analytics)
-- [Troubleshooting](#troubleshooting)
-
-## Prerequisites
-
-### System Requirements
-
-- **Node.js**: Version 16.x or higher
-- **npm**: Version 7.x or higher (or yarn equivalent)
-- **Git**: For version control and deployment
-- **Modern Browser Support**: Chrome 88+, Firefox 85+, Safari 14+, Edge 88+
-
-### Development Environment
-
-```bash
-# Verify Node.js version
-node --version  # Should be 16.x or higher
-
-# Verify npm version
-npm --version   # Should be 7.x or higher
-
-# Check project dependencies
-npm audit       # Should show no high-severity vulnerabilities
-```
-
-## Build Process
+## 🏗️ Build Process
 
 ### Production Build
 
+The application uses Vite for building optimized production bundles:
+
 ```bash
-# 1. Install dependencies
-npm ci --production=false
-
-# 2. Run tests (optional but recommended)
-npm run test
-
-# 3. Type checking
-npm run type-check
-
-# 4. Linting
-npm run lint
-
-# 5. Build for production
+# Create production build
 npm run build
 
-# 6. Preview build locally (optional)
+# Preview production build locally
 npm run preview
 ```
 
-### Build Output
+### Build Configuration
 
-The build process generates optimized static files in the `dist/` directory:
+The build process is configured in `vite.config.ts`:
 
+```typescript
+export default defineConfig({
+  plugins: [react()],
+  build: {
+    outDir: 'dist',
+    sourcemap: false, // Disable sourcemaps in production
+    minify: 'terser',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          charts: ['recharts', 'd3'],
+          ui: ['@headlessui/react', '@heroicons/react']
+        }
+      }
+    }
+  },
+  server: {
+    port: 5173,
+    host: true
+  }
+});
 ```
-dist/
-├── assets/
-│   ├── main-[hash].js          # Main application bundle
-│   ├── vendor-[hash].js        # Third-party dependencies
-│   ├── [component]-[hash].js   # Lazy-loaded components
-│   └── main-[hash].css         # Compiled styles
-├── favicon/                    # Favicon files
-├── index.html                  # Main HTML file
-└── stats.html                  # Bundle analysis (if generated)
-```
 
-### Build Optimization Features
+### Bundle Analysis
 
-- **Code Splitting**: Automatic vendor and component splitting
-- **Tree Shaking**: Unused code elimination
-- **Minification**: JavaScript and CSS compression
-- **Asset Optimization**: Image and font optimization
-- **Source Maps**: Generated for production debugging
-- **Bundle Analysis**: Size tracking and optimization insights
-
-## Deployment Platforms
-
-### Vercel (Recommended)
-
-**Automatic Deployment**:
-
-1. Connect your GitHub repository to Vercel
-2. Configure build settings:
-   ```json
-   {
-     "buildCommand": "npm run build",
-     "outputDirectory": "dist",
-     "installCommand": "npm ci"
-   }
-   ```
-3. Set environment variables in Vercel dashboard
-4. Deploy automatically on git push
-
-**Manual Deployment**:
+Analyze bundle size and dependencies:
 
 ```bash
-# Install Vercel CLI
-npm install -g vercel
+# Install bundle analyzer
+npm install --save-dev rollup-plugin-visualizer
 
-# Login to Vercel
-vercel login
-
-# Deploy
-vercel --prod
+# Analyze bundle
+npm run build:analyze
 ```
 
-**Vercel Configuration** (`vercel.json`):
+## 🌍 Environment Configuration
+
+### Environment Variables
+
+Create environment-specific configuration files:
+
+```bash
+# Development
+.env.development
+
+# Production
+.env.production
+
+# Local
+.env.local
+```
+
+#### Environment Variables Reference
+
+```bash
+# API Configuration
+VITE_API_BASE_URL=https://api.hospital-dashboard.com
+VITE_API_TIMEOUT=10000
+
+# Authentication
+VITE_JWT_SECRET=your-jwt-secret
+VITE_SESSION_TIMEOUT=3600000
+
+# Analytics
+VITE_GOOGLE_ANALYTICS_ID=GA-XXXXXXXXX
+VITE_SENTRY_DSN=https://your-sentry-dsn
+
+# Feature Flags
+VITE_ENABLE_ANALYTICS=true
+VITE_ENABLE_ERROR_REPORTING=true
+VITE_ENABLE_DEBUG_MODE=false
+
+# Hospital Configuration
+VITE_DEFAULT_HOSPITAL_ID=hospital-1
+VITE_MAX_HOSPITALS_PER_USER=5
+```
+
+### Environment-Specific Builds
+
+```typescript
+// vite.config.ts
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  
+  return {
+    define: {
+      __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+      __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
+    },
+    build: {
+      rollupOptions: {
+        external: mode === 'development' ? [] : ['react-devtools']
+      }
+    }
+  };
+});
+```
+
+## 🚀 Deployment Strategies
+
+### Static Site Hosting
+
+#### Netlify Deployment
+
+1. **Create `netlify.toml`**:
+```toml
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Security-Policy = "script-src 'self' 'unsafe-inline'"
+```
+
+2. **Deploy**:
+```bash
+# Connect to Netlify
+netlify login
+netlify init
+
+# Deploy
+netlify deploy --prod
+```
+
+#### Vercel Deployment
+
+1. **Create `vercel.json`**:
 ```json
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
-  "routes": [
+  "rewrites": [
     {
-      "src": "/[^.]+",
-      "dest": "/",
-      "status": 200
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [
@@ -142,358 +191,256 @@ vercel --prod
 }
 ```
 
----
-
-### Netlify
-
-**Automatic Deployment**:
-
-1. Connect GitHub repository to Netlify
-2. Configure build settings:
-   - **Build Command**: `npm run build`
-   - **Publish Directory**: `dist`
-   - **Node Version**: 16 or higher
-
-**Manual Deployment**:
-
+2. **Deploy**:
 ```bash
-# Install Netlify CLI
-npm install -g netlify-cli
+# Install Vercel CLI
+npm install -g vercel
 
-# Login to Netlify
-netlify login
+# Deploy
+vercel --prod
+```
 
-# Build and deploy
+#### AWS S3 + CloudFront
+
+1. **Build and upload to S3**:
+```bash
+# Build application
 npm run build
-netlify deploy --prod --dir=dist
-```
 
-**Netlify Configuration** (`netlify.toml`):
-```toml
-[build]
-  publish = "dist"
-  command = "npm run build"
-
-[build.environment]
-  NODE_VERSION = "18"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-```
-
----
-
-### AWS S3 + CloudFront
-
-**S3 Setup**:
-
-```bash
 # Install AWS CLI
-pip install awscli
-
-# Configure AWS credentials
 aws configure
 
-# Create S3 bucket
-aws s3 mb s3://your-hospital-dashboard-bucket
+# Upload to S3
+aws s3 sync dist/ s3://your-bucket-name --delete
 
-# Enable static website hosting
-aws s3 website s3://your-hospital-dashboard-bucket \
-  --index-document index.html \
-  --error-document index.html
-
-# Upload build files
-aws s3 sync dist/ s3://your-hospital-dashboard-bucket \
-  --delete \
-  --cache-control "public, max-age=31536000" \
-  --exclude "index.html" \
-  --exclude "*.map"
-
-# Upload index.html with different caching
-aws s3 cp dist/index.html s3://your-hospital-dashboard-bucket/index.html \
-  --cache-control "public, max-age=0, must-revalidate"
+# Invalidate CloudFront
+aws cloudfront create-invalidation --distribution-id YOUR_DISTRIBUTION_ID --paths "/*"
 ```
 
-**CloudFront Configuration**:
+2. **S3 Bucket Policy**:
 ```json
 {
-  "Origins": [{
-    "DomainName": "your-hospital-dashboard-bucket.s3.amazonaws.com",
-    "OriginPath": "",
-    "CustomOriginConfig": {
-      "HTTPPort": 80,
-      "HTTPSPort": 443,
-      "OriginProtocolPolicy": "https-only"
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::your-bucket-name/*"
     }
-  }],
-  "DefaultCacheBehavior": {
-    "TargetOriginId": "S3-your-hospital-dashboard-bucket",
-    "ViewerProtocolPolicy": "redirect-to-https",
-    "CachePolicyId": "managed-caching-optimized"
-  },
-  "CustomErrorResponses": [{
-    "ErrorCode": 404,
-    "ResponseCode": 200,
-    "ResponsePagePath": "/index.html"
-  }]
+  ]
 }
 ```
 
----
+### Container Deployment
 
-### Docker Deployment
+#### Docker Configuration
 
-**Dockerfile**:
+1. **Create `Dockerfile`**:
 ```dockerfile
-# Build stage
+# Multi-stage build
 FROM node:18-alpine AS builder
 
 WORKDIR /app
-
-# Copy package files
 COPY package*.json ./
+RUN npm ci --only=production
 
-# Install dependencies
-RUN npm ci --only=production=false
-
-# Copy source code
 COPY . .
-
-# Build application
 RUN npm run build
 
 # Production stage
 FROM nginx:alpine
 
-# Copy built files
 COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Copy nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Expose port
 EXPOSE 80
-
-# Start nginx
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-**nginx.conf**:
+2. **Nginx Configuration**:
 ```nginx
 events {
-    worker_connections 1024;
+  worker_connections 1024;
 }
 
 http {
-    include       /etc/nginx/mime.types;
-    default_type  application/octet-stream;
+  include /etc/nginx/mime.types;
+  default_type application/octet-stream;
 
-    server {
-        listen 80;
-        server_name localhost;
-        root /usr/share/nginx/html;
-        index index.html;
+  server {
+    listen 80;
+    server_name localhost;
+    root /usr/share/nginx/html;
+    index index.html;
 
-        # Handle client-side routing
-        location / {
-            try_files $uri $uri/ /index.html;
-        }
+    # Gzip compression
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
 
-        # Cache static assets
-        location /assets/ {
-            expires 1y;
-            add_header Cache-Control "public, immutable";
-        }
-
-        # Security headers
-        add_header X-Frame-Options "SAMEORIGIN" always;
-        add_header X-Content-Type-Options "nosniff" always;
-        add_header X-XSS-Protection "1; mode=block" always;
+    # Cache static assets
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+      expires 1y;
+      add_header Cache-Control "public, immutable";
     }
+
+    # Handle client-side routing
+    location / {
+      try_files $uri $uri/ /index.html;
+    }
+
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+  }
 }
 ```
 
-**Build and Deploy**:
+3. **Build and run**:
 ```bash
 # Build Docker image
 docker build -t hospital-dashboard .
 
 # Run container
 docker run -p 80:80 hospital-dashboard
-
-# Deploy to registry
-docker tag hospital-dashboard your-registry/hospital-dashboard:latest
-docker push your-registry/hospital-dashboard:latest
 ```
 
-## Environment Configuration
+#### Kubernetes Deployment
 
-### Environment Variables
+1. **Create `k8s-deployment.yaml`**:
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hospital-dashboard
+  labels:
+    app: hospital-dashboard
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hospital-dashboard
+  template:
+    metadata:
+      labels:
+        app: hospital-dashboard
+    spec:
+      containers:
+      - name: hospital-dashboard
+        image: hospital-dashboard:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        env:
+        - name: NODE_ENV
+          value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hospital-dashboard-service
+spec:
+  selector:
+    app: hospital-dashboard
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
+```
 
-Create environment-specific configuration files:
-
-**.env.production**:
+2. **Deploy to Kubernetes**:
 ```bash
-VITE_NODE_ENV=production
-VITE_API_URL=https://api.hospitalfinance.com
-VITE_APP_VERSION=1.0.0
-VITE_ANALYTICS_ID=GA_MEASUREMENT_ID
-VITE_SENTRY_DSN=SENTRY_DSN_URL
+# Apply deployment
+kubectl apply -f k8s-deployment.yaml
+
+# Check status
+kubectl get deployments
+kubectl get services
 ```
 
-**.env.staging**:
-```bash
-VITE_NODE_ENV=staging
-VITE_API_URL=https://staging-api.hospitalfinance.com
-VITE_APP_VERSION=1.0.0-staging
-VITE_ANALYTICS_ID=GA_STAGING_ID
-```
+## 🔒 Security Configuration
 
-### Build-time Configuration
+### Content Security Policy
 
-**vite.config.ts** (Production optimizations):
-```typescript
-export default defineConfig(({ mode }) => ({
-  plugins: [
-    react(),
-    ...(mode === 'production' ? [
-      visualizer({
-        filename: 'dist/stats.html',
-        gzipSize: true,
-        brotliSize: true
-      })
-    ] : [])
-  ],
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          charts: ['recharts'],
-          utils: ['date-fns', 'lodash-es']
-        }
-      }
-    },
-    chunkSizeWarningLimit: 1000,
-    sourcemap: true
-  },
-  define: {
-    __APP_VERSION__: JSON.stringify(process.env.npm_package_version)
-  }
-}));
-```
+Add CSP headers to prevent XSS attacks:
 
-## Performance Optimization
-
-### Build Optimization
-
-**Bundle Analysis**:
-```bash
-# Generate bundle analysis
-npm run build
-npm run analyze
-
-# Open dist/stats.html to review bundle composition
-```
-
-**Optimization Checklist**:
-- ✅ Code splitting implemented
-- ✅ Vendor chunks separated
-- ✅ Tree shaking enabled
-- ✅ Minification enabled
-- ✅ Source maps generated
-- ✅ Asset optimization enabled
-
-### Runtime Optimization
-
-**Preloading Critical Resources**:
 ```html
-<!-- In index.html -->
-<link rel="preload" href="/assets/main-[hash].js" as="script">
-<link rel="preload" href="/assets/main-[hash].css" as="style">
-```
-
-**Service Worker** (Optional):
-```javascript
-// public/sw.js
-const CACHE_NAME = 'hospital-dashboard-v1';
-const urlsToCache = [
-  '/',
-  '/assets/main-[hash].js',
-  '/assets/main-[hash].css'
-];
-
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(urlsToCache))
-  );
-});
-```
-
-### CDN Configuration
-
-**Cloudflare Settings**:
-- **Caching Level**: Standard
-- **Browser Cache TTL**: 4 hours for HTML, 1 year for assets
-- **Minification**: HTML, CSS, JS enabled
-- **Brotli Compression**: Enabled
-- **HTTP/2**: Enabled
-
-## Security Configuration
-
-### HTTP Security Headers
-
-```nginx
-# Security headers for nginx
-add_header X-Frame-Options "SAMEORIGIN" always;
-add_header X-Content-Type-Options "nosniff" always;
-add_header X-XSS-Protection "1; mode=block" always;
-add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self';" always;
+<!-- index.html -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  font-src 'self' https://fonts.gstatic.com;
+  img-src 'self' data: https:;
+  connect-src 'self' https://api.hospital-dashboard.com;
+">
 ```
 
 ### HTTPS Configuration
 
-**SSL/TLS Best Practices**:
-- Use TLS 1.2 or higher
-- Implement HSTS headers
-- Use strong cipher suites
-- Regular certificate renewal
+Ensure all deployments use HTTPS:
 
-**Certbot (Let's Encrypt)**:
-```bash
-# Install certbot
-sudo apt install certbot python3-certbot-nginx
-
-# Obtain certificate
-sudo certbot --nginx -d yourdomain.com
-
-# Auto-renewal
-sudo crontab -e
-# Add: 0 12 * * * /usr/bin/certbot renew --quiet
+```nginx
+# Nginx HTTPS configuration
+server {
+  listen 443 ssl http2;
+  server_name hospital-dashboard.com;
+  
+  ssl_certificate /path/to/certificate.crt;
+  ssl_certificate_key /path/to/private.key;
+  
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_ciphers ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512;
+  ssl_prefer_server_ciphers off;
+  
+  # Redirect HTTP to HTTPS
+  if ($scheme != "https") {
+    return 301 https://$host$request_uri;
+  }
+}
 ```
 
-## Monitoring & Analytics
+### Environment Security
+
+```bash
+# Secure environment variables
+export VITE_API_BASE_URL="https://secure-api.hospital.com"
+export VITE_JWT_SECRET="$(openssl rand -base64 32)"
+
+# Use secrets management
+# AWS Secrets Manager
+aws secretsmanager create-secret \
+  --name "hospital-dashboard/secrets" \
+  --description "Application secrets" \
+  --secret-string '{"jwt_secret":"your-secret","api_key":"your-key"}'
+```
+
+## 📊 Monitoring & Analytics
 
 ### Performance Monitoring
 
-**Web Vitals Tracking**:
+#### Core Web Vitals
+
 ```typescript
-// src/utils/analytics.ts
+// src/utils/webVitals.ts
 import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
 
-const sendToAnalytics = (metric) => {
+function sendToAnalytics(metric: any) {
   // Send to your analytics service
   console.log(metric);
-};
+}
 
 getCLS(sendToAnalytics);
 getFID(sendToAnalytics);
@@ -502,121 +449,319 @@ getLCP(sendToAnalytics);
 getTTFB(sendToAnalytics);
 ```
 
-**Error Tracking with Sentry**:
+#### Error Tracking
+
 ```typescript
-// src/utils/sentry.ts
+// src/utils/errorReporting.ts
 import * as Sentry from '@sentry/react';
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
-  environment: import.meta.env.VITE_NODE_ENV,
-  tracesSampleRate: 1.0
+  environment: import.meta.env.NODE_ENV,
+  tracesSampleRate: 1.0,
 });
+
+export const reportError = (error: Error, context?: any) => {
+  Sentry.captureException(error, { extra: context });
+};
 ```
 
 ### Health Checks
 
-**Health Check Endpoint**:
+Create health check endpoints:
+
 ```typescript
-// Create a health check endpoint
+// src/utils/healthCheck.ts
 export const healthCheck = {
-  status: 'healthy',
-  timestamp: new Date().toISOString(),
-  version: import.meta.env.VITE_APP_VERSION,
-  environment: import.meta.env.VITE_NODE_ENV
-};
-```
-
-### Log Aggregation
-
-**Structured Logging**:
-```typescript
-// Enhanced logger for production
-export const logger = {
-  info: (message: string, context?: any) => {
-    if (import.meta.env.PROD) {
-      // Send to log aggregation service
-      sendToLogService('info', message, context);
-    } else {
-      console.log(message, context);
-    }
-  },
-  error: (message: string, error?: Error) => {
-    if (import.meta.env.PROD) {
-      sendToLogService('error', message, { error: error?.stack });
-    } else {
-      console.error(message, error);
-    }
+  checkAppHealth: () => {
+    return {
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      version: import.meta.env.VITE_APP_VERSION,
+      environment: import.meta.env.NODE_ENV
+    };
   }
 };
 ```
 
-## Troubleshooting
+## 🔄 CI/CD Pipeline
 
-### Common Issues
+### GitHub Actions
 
-**Build Failures**:
+Create `.github/workflows/deploy.yml`:
+
+```yaml
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run type-check
+      - run: npm run test
+      - run: npm run test:e2e
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - run: npm ci
+      - run: npm run build
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: dist/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist/
+      
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v1.2
+        with:
+          publish-dir: './dist'
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+```
+
+### GitLab CI/CD
+
+Create `.gitlab-ci.yml`:
+
+```yaml
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  NODE_VERSION: "18"
+
+test:
+  stage: test
+  image: node:${NODE_VERSION}-alpine
+  script:
+    - npm ci
+    - npm run lint
+    - npm run type-check
+    - npm run test
+  artifacts:
+    reports:
+      coverage: coverage/lcov.info
+
+build:
+  stage: build
+  image: node:${NODE_VERSION}-alpine
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 hour
+
+deploy:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - apk add --no-cache curl
+    - curl -X POST -F "file=@dist/index.html" $DEPLOY_URL
+  only:
+    - main
+  dependencies:
+    - build
+```
+
+## 🚀 Performance Optimization
+
+### Build Optimization
+
+```typescript
+// vite.config.ts - Optimized build
+export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Vendor chunks
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          charts: ['recharts', 'd3-scale', 'd3-shape'],
+          ui: ['@headlessui/react', '@heroicons/react'],
+          utils: ['date-fns', 'lodash-es']
+        }
+      }
+    },
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    }
+  }
+});
+```
+
+### Caching Strategy
+
+```typescript
+// Service Worker for caching
+const CACHE_NAME = 'hospital-dashboard-v1';
+const urlsToCache = [
+  '/',
+  '/static/js/bundle.js',
+  '/static/css/main.css',
+  '/manifest.json'
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(urlsToCache))
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request)
+      .then((response) => {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request);
+      })
+  );
+});
+```
+
+## 🔧 Troubleshooting
+
+### Common Deployment Issues
+
+#### Build Failures
+
 ```bash
-# Clear node_modules and reinstall
+# Clear cache and rebuild
 rm -rf node_modules package-lock.json
 npm install
-
-# Clear build cache
-rm -rf dist
 npm run build
+
+# Check for TypeScript errors
+npm run type-check
+
+# Verify environment variables
+npm run env:check
 ```
 
-**Memory Issues During Build**:
-```bash
-# Increase Node.js memory limit
-NODE_OPTIONS="--max-old-space-size=4096" npm run build
+#### Runtime Errors
+
+```typescript
+// Error boundary for production
+class ProductionErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Production Error:', error, errorInfo);
+    // Send to error reporting service
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <ErrorFallback />;
+    }
+    return this.props.children;
+  }
+}
 ```
 
-**Route Handling Issues**:
-- Ensure proper redirect configuration for SPA routing
-- Check server configuration for fallback to index.html
-- Verify base URL configuration in vite.config.ts
+#### Performance Issues
 
-**Performance Issues**:
 ```bash
 # Analyze bundle size
-npm run analyze
+npm run build:analyze
 
-# Check for unnecessary dependencies
-npx depcheck
+# Check for memory leaks
+npm run test:memory
 
-# Audit performance
-npm audit
+# Profile performance
+npm run profile
 ```
 
-### Debugging Tools
+### Rollback Strategy
 
-**Build Analysis**:
 ```bash
-# Bundle analyzer
-npm run analyze
-
-# Dependency analysis
-npx madge --circular --extensions ts,tsx src/
-
-# Performance audit
-npx lighthouse-ci autorun
+# Quick rollback script
+#!/bin/bash
+echo "Rolling back to previous version..."
+git checkout HEAD~1
+npm run build
+npm run deploy:quick
+echo "Rollback complete!"
 ```
 
-**Runtime Debugging**:
-- Browser DevTools Performance tab
-- React Developer Tools Profiler
-- Network tab for resource loading
-- Console for error tracking
+## 📋 Deployment Checklist
 
-### Support Resources
+### Pre-Deployment
 
-- **Documentation**: `/docs` directory
-- **Issues**: GitHub Issues for bug reports
-- **Performance**: Bundle analysis reports
-- **Security**: Regular dependency audits
-- **Monitoring**: Application performance metrics
+- [ ] All tests pass
+- [ ] Code review completed
+- [ ] Environment variables configured
+- [ ] Security headers implemented
+- [ ] Performance optimizations applied
+- [ ] Error tracking configured
+- [ ] Monitoring setup
 
----
+### Post-Deployment
 
-This deployment guide provides comprehensive instructions for deploying the Hospital Finance Dashboard across various platforms while maintaining security, performance, and reliability standards.
+- [ ] Health checks passing
+- [ ] Performance metrics within limits
+- [ ] Error rates normal
+- [ ] User feedback collected
+- [ ] Backup strategy in place
+- [ ] Documentation updated
+- [ ] Team notified of deployment
+
+### Emergency Procedures
+
+- [ ] Rollback plan ready
+- [ ] Incident response team identified
+- [ ] Communication channels established
+- [ ] Recovery procedures documented
+- [ ] Post-incident review scheduled

@@ -1,646 +1,775 @@
-# Component Documentation
+# Components Documentation
 
-This document provides comprehensive documentation for all React components in the Hospital Finance Dashboard, including their props, usage examples, and best practices.
+## Overview
 
-## Table of Contents
+This document provides comprehensive documentation for all React components in the Hospital Finance Dashboard. Each component is designed with reusability, accessibility, and performance in mind.
 
-- [Core Components](#core-components)
-- [Chart Components](#chart-components)
-- [Authentication Components](#authentication-components)
-- [UI Components](#ui-components)
-- [Layout Components](#layout-components)
-- [Optimized Components](#optimized-components)
+## 📋 Component Index
 
-## Core Components
+### Core Components
+- [App](#app) - Main application component
+- [Dashboard](#dashboard) - Primary dashboard layout
+- [Header](#header) - Navigation and user interface header
+- [MetricCard](#metriccard) - Key performance indicator display
+- [RevenueChart](#revenuechart) - Revenue visualization
+- [CashFlowChart](#cashflowchart) - Cash flow analysis
+- [ExpensePieChart](#expensepiechart) - Expense breakdown visualization
+- [DepartmentTable](#departmenttable) - Department performance table
+- [PatientMetricsCard](#patientmetricscard) - Patient-related metrics
+
+### Authentication Components
+- [LoginForm](#loginform) - User authentication interface
+- [AuthGuard](#authguard) - Route protection component
+- [LogoutButton](#logoutbutton) - User logout functionality
+
+### UI Components
+- [Button](#button) - Reusable button component
+- [Dropdown](#dropdown) - Select dropdown component
+- [ThemeToggle](#themetoggle) - Dark/light mode switcher
+- [LoadingSpinner](#loadingspinner) - Loading state indicator
+- [ErrorBoundary](#errorboundary) - Error handling wrapper
+
+### Utility Components
+- [ChartNoData](#chartnodata) - Empty state for charts
+- [DashboardLoading](#dashboardloading) - Dashboard loading state
+- [DashboardNoData](#dashboardnodata) - Empty dashboard state
+- [ResponsiveChartWrapper](#responsivechartwrapper) - Chart responsiveness wrapper
+
+## 🔧 Core Components
+
+### App
+
+**Location**: `src/App.tsx`
+
+**Purpose**: Main application component that orchestrates the entire application flow.
+
+**Features**:
+- Authentication state management
+- Theme provider integration
+- Error boundary wrapping
+- Route handling
+
+**Props**: None
+
+**Usage**:
+```tsx
+<App />
+```
+
+**Key Responsibilities**:
+- Initialize authentication context
+- Provide theme context to child components
+- Handle global error states
+- Manage application routing
+
+---
 
 ### Dashboard
 
-The main dashboard component that orchestrates the entire financial analytics interface.
-
 **Location**: `src/components/Dashboard.tsx`
 
-**Props**: None (uses authentication context)
+**Purpose**: Main dashboard layout displaying financial metrics and charts.
 
 **Features**:
-- Role-based hospital access control
-- Dynamic data loading with year/hospital filtering
-- Lazy-loaded chart components for performance
-- Responsive design with mobile-friendly filters
-- Comprehensive error handling and loading states
+- Responsive grid layout
+- Metric cards display
+- Chart integration
+- Department performance table
+- Real-time data updates
 
-**Usage Example**:
+**Props**:
+```typescript
+interface DashboardProps {
+  // No explicit props - uses context data
+}
+```
+
+**Usage**:
 ```tsx
-import Dashboard from './components/Dashboard';
-
-// Used after authentication
 <Dashboard />
 ```
 
-**Key Functionality**:
-- Hospital and year selection with access validation
-- Real-time data updates based on selections
-- Performance monitoring for data operations
-- Responsive layout adaptation
+**Key Components Used**:
+- MetricCard components
+- RevenueChart
+- CashFlowChart
+- ExpensePieChart
+- DepartmentTable
+- PatientMetricsCard
+
+---
+
+### Header
+
+**Location**: `src/components/Header.tsx`
+
+**Purpose**: Application header with navigation, user info, and theme toggle.
+
+**Features**:
+- User authentication display
+- Theme toggle functionality
+- Responsive navigation
+- Logout functionality
+
+**Props**:
+```typescript
+interface HeaderProps {
+  // No explicit props - uses context data
+}
+```
+
+**Usage**:
+```tsx
+<Header />
+```
+
+**Key Features**:
+- User role display
+- Hospital/branch information
+- Theme switching
+- Mobile-responsive design
 
 ---
 
 ### MetricCard
 
-Displays financial key performance indicators with trend analysis.
-
 **Location**: `src/components/MetricCard.tsx`
+
+**Purpose**: Displays key performance indicators with trend information.
+
+**Features**:
+- Value display with formatting
+- Trend indicators (up/down)
+- Percentage change display
+- Icon support
+- Loading states
 
 **Props**:
 ```typescript
 interface MetricCardProps {
   title: string;
   value: number;
-  change: number;
-  changeType: 'increase' | 'decrease';
-  format: 'currency' | 'percentage' | 'number';
+  change?: number;
+  changeType?: 'increase' | 'decrease';
   icon?: React.ReactNode;
-  className?: string;
+  loading?: boolean;
 }
 ```
 
-**Usage Example**:
+**Usage**:
 ```tsx
 <MetricCard
   title="Total Revenue"
-  value={2500000}
+  value={125000}
   change={12.5}
   changeType="increase"
-  format="currency"
-  icon={<DollarSign className="w-5 h-5" />}
+  icon={<RevenueIcon />}
 />
 ```
 
-**Features**:
-- Automatic number formatting (currency, percentage, number)
-- Trend indicators with color coding
-- Responsive typography and spacing
-- Icon support for visual enhancement
+**Variants**:
+- Default: Standard metric display
+- Loading: Shows skeleton loader
+- Error: Displays error state
 
 ---
 
-## Chart Components
-
 ### RevenueChart
 
-Interactive line chart displaying revenue, expenses, and net income trends over time.
-
 **Location**: `src/components/RevenueChart.tsx`
+
+**Purpose**: Visualizes revenue trends over time using line charts.
+
+**Features**:
+- Interactive line chart
+- Time period selection
+- Revenue trend visualization
+- Responsive design
+- Loading and error states
 
 **Props**:
 ```typescript
 interface RevenueChartProps {
   data: RevenueData[];
-  isLoading?: boolean;
-  onDataPointClick?: (data: RevenueData) => void;
+  loading?: boolean;
+  error?: string;
 }
 ```
 
-**Usage Example**:
+**Usage**:
 ```tsx
 <RevenueChart
-  data={hospitalData.revenueData}
-  isLoading={false}
-  onDataPointClick={(data) => console.log('Clicked:', data)}
+  data={revenueData}
+  loading={isLoading}
+  error={errorMessage}
 />
 ```
 
-**Features**:
-- Multi-line chart with revenue, expenses, and net income
-- Interactive tooltips with detailed information
-- Responsive design with mobile optimization
-- Theme-aware colors (light/dark mode)
-- Click handlers for data point interaction
-- Loading state with skeleton UI
-
----
-
-### ExpensePieChart
-
-Pie chart visualization for expense category breakdown.
-
-**Location**: `src/components/ExpensePieChart.tsx`
-
-**Props**:
-```typescript
-interface ExpensePieChartProps {
-  data: ExpenseData[];
-  isLoading?: boolean;
-}
-```
-
-**Usage Example**:
-```tsx
-<ExpensePieChart
-  data={hospitalData.expenses}
-  isLoading={false}
-/>
-```
-
-**Features**:
-- Interactive pie chart with hover effects
-- Percentage labels and values
-- Legend with color coding
-- Responsive sizing
-- Empty state handling
+**Chart Features**:
+- Multi-line support for different revenue streams
+- Hover tooltips with detailed information
+- Responsive scaling
+- Accessibility support
 
 ---
 
 ### CashFlowChart
 
-Bar chart showing operating, investing, and financing cash flows.
-
 **Location**: `src/components/CashFlowChart.tsx`
+
+**Purpose**: Displays cash flow analysis using area charts.
+
+**Features**:
+- Area chart visualization
+- Positive/negative cash flow indication
+- Time-based analysis
+- Interactive tooltips
 
 **Props**:
 ```typescript
 interface CashFlowChartProps {
   data: CashFlowData[];
-  isLoading?: boolean;
+  loading?: boolean;
+  error?: string;
 }
 ```
 
-**Usage Example**:
+**Usage**:
 ```tsx
 <CashFlowChart
-  data={hospitalData.cashFlow}
-  isLoading={false}
+  data={cashFlowData}
+  loading={isLoading}
+  error={errorMessage}
 />
 ```
 
+---
+
+### ExpensePieChart
+
+**Location**: `src/components/ExpensePieChart.tsx`
+
+**Purpose**: Shows expense breakdown using pie/donut charts.
+
 **Features**:
-- Multi-series bar chart
-- Positive/negative value visualization
-- Interactive tooltips
-- Responsive layout
-- Theme integration
+- Pie chart visualization
+- Category-based breakdown
+- Interactive legend
+- Percentage display
+
+**Props**:
+```typescript
+interface ExpensePieChartProps {
+  data: ExpenseData[];
+  loading?: boolean;
+  error?: string;
+}
+```
+
+**Usage**:
+```tsx
+<ExpensePieChart
+  data={expenseData}
+  loading={isLoading}
+  error={errorMessage}
+/>
+```
 
 ---
 
 ### DepartmentTable
 
-Sortable table displaying department-wise financial performance.
-
 **Location**: `src/components/DepartmentTable.tsx`
+
+**Purpose**: Displays department performance in a sortable table format.
+
+**Features**:
+- Sortable columns
+- Responsive table design
+- Department metrics display
+- Performance indicators
 
 **Props**:
 ```typescript
 interface DepartmentTableProps {
-  departments: DepartmentFinance[];
-  isLoading?: boolean;
+  data: DepartmentData[];
+  loading?: boolean;
+  error?: string;
 }
 ```
 
-**Usage Example**:
+**Usage**:
 ```tsx
 <DepartmentTable
-  departments={hospitalData.departments}
-  isLoading={false}
+  data={departmentData}
+  loading={isLoading}
+  error={errorMessage}
 />
 ```
 
+**Table Features**:
+- Sort by revenue, patients, efficiency
+- Responsive column hiding
+- Loading skeleton rows
+- Error state handling
+
+---
+
+### PatientMetricsCard
+
+**Location**: `src/components/PatientMetricsCard.tsx`
+
+**Purpose**: Displays patient-related metrics and statistics.
+
 **Features**:
-- Sortable columns with indicators
-- Formatted financial data
-- Responsive table design
+- Patient count display
+- Admission/discharge rates
+- Average stay duration
+- Bed occupancy rates
+
+**Props**:
+```typescript
+interface PatientMetricsCardProps {
+  data: PatientMetrics;
+  loading?: boolean;
+  error?: string;
+}
+```
+
+**Usage**:
+```tsx
+<PatientMetricsCard
+  data={patientData}
+  loading={isLoading}
+  error={errorMessage}
+/>
+```
+
+## 🔐 Authentication Components
+
+### LoginForm
+
+**Location**: `src/components/auth/LoginForm.tsx`
+
+**Purpose**: Handles user authentication with email and password.
+
+**Features**:
+- Form validation
+- Error handling
 - Loading states
-- Empty state handling
-
----
-
-## Authentication Components
-
-### AuthWrapper
-
-Route protection wrapper that handles authentication flow.
-
-**Location**: `src/components/auth/AuthWrapper.tsx`
+- Accessibility support
 
 **Props**:
 ```typescript
-interface AuthWrapperProps {
+interface LoginFormProps {
+  onSuccess?: () => void;
+  onError?: (error: string) => void;
+}
+```
+
+**Usage**:
+```tsx
+<LoginForm
+  onSuccess={() => navigate('/dashboard')}
+  onError={(error) => showNotification(error)}
+/>
+```
+
+---
+
+### AuthGuard
+
+**Location**: `src/components/auth/AuthGuard.tsx`
+
+**Purpose**: Protects routes that require authentication.
+
+**Features**:
+- Authentication checking
+- Role-based access control
+- Redirect handling
+- Loading states
+
+**Props**:
+```typescript
+interface AuthGuardProps {
   children: React.ReactNode;
+  requiredRole?: UserRole;
+  fallback?: React.ReactNode;
 }
 ```
 
-**Usage Example**:
+**Usage**:
 ```tsx
-<AuthWrapper>
-  <Dashboard />
-</AuthWrapper>
+<AuthGuard requiredRole="admin">
+  <AdminPanel />
+</AuthGuard>
 ```
-
-**Features**:
-- Automatic authentication state checking
-- Smooth transitions between auth states
-- Loading state management
-- Route protection
 
 ---
 
-### SignInPage
+### LogoutButton
 
-User authentication form with validation and security features.
+**Location**: `src/components/auth/LogoutButton.tsx`
 
-**Location**: `src/components/auth/SignInPage.tsx`
+**Purpose**: Provides logout functionality with confirmation.
+
+**Features**:
+- Confirmation dialog
+- Loading state
+- Error handling
+- Accessibility support
 
 **Props**:
 ```typescript
-interface SignInPageProps {
-  onSwitchToSignUp: () => void;
+interface LogoutButtonProps {
+  variant?: 'button' | 'link';
+  className?: string;
 }
 ```
 
-**Usage Example**:
+**Usage**:
 ```tsx
-<SignInPage
-  onSwitchToSignUp={() => setCurrentPage('signup')}
-/>
+<LogoutButton variant="button" className="text-red-600" />
 ```
 
-**Features**:
-- Form validation with real-time feedback
-- Demo account quick access buttons
-- Password visibility toggle
-- Error handling with user-friendly messages
-- Loading states during authentication
-- Responsive design
-
----
-
-### SignUpPage
-
-User registration form with comprehensive validation.
-
-**Location**: `src/components/auth/SignUpPage.tsx`
-
-**Props**:
-```typescript
-interface SignUpPageProps {
-  onSwitchToSignIn: () => void;
-}
-```
-
-**Usage Example**:
-```tsx
-<SignUpPage
-  onSwitchToSignIn={() => setCurrentPage('signin')}
-/>
-```
-
-**Features**:
-- Multi-step validation process
-- Role selection with descriptions
-- Password strength indicators
-- Confirmation field validation
-- Accessible form design
-
----
-
-## UI Components
+## 🎨 UI Components
 
 ### Button
 
-Flexible button component with multiple variants and accessibility features.
-
 **Location**: `src/components/Button.tsx`
+
+**Purpose**: Reusable button component with multiple variants.
+
+**Features**:
+- Multiple variants (primary, secondary, danger)
+- Size options (sm, md, lg)
+- Loading state
+- Icon support
+- Accessibility features
 
 **Props**:
 ```typescript
 interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
   disabled?: boolean;
   icon?: React.ReactNode;
-  children: React.ReactNode;
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
-  className?: string;
 }
 ```
 
-**Usage Examples**:
+**Usage**:
 ```tsx
-// Primary button
-<Button variant="primary" onClick={handleSave}>
+<Button
+  variant="primary"
+  size="md"
+  loading={isSubmitting}
+  icon={<SaveIcon />}
+  onClick={handleSave}
+>
   Save Changes
 </Button>
-
-// Button with icon and loading state
-<Button
-  variant="secondary"
-  icon={<Download />}
-  loading={isDownloading}
-  onClick={handleDownload}
->
-  Download Report
-</Button>
-
-// Danger button
-<Button variant="danger" onClick={handleDelete}>
-  Delete Item
-</Button>
 ```
-
-**Features**:
-- Multiple visual variants
-- Size variations
-- Loading states with spinner
-- Icon support
-- Full accessibility support
-- Hover and focus states
-
----
-
-### Input
-
-Enhanced input component with validation and styling.
-
-**Location**: `src/components/ui/Input.tsx`
-
-**Props**:
-```typescript
-interface InputProps {
-  label?: string;
-  error?: string;
-  placeholder?: string;
-  type?: 'text' | 'email' | 'password' | 'number';
-  value: string;
-  onChange: (value: string) => void;
-  disabled?: boolean;
-  required?: boolean;
-  className?: string;
-}
-```
-
-**Usage Example**:
-```tsx
-<Input
-  label="Email Address"
-  type="email"
-  value={email}
-  onChange={setEmail}
-  error={emailError}
-  required
-  placeholder="Enter your email"
-/>
-```
-
-**Features**:
-- Built-in validation styling
-- Error message display
-- Label and placeholder support
-- Accessible form integration
-- Consistent styling across themes
 
 ---
 
 ### Dropdown
 
-Accessible dropdown component with keyboard navigation.
-
 **Location**: `src/components/Dropdown.tsx`
+
+**Purpose**: Select dropdown component with search and filtering.
+
+**Features**:
+- Search functionality
+- Multi-select support
+- Custom option rendering
+- Keyboard navigation
+- Accessibility support
 
 **Props**:
 ```typescript
 interface DropdownProps {
-  label?: string;
-  options: Array<{ value: string; label: string }>;
-  value: string;
-  onChange: (value: string) => void;
-  disabled?: boolean;
+  options: DropdownOption[];
+  value?: string | string[];
+  onChange: (value: string | string[]) => void;
   placeholder?: string;
-  className?: string;
+  searchable?: boolean;
+  multiple?: boolean;
+  disabled?: boolean;
 }
 ```
 
-**Usage Example**:
+**Usage**:
 ```tsx
 <Dropdown
-  label="Select Hospital"
   options={hospitalOptions}
   value={selectedHospital}
   onChange={setSelectedHospital}
-  placeholder="Choose a hospital"
+  placeholder="Select Hospital"
+  searchable
 />
 ```
-
-**Features**:
-- Keyboard navigation support
-- Search functionality
-- Custom styling options
-- Accessible ARIA attributes
-- Mobile-friendly design
-
----
-
-### LoadingSpinner
-
-Customizable loading spinner with text and animations.
-
-**Location**: `src/components/LoadingSpinner.tsx`
-
-**Props**:
-```typescript
-interface LoadingSpinnerProps {
-  size?: 'sm' | 'md' | 'lg';
-  text?: string;
-  className?: string;
-}
-```
-
-**Usage Example**:
-```tsx
-<LoadingSpinner
-  size="lg"
-  text="Loading dashboard data..."
-/>
-```
-
-**Features**:
-- Multiple size options
-- Optional loading text
-- Smooth animations
-- Theme-aware colors
-- Accessible loading states
-
----
-
-## Layout Components
-
-### Header
-
-Application header with navigation, user info, and global controls.
-
-**Location**: `src/components/Header.tsx`
-
-**Props**: None (uses authentication context)
-
-**Usage Example**:
-```tsx
-<Header />
-```
-
-**Features**:
-- User profile display
-- Theme toggle integration
-- Responsive navigation
-- Sign-out functionality
-- Role-based content display
-
----
-
-### ErrorBoundary
-
-React error boundary with graceful fallback UI and recovery options.
-
-**Location**: `src/components/ErrorBoundary.tsx`
-
-**Props**:
-```typescript
-interface ErrorBoundaryProps {
-  children: React.ReactNode;
-  fallback?: React.ComponentType<ErrorFallbackProps>;
-}
-```
-
-**Usage Example**:
-```tsx
-<ErrorBoundary>
-  <Dashboard />
-</ErrorBoundary>
-```
-
-**Features**:
-- Comprehensive error catching
-- User-friendly error messages
-- Recovery options
-- Development error details
-- Logging integration
 
 ---
 
 ### ThemeToggle
 
-Dark/light mode toggle with system preference detection.
-
 **Location**: `src/components/ThemeToggle.tsx`
 
-**Props**: None (uses theme context)
-
-**Usage Example**:
-```tsx
-<ThemeToggle />
-```
+**Purpose**: Toggles between light and dark themes.
 
 **Features**:
-- System theme detection
-- Smooth theme transitions
-- Persistent theme selection
-- Accessible toggle button
-- Visual theme indicators
+- Theme switching
+- Icon animation
+- Accessibility support
+- Persistent preference
+
+**Props**:
+```typescript
+interface ThemeToggleProps {
+  className?: string;
+  size?: 'sm' | 'md' | 'lg';
+}
+```
+
+**Usage**:
+```tsx
+<ThemeToggle className="ml-4" size="md" />
+```
 
 ---
 
-## Optimized Components
+### LoadingSpinner
 
-### OptimizedRevenueChart
+**Location**: `src/components/LoadingSpinner.tsx`
 
-Performance-optimized version of the revenue chart with advanced memoization.
+**Purpose**: Displays loading state with animated spinner.
 
-**Location**: `src/components/optimized/OptimizedRevenueChart.tsx`
+**Features**:
+- Animated spinner
+- Size variants
+- Color customization
+- Accessibility support
 
-**Props**: Same as `RevenueChart`
+**Props**:
+```typescript
+interface LoadingSpinnerProps {
+  size?: 'sm' | 'md' | 'lg';
+  color?: string;
+  className?: string;
+}
+```
 
-**Usage Example**:
+**Usage**:
 ```tsx
-<OptimizedRevenueChart
-  data={largeDataset}
-  isLoading={false}
-  onDataPointClick={handleDataClick}
+<LoadingSpinner size="md" color="text-blue-600" />
+```
+
+---
+
+### ErrorBoundary
+
+**Location**: `src/components/ErrorBoundary.tsx`
+
+**Purpose**: Catches and handles React component errors gracefully.
+
+**Features**:
+- Error catching
+- Fallback UI
+- Error reporting
+- Recovery options
+
+**Props**:
+```typescript
+interface ErrorBoundaryProps {
+  children: React.ReactNode;
+  fallback?: React.ComponentType<ErrorBoundaryFallbackProps>;
+  onError?: (error: Error, errorInfo: ErrorInfo) => void;
+}
+```
+
+**Usage**:
+```tsx
+<ErrorBoundary fallback={ErrorFallback}>
+  <Dashboard />
+</ErrorBoundary>
+```
+
+## 🔧 Utility Components
+
+### ChartNoData
+
+**Location**: `src/components/ChartNoData.tsx`
+
+**Purpose**: Displays empty state for charts when no data is available.
+
+**Features**:
+- Empty state illustration
+- Customizable message
+- Action button support
+
+**Props**:
+```typescript
+interface ChartNoDataProps {
+  message?: string;
+  actionText?: string;
+  onAction?: () => void;
+}
+```
+
+**Usage**:
+```tsx
+<ChartNoData
+  message="No revenue data available"
+  actionText="Refresh Data"
+  onAction={handleRefresh}
 />
 ```
 
+---
+
+### DashboardLoading
+
+**Location**: `src/components/DashboardLoading.tsx`
+
+**Purpose**: Shows loading state for the entire dashboard.
+
 **Features**:
-- Advanced React.memo optimization
-- Memoized data processing
-- Performance monitoring
-- Efficient re-render prevention
-- Lazy loading support
+- Skeleton loading
+- Animated placeholders
+- Responsive design
 
----
-
-## Best Practices
-
-### Component Development Guidelines
-
-1. **TypeScript First**: Always define proper interfaces for props
-2. **Accessibility**: Include ARIA attributes and keyboard support
-3. **Performance**: Use React.memo, useMemo, and useCallback appropriately
-4. **Error Handling**: Implement proper error boundaries and fallbacks
-5. **Testing**: Include comprehensive tests for all components
-6. **Documentation**: Add JSDoc comments for all public props and methods
-
-### Code Examples
-
-**Component Template**:
-```tsx
-/**
- * Component description
- * 
- * @component
- * @example
- * ```tsx
- * <MyComponent prop="value" />
- * ```
- */
-interface MyComponentProps {
-  /** Description of prop */
-  prop: string;
+**Props**:
+```typescript
+interface DashboardLoadingProps {
+  // No props needed
 }
-
-const MyComponent: React.FC<MyComponentProps> = ({ prop }) => {
-  // Component logic
-  return <div>{prop}</div>;
-};
-
-export default React.memo(MyComponent);
 ```
 
-**Custom Hook Pattern**:
+**Usage**:
 ```tsx
-/**
- * Custom hook for specific functionality
- */
-const useCustomLogic = () => {
-  const [state, setState] = useState();
-  
-  // Hook logic
-  
-  return { state, setState };
-};
+<DashboardLoading />
 ```
-
-### Performance Considerations
-
-1. **Lazy Loading**: Use React.lazy for code splitting
-2. **Memoization**: Memoize expensive calculations
-3. **Event Handlers**: Use useCallback for stable references
-4. **Props Drilling**: Consider context for deeply nested props
-5. **Bundle Size**: Monitor and optimize component dependencies
-
-### Testing Guidelines
-
-1. **Unit Tests**: Test component rendering and props
-2. **Integration Tests**: Test component interactions
-3. **Accessibility Tests**: Verify ARIA attributes and keyboard navigation
-4. **Performance Tests**: Monitor render times and memory usage
 
 ---
 
-This documentation provides a comprehensive guide to all components in the Hospital Finance Dashboard. For implementation details, refer to the individual component files and their associated test files.
+### DashboardNoData
+
+**Location**: `src/components/DashboardNoData.tsx`
+
+**Purpose**: Displays empty state when dashboard has no data.
+
+**Features**:
+- Empty state illustration
+- Action suggestions
+- Refresh functionality
+
+**Props**:
+```typescript
+interface DashboardNoDataProps {
+  onRefresh?: () => void;
+}
+```
+
+**Usage**:
+```tsx
+<DashboardNoData onRefresh={handleRefresh} />
+```
+
+---
+
+### ResponsiveChartWrapper
+
+**Location**: `src/components/ResponsiveChartWrapper.tsx`
+
+**Purpose**: Wraps charts to ensure proper responsive behavior.
+
+**Features**:
+- Responsive container
+- Aspect ratio maintenance
+- Resize handling
+
+**Props**:
+```typescript
+interface ResponsiveChartWrapperProps {
+  children: React.ReactNode;
+  aspectRatio?: number;
+  className?: string;
+}
+```
+
+**Usage**:
+```tsx
+<ResponsiveChartWrapper aspectRatio={16/9}>
+  <RevenueChart data={data} />
+</ResponsiveChartWrapper>
+```
+
+## 🎯 Component Best Practices
+
+### 1. Props Interface Design
+- Always define explicit TypeScript interfaces
+- Use optional props with default values
+- Provide JSDoc comments for complex props
+
+### 2. Accessibility
+- Include ARIA labels and descriptions
+- Support keyboard navigation
+- Ensure color contrast compliance
+- Provide screen reader support
+
+### 3. Performance
+- Use React.memo for expensive components
+- Implement proper key props for lists
+- Optimize re-renders with useMemo/useCallback
+
+### 4. Error Handling
+- Implement error boundaries where appropriate
+- Provide meaningful error messages
+- Include fallback UI states
+
+### 5. Testing
+- Write unit tests for all components
+- Test accessibility features
+- Include integration tests for complex interactions
+
+## 🔄 Component Lifecycle
+
+### Mounting
+1. Component initialization
+2. Context consumption
+3. Effect hooks execution
+4. Initial render
+
+### Updating
+1. Props/state changes
+2. Re-render determination
+3. Effect cleanup/execution
+4. DOM updates
+
+### Unmounting
+1. Cleanup functions execution
+2. Event listener removal
+3. Memory leak prevention
+
+## 📱 Responsive Behavior
+
+### Mobile (< 768px)
+- Stack components vertically
+- Use touch-friendly sizes
+- Optimize for thumb navigation
+- Reduce information density
+
+### Tablet (768px - 1024px)
+- Balanced layout
+- Touch and mouse support
+- Moderate information density
+
+### Desktop (> 1024px)
+- Full layout utilization
+- Hover states
+- Maximum information density
+- Keyboard shortcuts

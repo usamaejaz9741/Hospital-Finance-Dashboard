@@ -6,7 +6,15 @@ import {
   ExpenseBreakdown, 
   CashFlowData,
   Hospital,
-  HospitalData
+  HospitalData,
+  RevenueBreakdown,
+  EBIDAMetrics,
+  ContextualEvent,
+  DonationData,
+  EnhancedExpenseBreakdown,
+  FinancialAssets,
+  BondRatings,
+  StateProgramDependency
 } from '../types/finance';
 
 export const financialMetrics: FinancialMetric[] = [
@@ -161,6 +169,221 @@ export const cashFlowData: CashFlowData[] = [
     investingCashFlow: -600000,
     financingCashFlow: -250000,
     netCashFlow: 1500000
+  }
+];
+
+// Enhanced data structures for GP Spec implementation
+export const revenueBreakdowns: RevenueBreakdown[] = [
+  {
+    government: 4200000,    // Medicare/Medicaid - 2022
+    commercial: 2800000,    // Private insurance
+    selfPay: 750000,        // Out-of-pocket
+    other: 450000           // Grants, donations
+  },
+  {
+    government: 4350000,    // Medicare/Medicaid - 2023
+    commercial: 3000000,    // Private insurance
+    selfPay: 775000,        // Out-of-pocket
+    other: 475000           // Grants, donations
+  },
+  {
+    government: 4500000,    // Medicare/Medicaid - 2024
+    commercial: 3200000,    // Private insurance
+    selfPay: 800000,        // Out-of-pocket
+    other: 500000           // Grants, donations
+  }
+];
+
+export const ebidaMetrics: EBIDAMetrics[] = [
+  {
+    operatingIncome: 1800000,
+    depreciation: 450000,
+    interest: 320000,
+    ebida: 2570000
+  }
+];
+
+export const contextualEvents: ContextualEvent[] = [
+  {
+    id: 'event-1',
+    title: 'Major System Upgrade',
+    description: 'Implemented new electronic health records system across all departments, improving efficiency and patient care coordination.',
+    date: '2024-03-15',
+    type: 'other',
+    impact: 'medium',
+    affectedMetrics: ['Operating Expenses', 'Efficiency Metrics']
+  },
+  {
+    id: 'event-2',
+    title: 'New CEO Appointment',
+    description: 'Dr. Sarah Johnson appointed as new Chief Executive Officer, bringing 15 years of healthcare leadership experience.',
+    date: '2024-01-10',
+    type: 'leadership_change',
+    impact: 'high',
+    affectedMetrics: ['Strategic Initiatives', 'Operational Efficiency']
+  },
+  {
+    id: 'event-3',
+    title: 'Medicare Expansion',
+    description: 'State expanded Medicare coverage, leading to increased patient volume and government payer mix.',
+    date: '2023-11-20',
+    type: 'regulatory',
+    impact: 'high',
+    affectedMetrics: ['Government Revenue', 'Patient Volume']
+  },
+  {
+    id: 'event-4',
+    title: 'Partnership with Regional Health System',
+    description: 'Formed strategic partnership with Regional Health System for shared services and cost optimization.',
+    date: '2023-09-05',
+    type: 'merger',
+    impact: 'medium',
+    affectedMetrics: ['Operating Expenses', 'Service Capacity']
+  }
+];
+
+export const donationData: DonationData[] = [
+  {
+    totalDonations: 850000,
+    newDonations: 650000,
+    releasedFromRestrictions: 200000,
+    change: 15.2
+  }
+];
+
+// Enhanced expense breakdown with inflation overlay
+export const enhancedExpenseBreakdowns: EnhancedExpenseBreakdown[] = [
+  {
+    category: 'Personnel & Benefits',
+    currentAmount: 5200000,
+    previousAmount: 4800000,
+    inflationAdjustedAmount: 5050000,
+    percentage: 53.1,
+    changePercentage: 8.3,
+    inflationRate: 3.2,
+    color: '#f59e0b',
+    subcategories: [
+      { name: 'Physician Salaries', amount: 2800000, percentage: 53.8, color: '#fbbf24' },
+      { name: 'Nursing Staff', amount: 1800000, percentage: 34.6, color: '#f59e0b' },
+      { name: 'Benefits & Insurance', amount: 600000, percentage: 11.5, color: '#d97706' }
+    ]
+  },
+  {
+    category: 'Medical Supplies & Pharmaceuticals',
+    currentAmount: 1800000,
+    previousAmount: 1650000,
+    inflationAdjustedAmount: 1750000,
+    percentage: 18.4,
+    changePercentage: 9.1,
+    inflationRate: 4.1,
+    color: '#3b82f6',
+    subcategories: [
+      { name: 'Pharmaceuticals', amount: 900000, percentage: 50.0, color: '#60a5fa' },
+      { name: 'Medical Supplies', amount: 540000, percentage: 30.0, color: '#3b82f6' },
+      { name: 'Equipment Maintenance', amount: 360000, percentage: 20.0, color: '#2563eb' }
+    ]
+  },
+  {
+    category: 'Facilities & Equipment',
+    currentAmount: 1200000,
+    previousAmount: 1100000,
+    inflationAdjustedAmount: 1150000,
+    percentage: 12.2,
+    changePercentage: 9.1,
+    inflationRate: 2.8,
+    color: '#22c55e',
+    subcategories: [
+      { name: 'Equipment Depreciation', amount: 720000, percentage: 60.0, color: '#4ade80' },
+      { name: 'Facility Maintenance', amount: 360000, percentage: 30.0, color: '#22c55e' },
+      { name: 'Utilities', amount: 120000, percentage: 10.0, color: '#16a34a' }
+    ]
+  },
+  {
+    category: 'Administrative & Support',
+    currentAmount: 600000,
+    previousAmount: 580000,
+    inflationAdjustedAmount: 590000,
+    percentage: 6.1,
+    changePercentage: 3.4,
+    inflationRate: 2.5,
+    color: '#06b6d4',
+    subcategories: [
+      { name: 'Administrative Staff', amount: 360000, percentage: 60.0, color: '#22d3ee' },
+      { name: 'Professional Services', amount: 180000, percentage: 30.0, color: '#06b6d4' },
+      { name: 'Legal & Compliance', amount: 60000, percentage: 10.0, color: '#0891b2' }
+    ]
+  },
+  {
+    category: 'Technology & IT',
+    currentAmount: 500000,
+    previousAmount: 450000,
+    inflationAdjustedAmount: 480000,
+    percentage: 5.1,
+    changePercentage: 11.1,
+    inflationRate: 3.5,
+    color: '#ef4444',
+    subcategories: [
+      { name: 'IT Infrastructure', amount: 300000, percentage: 60.0, color: '#f87171' },
+      { name: 'Software Licenses', amount: 150000, percentage: 30.0, color: '#ef4444' },
+      { name: 'Cybersecurity', amount: 50000, percentage: 10.0, color: '#dc2626' }
+    ]
+  },
+  {
+    category: 'Other Operating Expenses',
+    currentAmount: 500000,
+    previousAmount: 470000,
+    inflationAdjustedAmount: 485000,
+    percentage: 5.1,
+    changePercentage: 6.4,
+    inflationRate: 2.9,
+    color: '#14b8a6',
+    subcategories: [
+      { name: 'Insurance', amount: 200000, percentage: 40.0, color: '#5eead4' },
+      { name: 'Marketing & Outreach', amount: 150000, percentage: 30.0, color: '#14b8a6' },
+      { name: 'Research & Development', amount: 100000, percentage: 20.0, color: '#0d9488' },
+      { name: 'Miscellaneous', amount: 50000, percentage: 10.0, color: '#0f766e' }
+    ]
+  }
+];
+
+// Financial assets breakdown
+export const financialAssets: FinancialAssets[] = [
+  {
+    cashAndEquivalents: 2500000,
+    shortTermInvestments: 1800000,
+    longTermInvestments: 4200000,
+    accountsReceivable: 3200000,
+    inventory: 850000,
+    propertyPlantEquipment: 28500000,
+    otherAssets: 1200000,
+    totalAssets: 41800000,
+    daysCashOnHand: 87
+  }
+];
+
+// Bond ratings data
+export const bondRatings: BondRatings[] = [
+  {
+    moodysRating: 'A2',
+    spRating: 'A',
+    fitchRating: 'A+',
+    outlook: 'stable',
+    lastUpdated: '2024-01-15',
+    debtOutstanding: 18500000,
+    interestCoverageRatio: 4.2
+  }
+];
+
+// State program dependency
+export const stateProgramDependencies: StateProgramDependency[] = [
+  {
+    medicaidPercentage: 28.5,
+    medicarePercentage: 42.3,
+    stateGrants: 850000,
+    dshPayments: 650000,
+    uplPayments: 320000,
+    totalDependency: 71.2,
+    riskLevel: 'medium'
   }
 ];
 
@@ -423,7 +646,84 @@ hospitals.forEach(hospital => {
           financingCashFlow: generateVariation(-250000 * baseMultiplier),
           netCashFlow: generateVariation(1500000 * baseMultiplier)
         }
-      ]
+      ],
+      
+      // Enhanced GP Spec features
+      revenueBreakdown: {
+        government: generateVariation(4500000 * baseMultiplier),    // Medicare/Medicaid
+        commercial: generateVariation(3200000 * baseMultiplier),    // Private insurance
+        selfPay: generateVariation(800000 * baseMultiplier),        // Out-of-pocket
+        other: generateVariation(500000 * baseMultiplier)           // Grants, donations
+      },
+      
+      ebidaMetrics: {
+        operatingIncome: generateVariation(1800000 * baseMultiplier),
+        depreciation: generateVariation(450000 * baseMultiplier),
+        interest: generateVariation(320000 * baseMultiplier),
+        ebida: generateVariation(2570000 * baseMultiplier)
+      },
+      
+      contextualEvents: contextualEvents.filter(event => {
+        const eventYear = new Date(event.date).getFullYear();
+        return eventYear <= year;
+      }),
+      
+      donationData: {
+        totalDonations: generateVariation(850000 * baseMultiplier),
+        newDonations: generateVariation(650000 * baseMultiplier),
+        releasedFromRestrictions: generateVariation(200000 * baseMultiplier),
+        change: generateVariation(15.2)
+      },
+
+      // Enhanced expense breakdown with inflation overlay
+      enhancedExpenseBreakdown: enhancedExpenseBreakdowns.map(expense => ({
+        ...expense,
+        currentAmount: generateVariation(expense.currentAmount * baseMultiplier),
+        previousAmount: generateVariation(expense.previousAmount * baseMultiplier),
+        inflationAdjustedAmount: generateVariation(expense.inflationAdjustedAmount * baseMultiplier),
+        changePercentage: generateVariation(expense.changePercentage, 30),
+        inflationRate: generateVariation(expense.inflationRate, 20),
+        subcategories: expense.subcategories?.map(sub => ({
+          ...sub,
+          amount: generateVariation(sub.amount * baseMultiplier),
+          percentage: generateVariation(sub.percentage, 15)
+        })) ?? []
+      })),
+
+      // Financial assets breakdown
+      financialAssets: {
+        cashAndEquivalents: generateVariation(2500000 * baseMultiplier),
+        shortTermInvestments: generateVariation(1800000 * baseMultiplier),
+        longTermInvestments: generateVariation(4200000 * baseMultiplier),
+        accountsReceivable: generateVariation(3200000 * baseMultiplier),
+        inventory: generateVariation(850000 * baseMultiplier),
+        propertyPlantEquipment: generateVariation(28500000 * baseMultiplier),
+        otherAssets: generateVariation(1200000 * baseMultiplier),
+        totalAssets: generateVariation(41800000 * baseMultiplier),
+        daysCashOnHand: generateVariation(87, 20)
+      },
+
+      // Bond ratings and credit information
+      bondRatings: {
+        moodysRating: 'A2',
+        spRating: 'A',
+        fitchRating: 'A+',
+        outlook: 'stable' as const,
+        lastUpdated: '2024-01-15',
+        debtOutstanding: generateVariation(18500000 * baseMultiplier),
+        interestCoverageRatio: generateVariation(4.2 * 10, 25) / 10
+      },
+
+      // State program dependency analysis
+      stateProgramDependency: {
+        medicaidPercentage: generateVariation(28.5, 15),
+        medicarePercentage: generateVariation(42.3, 15),
+        stateGrants: generateVariation(850000 * baseMultiplier),
+        dshPayments: generateVariation(650000 * baseMultiplier),
+        uplPayments: generateVariation(320000 * baseMultiplier),
+        totalDependency: generateVariation(71.2, 10),
+        riskLevel: 'medium' as const
+      }
     };
 
     hospitalDataByYear.push(hospitalData);

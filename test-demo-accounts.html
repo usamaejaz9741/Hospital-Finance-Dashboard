@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Accounts Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .account-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .credentials {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .email {
+            font-weight: bold;
+            color: #0066cc;
+        }
+        .password {
+            font-family: monospace;
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .clear-storage {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        .clear-storage:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏥 Hospital Finance Dashboard - Demo Accounts</h1>
+    
+    <div class="warning">
+        <strong>⚠️ Important:</strong> If you're having trouble logging in, try clearing your browser's local storage first. Failed login attempts may have locked your account temporarily.
+    </div>
+
+    <button class="clear-storage" onclick="clearLocalStorage()">🗑️ Clear Local Storage & Reset Login Attempts</button>
+
+    <div class="account-card">
+        <h2>👑 Admin Account</h2>
+        <p>Full system access with administrative privileges</p>
+        <div class="credentials">
+            <div><strong>Email:</strong> <span class="email">admin@hospitalfinance.com</span></div>
+            <div><strong>Password:</strong> <span class="password">UsamaHF2024!</span></div>
+        </div>
+    </div>
+
+    <div class="account-card">
+        <h2>🏢 Hospital Owner Account</h2>
+        <p>Access to multiple hospitals owned by the user</p>
+        <div class="credentials">
+            <div><strong>Email:</strong> <span class="email">owner@metrogeneral.com</span></div>
+            <div><strong>Password:</strong> <span class="password">OwnerMG2024!</span></div>
+        </div>
+    </div>
+
+    <div class="account-card">
+        <h2>🏥 Branch Manager Account</h2>
+        <p>Access to specific hospital branch management</p>
+        <div class="credentials">
+            <div><strong>Email:</strong> <span class="email">manager@metrogeneral.com</span></div>
+            <div><strong>Password:</strong> <span class="password">ManagerMG2024!</span></div>
+        </div>
+    </div>
+
+    <div class="account-card">
+        <h2>🔄 Alternative Demo Password</h2>
+        <p>If the above passwords don't work, try this alternative:</p>
+        <div class="credentials">
+            <div><strong>Alternative Password:</strong> <span class="password">Demo123!@#</span></div>
+            <div><small>This password works for all demo accounts as a fallback</small></div>
+        </div>
+    </div>
+
+    <div class="account-card">
+        <h2>🔧 Troubleshooting</h2>
+        <ul>
+            <li><strong>Account Locked:</strong> If you see "Account temporarily locked", wait 15 minutes or clear local storage</li>
+            <li><strong>Wrong Password:</strong> Make sure to copy the password exactly, including special characters</li>
+            <li><strong>Rate Limiting:</strong> Too many failed attempts will trigger rate limiting</li>
+            <li><strong>Browser Issues:</strong> Try refreshing the page or clearing browser cache</li>
+        </ul>
+    </div>
+
+    <script>
+        function clearLocalStorage() {
+            // Clear all login attempt tracking
+            const keys = Object.keys(localStorage);
+            keys.forEach(key => {
+                if (key.startsWith('login_attempts_') || key.startsWith('lockout_')) {
+                    localStorage.removeItem(key);
+                }
+            });
+            
+            // Also clear any stored user data
+            localStorage.removeItem('hospitalFinanceUser');
+            
+            alert('✅ Local storage cleared! You can now try logging in again.');
+        }
+
+        // Show current localStorage status
+        function showStorageStatus() {
+            const loginAttempts = Object.keys(localStorage).filter(key => key.startsWith('login_attempts_'));
+            const lockouts = Object.keys(localStorage).filter(key => key.startsWith('lockout_'));
+            
+            if (loginAttempts.length > 0 || lockouts.length > 0) {
+                console.log('Current login attempts:', loginAttempts);
+                console.log('Current lockouts:', lockouts);
+            }
+        }
+
+        // Run on page load
+        showStorageStatus();
+    </script>
+</body>
+</html>

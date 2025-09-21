@@ -1,529 +1,257 @@
-# Hospital Finance Dashboard - Architecture Documentation
+# Architecture Documentation
 
 ## Overview
 
-The Hospital Finance Dashboard is a modern, scalable React application built with TypeScript that provides comprehensive financial analytics for healthcare institutions. This document outlines the system architecture, design patterns, and technical decisions that drive the application.
+The Hospital Finance Dashboard is built using modern React patterns with TypeScript, following a component-based architecture with clear separation of concerns. The application is designed for scalability, maintainability, and performance.
 
-## Table of Contents
+## 🏗️ System Architecture
 
-- [System Architecture](#system-architecture)
-- [Component Architecture](#component-architecture)
-- [Data Flow](#data-flow)
-- [State Management](#state-management)
-- [Authentication & Authorization](#authentication--authorization)
-- [Performance Strategy](#performance-strategy)
-- [Design Patterns](#design-patterns)
-- [Security Architecture](#security-architecture)
-- [Testing Strategy](#testing-strategy)
-- [Build & Deployment](#build--deployment)
-
-## System Architecture
-
-### High-Level Overview
+### High-Level Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Browser (Client)                         │
 ├─────────────────────────────────────────────────────────────┤
-│  React Application (SPA)                                    │
-│  ├── Authentication Layer                                   │
-│  ├── Route Protection                                       │
-│  ├── Component Tree                                         │
-│  └── State Management (Context API)                        │
+│  React App (Vite + TypeScript)                              │
+│  ├── Components Layer                                       │
+│  ├── Hooks Layer                                           │
+│  ├── Context Layer                                         │
+│  ├── Services Layer                                        │
+│  └── Utils Layer                                           │
 ├─────────────────────────────────────────────────────────────┤
-│  Data Layer                                                 │
-│  ├── Mock Data Services                                     │
-│  ├── Local Storage (Session Persistence)                   │
-│  └── Chart Data Processing                                  │
-├─────────────────────────────────────────────────────────────┤
-│  Build Tools & Optimization                                │
+│  Build Tools & Dev Environment                              │
 │  ├── Vite (Build Tool)                                     │
-│  ├── TypeScript (Type Safety)                              │
-│  ├── Tailwind CSS (Styling)                                │
-│  └── Bundle Optimization                                    │
+│  ├── ESLint (Code Quality)                                 │
+│  ├── Prettier (Code Formatting)                            │
+│  └── Jest (Testing)                                        │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Technology Stack
-
-**Frontend Framework**
-- **React 18**: Component-based UI with concurrent features
-- **TypeScript**: Static type checking and improved developer experience
-- **Vite**: Fast build tool with HMR and optimized production builds
-
-**Styling & UI**
-- **Tailwind CSS**: Utility-first CSS framework with dark mode support
-- **Lucide React**: Modern icon library with consistent design
-- **Recharts**: Responsive chart library for data visualization
-
-**State Management**
-- **React Context API**: Global state management for auth and theme
-- **React Hooks**: Local state management with useState, useEffect, etc.
-- **Custom Hooks**: Reusable stateful logic encapsulation
-
-**Development Tools**
-- **ESLint**: Code linting with TypeScript rules
-- **Jest**: Unit and integration testing
-- **React Testing Library**: Component testing utilities
-
-## Component Architecture
-
-### Component Hierarchy
-
-```
-App
-├── ErrorBoundary
-│   ├── ThemeProvider
-│   │   └── AuthProvider
-│   │       ├── AuthWrapper
-│   │       │   ├── SignInPage
-│   │       │   └── SignUpPage
-│   │       └── Dashboard (Protected)
-│   │           ├── Header
-│   │           │   ├── ThemeToggle
-│   │           │   └── User Menu
-│   │           ├── Filters
-│   │           │   ├── Hospital Dropdown
-│   │           │   └── Year Dropdown
-│   │           ├── Metrics Grid
-│   │           │   └── MetricCard[]
-│   │           ├── Charts Section
-│   │           │   ├── RevenueChart
-│   │           │   ├── ExpensePieChart
-│   │           │   └── CashFlowChart
-│   │           ├── Patient Metrics
-│   │           │   └── PatientMetricsCard
-│   │           └── Department Table
-│   │               └── DepartmentTable
-└── Loading States & Error Fallbacks
-```
-
-### Component Categories
-
-**1. Layout Components**
-- `Dashboard`: Main application layout and data orchestration
-- `Header`: Navigation, user info, and global controls
-- `ErrorBoundary`: Error handling and recovery
-
-**2. Data Visualization**
-- `MetricCard`: KPI display with trend indicators
-- `RevenueChart`: Time-series financial data
-- `ExpensePieChart`: Categorical expense breakdown
-- `CashFlowChart`: Cash flow analysis
-- `DepartmentTable`: Tabular department performance
-
-**3. Authentication**
-- `AuthWrapper`: Route protection and authentication flow
-- `SignInPage`: User authentication form
-- `SignUpPage`: User registration with validation
-
-**4. UI Components**
-- `Button`: Reusable button with variants
-- `Input`: Enhanced form input with validation
-- `Dropdown`: Accessible dropdown with keyboard support
-- `LoadingSpinner`: Loading state indicator
-
-**5. Optimized Components**
-- `OptimizedRevenueChart`: Performance-optimized chart with memoization
-- Lazy-loaded components for code splitting
-
-## Data Flow
-
-### Authentication Flow
-
-```
-User Login Attempt
-       ↓
-Input Validation
-       ↓
-Authentication Service
-       ↓
-Role & Permissions Check
-       ↓
-Session Storage (localStorage)
-       ↓
-Context State Update
-       ↓
-UI Re-render with User Data
-       ↓
-Route Protection Evaluation
-```
-
-### Data Loading Flow
-
-```
-Component Mount
-       ↓
-Hospital & Year Selection
-       ↓
-Access Control Check
-       ↓
-Data Service Call
-       ↓
-Loading State Management
-       ↓
-Data Processing & Formatting
-       ↓
-Chart/Table Rendering
-       ↓
-Performance Monitoring
-```
-
-### State Update Flow
-
-```
-User Interaction
-       ↓
-Event Handler
-       ↓
-State Validation
-       ↓
-Context/Local State Update
-       ↓
-Dependent Components Re-render
-       ↓
-Side Effects (useEffect)
-       ↓
-UI Synchronization
-```
-
-## State Management
-
-### Context Providers
-
-**AuthContext**
-```typescript
-interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (userData: SignUpData) => Promise<void>;
-  signOut: () => void;
-  canAccessHospital: (hospitalId: string) => boolean;
-  getAccessibleHospitals: () => string[];
-}
-```
-
-**ThemeContext**
-```typescript
-interface ThemeContextType {
-  theme: Theme;
-  resolvedTheme: 'light' | 'dark';
-  setTheme: (theme: Theme) => void;
-}
-```
-
-### Local State Patterns
-
-**Dashboard State**
-- Hospital and year selections
-- Loading states for async operations
-- Filter visibility for mobile responsiveness
-- Current data cache
-
-**Form State**
-- Input values and validation states
-- Submission states and error handling
-- Field-level validation feedback
-
-## Authentication & Authorization
-
-### Authentication Strategy
-
-**Multi-Role System**
-- **Admin**: Full system access across all hospitals
-- **Hospital Owner**: Access to owned hospitals and their branches
-- **Branch Manager**: Access to specific hospital branches
-
-**Session Management**
-- Persistent sessions with localStorage
-- Automatic session validation on app load
-- Secure session cleanup on logout
-
-**Access Control**
-```typescript
-// Role-based hospital access
-const canAccessHospital = (hospitalId: string): boolean => {
-  if (!user) return false;
-  
-  switch (user.role) {
-    case 'admin':
-      return true; // Admin has access to all hospitals
-    case 'hospital_owner':
-      return user.hospitalIds?.includes(hospitalId) || false;
-    case 'branch_manager':
-      return user.hospitalId === hospitalId;
-    default:
-      return false;
-  }
-};
-```
-
-### Security Measures
-
-**Input Validation**
-- Client-side validation with Zod schemas
-- XSS prevention through proper escaping
-- SQL injection prevention (when applicable)
-
-**Authentication Security**
-- Password complexity requirements
-- Rate limiting for failed attempts
-- Secure error messages
-
-## Performance Strategy
-
-### Code Splitting
-
-**Route-Level Splitting**
-```typescript
-const Dashboard = lazy(() => import('./components/Dashboard'));
-const AuthWrapper = lazy(() => import('./components/auth/AuthWrapper'));
-```
-
-**Component-Level Splitting**
-```typescript
-const RevenueChart = lazy(() => import('./RevenueChart'));
-const ExpensePieChart = lazy(() => import('./ExpensePieChart'));
-```
-
-### Optimization Techniques
-
-**React Optimizations**
-- `React.memo` for expensive components
-- `useMemo` for expensive calculations
-- `useCallback` for stable function references
-- Lazy loading with `Suspense`
-
-**Bundle Optimizations**
-- Vendor chunk separation
-- Tree shaking for unused code
-- Asset optimization and compression
-- Source map generation for debugging
-
-**Performance Monitoring**
-```typescript
-// Built-in performance monitoring
-const processedData = useMemo(() => {
-  return measurePerformance(() => {
-    return data.map(item => ({
-      ...item,
-      revenue: Math.round(item.revenue),
-      expenses: Math.round(item.expenses)
-    }));
-  }, 'dataProcessing');
-}, [data]);
-```
-
-## Design Patterns
-
-### Component Patterns
-
-**Higher-Order Components (HOCs)**
-- `ErrorBoundary`: Error handling wrapper
-- `AuthWrapper`: Authentication protection
-
-**Render Props**
-- Loading states with render prop pattern
-- Conditional rendering based on auth state
-
-**Custom Hooks**
-```typescript
-// Encapsulated stateful logic
-const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
-  return context;
-};
-```
-
-### Data Patterns
-
-**Repository Pattern**
-- Data service layer abstraction
-- Mock data services for development
-- Consistent data access interface
-
-**Observer Pattern**
-- React Context for state broadcasting
-- Event-driven updates across components
-
-**Factory Pattern**
-- Dynamic data generation
-- Hospital data factory functions
-
-## Security Architecture
-
-### Client-Side Security
-
-**Input Sanitization**
-```typescript
-export const sanitizeInput = (input: string): string => {
-  return input
-    .replace(/[<>]/g, '') // Remove potential HTML tags
-    .trim() // Remove whitespace
-    .substring(0, 1000); // Limit length
-};
-```
-
-**Error Handling**
-```typescript
-export const sanitizeError = (error: unknown): SafeError => {
-  if (error instanceof Error) {
-    return {
-      message: error.message.includes('SQL') 
-        ? 'An internal error occurred' 
-        : error.message,
-      stack: import.meta.env.DEV ? error.stack : undefined
-    };
-  }
-  return { message: 'An unknown error occurred' };
-};
-```
-
-**Authentication Security**
-- Secure session storage
-- Automatic session cleanup
-- Role-based access validation
-
-### Data Protection
-
-**Sensitive Data Handling**
-- No sensitive data in client-side storage
-- Proper error message sanitization
-- Input validation and sanitization
-
-**Access Control**
-- Role-based permissions
-- Hospital-level access restrictions
-- UI-level security enforcement
-
-## Testing Strategy
-
-### Test Categories
-
-**Unit Tests**
-- Component rendering and behavior
-- Utility function correctness
-- Hook functionality
-
-**Integration Tests**
-- Authentication flow
-- Data loading and display
-- User interactions
-
-**Performance Tests**
-- Bundle size monitoring
-- Render performance
-- Memory usage tracking
-
-### Test Structure
+## 📁 Project Structure
 
 ```
 src/
-├── components/
-│   └── __tests__/
-│       ├── Dashboard.test.tsx
-│       ├── Button.test.tsx
-│       └── auth.integration.test.tsx
-└── utils/
-    └── __tests__/
-        ├── formatters.test.ts
-        ├── performance.test.ts
-        └── security.test.ts
+├── components/           # React components
+│   ├── __tests__/       # Component tests
+│   ├── auth/           # Authentication components
+│   ├── optimized/      # Performance-optimized components
+│   └── ui/             # Reusable UI components
+├── contexts/           # React Context providers
+├── hooks/              # Custom React hooks
+├── services/           # Business logic and API services
+├── types/              # TypeScript type definitions
+├── utils/              # Utility functions
+├── data/               # Mock data and configuration
+├── styles/             # Design system documentation
+└── test/               # Test utilities and mocks
 ```
 
-### Testing Utilities
+## 🎨 Design Patterns
 
-**Mock Services**
-- Authentication service mocks
-- Data service mocks
-- Performance monitoring mocks
+### 1. Component Composition Pattern
 
-**Test Helpers**
-- Custom render functions with providers
-- Mock user data generators
-- Assertion helpers
+Components are built using composition over inheritance, allowing for flexible and reusable UI elements.
 
-## Build & Deployment
-
-### Build Configuration
-
-**Vite Configuration**
 ```typescript
-export default defineConfig({
-  plugins: [react(), visualizer()],
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          charts: ['recharts']
-        }
-      }
-    }
-  }
-});
+// Example: MetricCard composition
+<MetricCard>
+  <MetricCard.Header>
+    <MetricCard.Title>Revenue</MetricCard.Title>
+    <MetricCard.Icon>💰</MetricCard.Icon>
+  </MetricCard.Header>
+  <MetricCard.Content>
+    <MetricCard.Value>$125,000</MetricCard.Value>
+    <MetricCard.Change>+12.5%</MetricCard.Change>
+  </MetricCard.Content>
+</MetricCard>
 ```
 
-**TypeScript Configuration**
-- Strict mode enabled
-- Path aliases for clean imports
-- Build-time type checking
+### 2. Custom Hooks Pattern
 
-### Deployment Strategy
+Business logic is extracted into custom hooks for reusability and testability.
 
-**Static Site Deployment**
-- Pre-built static assets
-- CDN distribution
-- Optimized caching strategies
+```typescript
+// Example: useAuth hook
+const { user, login, logout, isLoading } = useAuth();
+```
 
-**Environment Configuration**
-- Development vs production builds
-- Environment variable management
-- Feature flag support
+### 3. Context Provider Pattern
 
-### Performance Monitoring
+Global state management using React Context for authentication and theming.
 
-**Bundle Analysis**
-- Size tracking with rollup-plugin-visualizer
-- Chunk analysis and optimization
-- Dependency impact assessment
+```typescript
+// Example: Theme context
+<ThemeProvider>
+  <AuthProvider>
+    <App />
+  </AuthProvider>
+</ThemeProvider>
+```
 
-**Runtime Monitoring**
-- Performance metrics collection
-- Error tracking and reporting
-- User experience monitoring
+### 4. Service Layer Pattern
 
-## Future Considerations
+Business logic is separated into service classes for better organization and testing.
 
-### Scalability
+```typescript
+// Example: AuthService
+class AuthService {
+  async signIn(email: string, password: string): Promise<User> {
+    // Authentication logic
+  }
+}
+```
 
-**State Management Evolution**
-- Consider Redux Toolkit for complex state
-- Implement proper caching strategies
-- Add offline support capabilities
+## 🔧 Technical Stack
 
-**API Integration**
-- Replace mock services with real APIs
-- Implement proper error boundaries
-- Add retry mechanisms
+### Frontend Framework
+- **React 18.2.0**: Modern React with hooks and concurrent features
+- **TypeScript 5.3.3**: Type safety and better developer experience
+- **Vite 7.1.5**: Fast build tool and development server
 
-### Performance Enhancements
+### Styling & UI
+- **Tailwind CSS 3.3.5**: Utility-first CSS framework
+- **Headless UI**: Unstyled, accessible UI components
+- **React Icons**: Comprehensive icon library
 
-**Advanced Optimizations**
-- Service Worker implementation
+### State Management
+- **React Context**: Global state for authentication and theming
+- **Local State**: useState and useReducer for component state
+- **Custom Hooks**: Encapsulated stateful logic
+
+### Testing
+- **Jest**: JavaScript testing framework
+- **React Testing Library**: Component testing utilities
+- **MSW**: API mocking for tests
+
+### Development Tools
+- **ESLint**: Code linting and quality
+- **Prettier**: Code formatting
+- **TypeScript**: Static type checking
+
+## 🚀 Performance Optimizations
+
+### 1. Code Splitting
+- Route-based code splitting with React.lazy()
+- Component-level lazy loading for heavy components
+
+### 2. Memoization
+- React.memo for component memoization
+- useMemo and useCallback for expensive calculations
+
+### 3. Bundle Optimization
+- Tree shaking to eliminate unused code
+- Dynamic imports for conditional loading
+- Asset optimization with Vite
+
+### 4. Caching Strategies
+- Browser caching for static assets
+- Service worker for offline functionality
+- Local storage for user preferences
+
+## 🔒 Security Architecture
+
+### 1. Authentication Flow
+```
+User Login → Credential Validation → JWT Token → Secure Storage
+```
+
+### 2. Authorization Levels
+- **Admin**: Full system access
+- **Hospital Owner**: Hospital-specific access
+- **Branch Manager**: Branch-specific access
+
+### 3. Data Protection
+- Input validation and sanitization
+- XSS protection with React's built-in escaping
+- CSRF protection with secure tokens
+
+## 📱 Responsive Design
+
+### Breakpoint System
+```css
+sm: 640px   /* Small devices */
+md: 768px   /* Medium devices */
+lg: 1024px  /* Large devices */
+xl: 1280px  /* Extra large devices */
+2xl: 1536px /* 2X large devices */
+```
+
+### Mobile-First Approach
+- Progressive enhancement from mobile to desktop
+- Touch-friendly interface elements
+- Optimized performance for mobile devices
+
+## 🧪 Testing Strategy
+
+### 1. Unit Testing
+- Component testing with React Testing Library
+- Hook testing with custom test utilities
+- Utility function testing with Jest
+
+### 2. Integration Testing
+- Context provider testing
+- Service layer testing
+- API integration testing
+
+### 3. End-to-End Testing
+- User journey testing with Playwright
+- Cross-browser compatibility testing
+- Performance testing
+
+## 🔄 Data Flow Architecture
+
+### 1. Unidirectional Data Flow
+```
+User Action → Event Handler → State Update → Component Re-render
+```
+
+### 2. Context Data Flow
+```
+Context Provider → Context Consumer → Component Update
+```
+
+### 3. Service Data Flow
+```
+Component → Service Call → API Request → Response → State Update
+```
+
+## 📊 Monitoring & Analytics
+
+### 1. Error Tracking
+- Error boundaries for component error handling
+- Console logging for development debugging
+- User feedback collection
+
+### 2. Performance Monitoring
+- Core Web Vitals tracking
+- Bundle size monitoring
+- Runtime performance metrics
+
+## 🚀 Deployment Architecture
+
+### 1. Build Process
+```
+Source Code → TypeScript Compilation → Bundle Optimization → Static Assets
+```
+
+### 2. Deployment Strategy
+- Static site deployment
+- CDN distribution for global performance
+- Environment-specific configurations
+
+## 🔮 Future Architecture Considerations
+
+### 1. Scalability
+- Micro-frontend architecture for large teams
+- Server-side rendering (SSR) for SEO
+- Progressive Web App (PWA) features
+
+### 2. Performance
+- Virtual scrolling for large datasets
+- Web Workers for heavy computations
 - Advanced caching strategies
-- Progressive Web App features
 
-**Monitoring & Analytics**
-- Real-time performance monitoring
-- User behavior analytics
-- Error tracking and alerting
-
----
-
-This architecture provides a solid foundation for a scalable, maintainable healthcare financial dashboard while maintaining security, performance, and user experience standards.
+### 3. Developer Experience
+- Storybook for component documentation
+- Automated testing pipelines
+- Performance profiling tools

@@ -6,6 +6,22 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import AuthWrapper from './components/auth/AuthWrapper';
 import LoadingSpinner from './components/LoadingSpinner';
 
+/**
+ * Main Application Component
+ * 
+ * This is the root component of the Hospital Finance Dashboard application.
+ * It sets up the core providers and layout structure for the entire application.
+ * 
+ * Features:
+ * - Error boundary wrapping for graceful error handling
+ * - Theme provider for dark/light mode support
+ * - Authentication provider for user management
+ * - Accessibility features including skip navigation
+ * - Performance optimizations with preloaded styles
+ * - Animated background for enhanced visual appeal
+ * 
+ * @returns {JSX.Element} The main application component
+ */
 function App() {
   return (
     <ErrorBoundary>

@@ -1,820 +1,742 @@
 # Development Guide
 
-This comprehensive guide covers everything you need to know for developing, maintaining, and extending the Hospital Finance Dashboard.
+## Overview
 
-## Table of Contents
+This guide provides comprehensive information for developers working on the Hospital Finance Dashboard. It covers setup, development workflow, coding standards, and best practices.
 
-- [Getting Started](#getting-started)
-- [Development Environment](#development-environment)
-- [Project Structure](#project-structure)
-- [Development Workflow](#development-workflow)
-- [Code Standards](#code-standards)
-- [Testing Guidelines](#testing-guidelines)
-- [Performance Optimization](#performance-optimization)
-- [Debugging Guide](#debugging-guide)
-- [Contributing Guidelines](#contributing-guidelines)
-
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
-**Required Software**:
-- Node.js 18.x or higher
-- npm 9.x or higher
-- Git 2.x or higher
-- VS Code (recommended) with extensions:
-  - TypeScript and JavaScript Language Features
-  - Tailwind CSS IntelliSense
-  - ES7+ React/Redux/React-Native snippets
-  - Prettier - Code formatter
-  - ESLint
+Before starting development, ensure you have the following installed:
 
-**System Requirements**:
-- RAM: 8GB minimum, 16GB recommended
-- Storage: 2GB free space for dependencies
-- OS: Windows 10+, macOS 10.15+, or Linux
+- **Node.js**: Version 18.0.0 or higher
+- **npm**: Version 8.0.0 or higher (comes with Node.js)
+- **Git**: For version control
+- **VS Code**: Recommended editor with extensions
+
+### Required VS Code Extensions
+
+Install these extensions for the best development experience:
+
+```json
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "ms-vscode.vscode-typescript-next",
+    "formulahendry.auto-rename-tag",
+    "christian-kohler.path-intellisense",
+    "ms-vscode.vscode-json"
+  ]
+}
+```
 
 ### Initial Setup
 
-```bash
-# 1. Clone the repository
-git clone <repository-url>
-cd Hospital-Finance-Dashboard
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd Hospital-Finance-Dashboard
+   ```
 
-# 2. Install dependencies
-npm install
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-# 3. Verify installation
-npm run type-check
-npm run lint
-npm test
+3. **Start development server**:
+   ```bash
+   npm run dev
+   ```
 
-# 4. Start development server
-npm run dev
-```
+4. **Open browser**:
+   Navigate to `http://localhost:5173`
 
-### VS Code Configuration
-
-Create `.vscode/settings.json`:
-```json
-{
-  "typescript.preferences.importModuleSpecifier": "relative",
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true,
-    "source.organizeImports": true
-  },
-  "tailwindCSS.includeLanguages": {
-    "typescript": "typescript",
-    "typescriptreact": "typescriptreact"
-  },
-  "files.associations": {
-    "*.css": "tailwindcss"
-  }
-}
-```
-
-## Development Environment
-
-### Environment Variables
-
-Create `.env.local` for local development:
-```bash
-VITE_NODE_ENV=development
-VITE_API_URL=http://localhost:3001
-VITE_DEBUG=true
-VITE_LOG_LEVEL=debug
-```
-
-### Development Scripts
-
-```bash
-# Development server with hot reload
-npm run dev
-
-# Type checking in watch mode
-npm run type-check:watch
-
-# Linting with auto-fix
-npm run lint:fix
-
-# Testing in watch mode
-npm run test:watch
-
-# Build and preview production
-npm run build && npm run preview
-```
-
-### Browser Development Tools
-
-**Recommended Extensions**:
-- React Developer Tools
-- Redux DevTools (if using Redux)
-- Lighthouse for performance auditing
-- axe DevTools for accessibility testing
-
-## Project Structure
-
-### Directory Organization
+## 📁 Project Structure
 
 ```
 src/
-├── components/          # React components
+├── components/           # React components
+│   ├── __tests__/       # Component unit tests
 │   ├── auth/           # Authentication components
-│   ├── ui/             # Reusable UI components
 │   ├── optimized/      # Performance-optimized components
-│   └── __tests__/      # Component tests
-├── contexts/           # React contexts
+│   └── ui/             # Reusable UI components
+├── contexts/           # React Context providers
 ├── hooks/              # Custom React hooks
-├── utils/              # Utility functions
-│   └── __tests__/      # Utility tests
+├── services/           # Business logic and API services
 ├── types/              # TypeScript type definitions
-├── data/               # Mock data and configurations
-├── services/           # API services and business logic
-├── config/             # Configuration files
-└── test/               # Test utilities and setup
+├── utils/              # Utility functions and helpers
+├── data/               # Mock data and configuration
+├── styles/             # Design system documentation
+└── test/               # Test utilities and mocks
 ```
 
-### File Naming Conventions
+## 🛠️ Development Scripts
 
-- **Components**: PascalCase (e.g., `DashboardHeader.tsx`)
-- **Hooks**: camelCase with `use` prefix (e.g., `useAuth.ts`)
-- **Utilities**: camelCase (e.g., `formatCurrency.ts`)
-- **Types**: PascalCase (e.g., `UserTypes.ts`)
-- **Tests**: Match source file with `.test.ts` suffix
-- **Constants**: UPPER_SNAKE_CASE (e.g., `API_ENDPOINTS.ts`)
+### Core Scripts
 
-### Import Organization
+```bash
+# Development
+npm run dev              # Start development server
+npm run build            # Build for production
+npm run preview          # Preview production build
 
-```typescript
-// 1. External libraries
-import React, { useState, useEffect } from 'react';
-import { User } from 'lucide-react';
+# Code Quality
+npm run lint             # Run ESLint
+npm run lint:fix         # Fix ESLint issues
+npm run type-check       # TypeScript type checking
 
-// 2. Internal utilities and types
-import { formatCurrency } from '../utils/formatters';
-import { HospitalData } from '../types/finance';
+# Testing
+npm run test             # Run unit tests
+npm run test:watch       # Run tests in watch mode
+npm run test:coverage    # Generate coverage report
+npm run test:e2e         # Run end-to-end tests
 
-// 3. Components
-import Button from './Button';
-import MetricCard from './MetricCard';
-
-// 4. Relative imports
-import './Dashboard.css';
+# Utilities
+npm run clean            # Clean build artifacts
+npm run format           # Format code with Prettier
 ```
 
-## Development Workflow
+### Advanced Scripts
 
-### Feature Development Process
+```bash
+# Bundle Analysis
+npm run build:analyze    # Analyze bundle size
 
-1. **Create Feature Branch**
-   ```bash
-   git checkout -b feature/dashboard-improvements
-   ```
-
-2. **Development Cycle**
-   ```bash
-   # Make changes
-   npm run dev          # Start development server
-   npm run type-check   # Verify TypeScript
-   npm run lint         # Check code quality
-   npm test             # Run tests
-   ```
-
-3. **Pre-commit Checks**
-   ```bash
-   npm run type-check
-   npm run lint:fix
-   npm test
-   npm run build        # Verify production build
-   ```
-
-4. **Commit and Push**
-   ```bash
-   git add .
-   git commit -m "feat: add hospital comparison feature"
-   git push origin feature/dashboard-improvements
-   ```
-
-### Component Development Workflow
-
-**1. Create Component Structure**
-```typescript
-// components/NewComponent.tsx
-import React from 'react';
-
-interface NewComponentProps {
-  /** Component description */
-  title: string;
-  /** Optional callback */
-  onAction?: () => void;
-}
-
-/**
- * Component description with usage example
- * 
- * @component
- * @example
- * ```tsx
- * <NewComponent title="Example" onAction={handleAction} />
- * ```
- */
-const NewComponent: React.FC<NewComponentProps> = ({
-  title,
-  onAction
-}) => {
-  return (
-    <div className="p-4">
-      <h2>{title}</h2>
-      {onAction && (
-        <button onClick={onAction}>Action</button>
-      )}
-    </div>
-  );
-};
-
-export default React.memo(NewComponent);
+# Performance
+npm run lighthouse       # Run Lighthouse audit
+npm run bundle-analyzer  # Visualize bundle contents
 ```
 
-**2. Create Tests**
-```typescript
-// components/__tests__/NewComponent.test.tsx
-import { render, screen, fireEvent } from '@testing-library/react';
-import NewComponent from '../NewComponent';
-
-describe('NewComponent', () => {
-  test('renders with title', () => {
-    render(<NewComponent title="Test Title" />);
-    expect(screen.getByText('Test Title')).toBeInTheDocument();
-  });
-
-  test('calls onAction when button clicked', () => {
-    const mockAction = jest.fn();
-    render(<NewComponent title="Test" onAction={mockAction} />);
-    
-    fireEvent.click(screen.getByText('Action'));
-    expect(mockAction).toHaveBeenCalledTimes(1);
-  });
-});
-```
-
-**3. Add to Storybook (if applicable)**
-```typescript
-// components/NewComponent.stories.tsx
-import type { Meta, StoryObj } from '@storybook/react';
-import NewComponent from './NewComponent';
-
-const meta: Meta<typeof NewComponent> = {
-  title: 'Components/NewComponent',
-  component: NewComponent,
-  parameters: {
-    layout: 'centered',
-  },
-  tags: ['autodocs'],
-};
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Default: Story = {
-  args: {
-    title: 'Default Title',
-  },
-};
-
-export const WithAction: Story = {
-  args: {
-    title: 'With Action',
-    onAction: () => alert('Action clicked!'),
-  },
-};
-```
-
-### Hook Development Pattern
-
-```typescript
-// hooks/useCustomHook.ts
-import { useState, useEffect } from 'react';
-
-interface UseCustomHookOptions {
-  initialValue?: string;
-  autoUpdate?: boolean;
-}
-
-interface UseCustomHookReturn {
-  value: string;
-  setValue: (value: string) => void;
-  isLoading: boolean;
-  error: string | null;
-}
-
-/**
- * Custom hook description
- * 
- * @param options - Configuration options
- * @returns Hook return object
- */
-export const useCustomHook = (
-  options: UseCustomHookOptions = {}
-): UseCustomHookReturn => {
-  const { initialValue = '', autoUpdate = false } = options;
-  
-  const [value, setValue] = useState<string>(initialValue);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (autoUpdate) {
-      // Auto-update logic
-    }
-  }, [autoUpdate]);
-
-  return {
-    value,
-    setValue,
-    isLoading,
-    error
-  };
-};
-```
-
-## Code Standards
+## 🎨 Code Style & Standards
 
 ### TypeScript Guidelines
 
-**1. Interface Definitions**
+#### Type Definitions
+- Always define explicit interfaces for component props
+- Use union types for limited options
+- Prefer `interface` over `type` for object shapes
+- Use generic types for reusable components
+
 ```typescript
-// Good: Descriptive interface names
-interface HospitalFinancialMetrics {
-  totalRevenue: number;
-  operatingExpenses: number;
-  netIncome: number;
-  profitMargin: number;
+// ✅ Good
+interface ButtonProps {
+  variant: 'primary' | 'secondary' | 'danger';
+  size: 'sm' | 'md' | 'lg';
+  children: React.ReactNode;
+  onClick?: () => void;
 }
 
-// Good: Optional properties with clear defaults
-interface ChartConfiguration {
-  showLegend?: boolean;
-  animationDuration?: number;
-  theme?: 'light' | 'dark';
+// ❌ Avoid
+type ButtonProps = {
+  variant: string;
+  size: string;
+  children: any;
+  onClick?: Function;
 }
 ```
 
-**2. Type Guards**
+#### Component Structure
 ```typescript
-// Type guard for runtime type checking
-const isHospitalData = (data: unknown): data is HospitalData => {
+// ✅ Recommended component structure
+import React from 'react';
+import { ButtonProps } from '../types';
+
+interface ExtendedButtonProps extends ButtonProps {
+  loading?: boolean;
+}
+
+export const Button: React.FC<ExtendedButtonProps> = ({
+  variant = 'primary',
+  size = 'md',
+  children,
+  loading = false,
+  onClick,
+  ...props
+}) => {
+  // Component logic here
+  
   return (
-    typeof data === 'object' &&
-    data !== null &&
-    'id' in data &&
-    'name' in data &&
-    'financialMetrics' in data
+    <button
+      className={`btn btn-${variant} btn-${size}`}
+      onClick={onClick}
+      disabled={loading}
+      {...props}
+    >
+      {children}
+    </button>
   );
-};
-```
-
-**3. Generic Types**
-```typescript
-// Reusable generic interfaces
-interface ApiResponse<T> {
-  data: T;
-  status: 'success' | 'error';
-  message?: string;
-  timestamp: string;
-}
-
-// Usage
-const hospitalResponse: ApiResponse<HospitalData> = {
-  data: hospitalData,
-  status: 'success',
-  timestamp: new Date().toISOString()
 };
 ```
 
 ### React Best Practices
 
-**1. Component Composition**
+#### Hooks Usage
 ```typescript
-// Good: Composition over inheritance
-const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div className="dashboard-layout">
-    <Header />
-    <main>{children}</main>
-    <Footer />
-  </div>
-);
-
-// Usage
-<DashboardLayout>
-  <FinancialMetrics />
-  <Charts />
-</DashboardLayout>
-```
-
-**2. Performance Optimization**
-```typescript
-// Memoize expensive calculations
-const expensiveCalculation = useMemo(() => {
-  return data.reduce((acc, item) => acc + item.value, 0);
-}, [data]);
-
-// Memoize callback functions
-const handleClick = useCallback((id: string) => {
-  onItemClick(id);
-}, [onItemClick]);
-
-// Memoize components with React.memo
-export default React.memo(Component, (prevProps, nextProps) => {
-  return prevProps.data === nextProps.data;
-});
-```
-
-**3. Error Handling**
-```typescript
-// Component-level error handling
-const DataComponent: React.FC = () => {
-  const [data, setData] = useState<Data | null>(null);
-  const [error, setError] = useState<string | null>(null);
+// ✅ Good - Custom hook
+const useAuth = () => {
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const result = await apiCall();
-        setData(result);
-        setError(null);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
-        logger.error('Failed to fetch data', { error: err });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+  const login = useCallback(async (email: string, password: string) => {
+    setLoading(true);
+    try {
+      const userData = await authService.signIn(email, password);
+      setUser(userData);
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  if (loading) return <LoadingSpinner />;
-  if (error) return <ErrorMessage error={error} />;
-  if (!data) return <NoDataMessage />;
+  return { user, loading, login };
+};
 
-  return <DataDisplay data={data} />;
+// ✅ Good - Component using custom hook
+const LoginForm: React.FC = () => {
+  const { login, loading } = useAuth();
+  
+  const handleSubmit = useCallback(async (data: LoginData) => {
+    try {
+      await login(data.email, data.password);
+    } catch (error) {
+      // Handle error
+    }
+  }, [login]);
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* Form content */}
+    </form>
+  );
 };
 ```
 
-### CSS/Tailwind Guidelines
-
-**1. Responsive Design**
-```tsx
-// Mobile-first responsive classes
-<div className="
-  grid grid-cols-1 
-  md:grid-cols-2 
-  lg:grid-cols-3 
-  gap-4 
-  p-4 
-  sm:p-6 
-  lg:p-8
-">
-```
-
-**2. Component Styling**
-```tsx
-// Consistent spacing and colors
-const cardClasses = `
-  bg-white dark:bg-dark-surface
-  border border-gray-200 dark:border-dark-border
-  rounded-lg shadow-sm
-  p-4 sm:p-6
-  hover:shadow-md
-  transition-shadow duration-200
-`;
-```
-
-**3. Theme Integration**
-```tsx
-// Theme-aware components
-<div className="
-  text-gray-900 dark:text-gray-100
-  bg-gray-50 dark:bg-gray-900
-  border-gray-200 dark:border-gray-700
-">
-```
-
-## Testing Guidelines
-
-### Test Structure
-
+#### State Management
 ```typescript
-// Standard test structure
-describe('ComponentName', () => {
-  // Setup
-  beforeEach(() => {
-    // Reset mocks, clear localStorage, etc.
+// ✅ Good - Local state for component-specific data
+const [isOpen, setIsOpen] = useState(false);
+
+// ✅ Good - Context for global state
+const { user, theme } = useAuth();
+
+// ✅ Good - Derived state
+const filteredData = useMemo(() => {
+  return data.filter(item => item.category === selectedCategory);
+}, [data, selectedCategory]);
+```
+
+### Styling Guidelines
+
+#### Tailwind CSS Usage
+```tsx
+// ✅ Good - Semantic class grouping
+<button className="
+  flex items-center justify-center
+  px-4 py-2 rounded-lg
+  bg-blue-600 text-white
+  hover:bg-blue-700 focus:ring-2 focus:ring-blue-500
+  disabled:opacity-50 disabled:cursor-not-allowed
+  transition-colors duration-200
+">
+  Save Changes
+</button>
+
+// ✅ Good - Responsive design
+<div className="
+  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3
+  gap-4 p-4
+">
+  {items.map(item => (
+    <Card key={item.id} item={item} />
+  ))}
+</div>
+```
+
+#### CSS Custom Properties
+```css
+/* ✅ Good - Design tokens */
+:root {
+  --color-primary: theme('colors.blue.600');
+  --color-primary-hover: theme('colors.blue.700');
+  --spacing-sm: theme('spacing.2');
+  --spacing-md: theme('spacing.4');
+  --border-radius: theme('borderRadius.lg');
+}
+```
+
+### File Naming Conventions
+
+```
+components/
+├── Button.tsx                    # PascalCase for components
+├── Button.test.tsx              # Component tests
+├── Button.stories.tsx           # Storybook stories
+└── auth/
+    ├── LoginForm.tsx            # Feature-based grouping
+    └── AuthGuard.tsx
+
+utils/
+├── formatters.ts                # camelCase for utilities
+├── validators.ts
+└── constants.ts
+
+types/
+├── auth.ts                      # Feature-based type files
+├── finance.ts
+└── common.ts
+```
+
+## 🧪 Testing Strategy
+
+### Unit Testing
+
+#### Component Testing
+```typescript
+// ✅ Good - Component test example
+import { render, screen, fireEvent } from '@testing-library/react';
+import { Button } from '../Button';
+
+describe('Button', () => {
+  it('renders with correct text', () => {
+    render(<Button>Click me</Button>);
+    expect(screen.getByRole('button')).toHaveTextContent('Click me');
   });
 
-  // Test groups
-  describe('rendering', () => {
-    test('renders with required props', () => {});
-    test('renders loading state', () => {});
-    test('renders error state', () => {});
+  it('calls onClick when clicked', () => {
+    const handleClick = jest.fn();
+    render(<Button onClick={handleClick}>Click me</Button>);
+    
+    fireEvent.click(screen.getByRole('button'));
+    expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
-  describe('interactions', () => {
-    test('handles user click', () => {});
-    test('handles form submission', () => {});
-  });
-
-  describe('edge cases', () => {
-    test('handles empty data', () => {});
-    test('handles network errors', () => {});
+  it('is disabled when loading', () => {
+    render(<Button loading>Click me</Button>);
+    expect(screen.getByRole('button')).toBeDisabled();
   });
 });
 ```
 
-### Testing Utilities
+#### Hook Testing
+```typescript
+// ✅ Good - Hook test example
+import { renderHook, act } from '@testing-library/react';
+import { useAuth } from '../useAuth';
+
+describe('useAuth', () => {
+  it('should initialize with null user', () => {
+    const { result } = renderHook(() => useAuth());
+    expect(result.current.user).toBeNull();
+  });
+
+  it('should login user successfully', async () => {
+    const { result } = renderHook(() => useAuth());
+    
+    await act(async () => {
+      await result.current.login('test@example.com', 'password');
+    });
+    
+    expect(result.current.user).toBeDefined();
+  });
+});
+```
+
+### Integration Testing
 
 ```typescript
-// Test utilities
-import { render, screen } from '@testing-library/react';
-import { AuthProvider } from '../contexts/AuthContext';
-import { ThemeProvider } from '../contexts/ThemeContext';
+// ✅ Good - Integration test example
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { Dashboard } from '../Dashboard';
+import { AuthProvider } from '../../contexts/AuthContext';
 
-// Custom render with providers
-export const renderWithProviders = (
-  ui: React.ReactElement,
-  options: {
-    initialAuthState?: Partial<AuthState>;
-    theme?: 'light' | 'dark';
-  } = {}
-) => {
-  const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <ThemeProvider initialTheme={options.theme}>
-      <AuthProvider initialState={options.initialAuthState}>
-        {children}
+describe('Dashboard Integration', () => {
+  it('should display metrics after login', async () => {
+    render(
+      <AuthProvider>
+        <Dashboard />
       </AuthProvider>
-    </ThemeProvider>
-  );
+    );
 
-  return render(ui, { wrapper: Wrapper, ...options });
-};
+    // Simulate login
+    await userEvent.click(screen.getByText('Login'));
+    
+    await waitFor(() => {
+      expect(screen.getByText('Total Revenue')).toBeInTheDocument();
+    });
+  });
+});
 ```
 
-### Mock Patterns
+### End-to-End Testing
 
 ```typescript
-// Mock external dependencies
-jest.mock('../utils/logger', () => ({
-  logger: {
-    info: jest.fn(),
-    error: jest.fn(),
-    warn: jest.fn(),
-  },
-}));
+// ✅ Good - E2E test example
+import { test, expect } from '@playwright/test';
 
-// Mock React hooks
-const mockUseAuth = {
-  user: mockUser,
-  isAuthenticated: true,
-  signIn: jest.fn(),
-  signOut: jest.fn(),
-};
-
-jest.mock('../hooks/useAuth', () => ({
-  useAuth: () => mockUseAuth,
-}));
+test('user can login and view dashboard', async ({ page }) => {
+  await page.goto('/');
+  
+  // Login
+  await page.fill('[data-testid="email-input"]', 'admin@hospital.com');
+  await page.fill('[data-testid="password-input"]', 'password123');
+  await page.click('[data-testid="login-button"]');
+  
+  // Verify dashboard loads
+  await expect(page.locator('[data-testid="dashboard"]')).toBeVisible();
+  await expect(page.locator('[data-testid="revenue-chart"]')).toBeVisible();
+});
 ```
 
-## Performance Optimization
+## 🔧 Development Workflow
+
+### Feature Development
+
+1. **Create feature branch**:
+   ```bash
+   git checkout -b feature/user-authentication
+   ```
+
+2. **Implement feature**:
+   - Write components and logic
+   - Add tests
+   - Update documentation
+
+3. **Run quality checks**:
+   ```bash
+   npm run lint
+   npm run type-check
+   npm run test
+   ```
+
+4. **Commit changes**:
+   ```bash
+   git add .
+   git commit -m "feat: add user authentication system"
+   ```
+
+5. **Push and create PR**:
+   ```bash
+   git push origin feature/user-authentication
+   ```
+
+### Code Review Process
+
+1. **Self Review**:
+   - Run all quality checks
+   - Test functionality manually
+   - Review code for best practices
+
+2. **Peer Review**:
+   - Request review from team members
+   - Address feedback promptly
+   - Ensure all tests pass
+
+3. **Merge**:
+   - Squash commits if needed
+   - Delete feature branch after merge
+
+### Debugging
+
+#### React DevTools
+- Install React Developer Tools browser extension
+- Use Components tab to inspect component tree
+- Use Profiler tab for performance analysis
+
+#### Console Debugging
+```typescript
+// ✅ Good - Structured logging
+const handleSubmit = async (data: FormData) => {
+  console.group('Form Submission');
+  console.log('Form data:', data);
+  
+  try {
+    const result = await submitForm(data);
+    console.log('Success:', result);
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    console.groupEnd();
+  }
+};
+```
+
+#### Error Boundaries
+```typescript
+// ✅ Good - Error boundary usage
+const App: React.FC = () => {
+  return (
+    <ErrorBoundary fallback={ErrorFallback}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+        </Routes>
+      </Router>
+    </ErrorBoundary>
+  );
+};
+```
+
+## 🚀 Performance Optimization
 
 ### Bundle Analysis
 
 ```bash
-# Generate bundle analysis
-npm run build
-npm run analyze
+# Analyze bundle size
+npm run build:analyze
 
-# Check bundle size
-npx bundlesize
-
-# Analyze dependencies
-npx webpack-bundle-analyzer dist/stats.json
+# Check for duplicate dependencies
+npm run duplicate-check
 ```
 
-### Code Splitting Strategies
+### Code Splitting
 
 ```typescript
-// Route-based code splitting
+// ✅ Good - Route-based code splitting
 const Dashboard = lazy(() => import('./components/Dashboard'));
-const Reports = lazy(() => import('./components/Reports'));
+const AdminPanel = lazy(() => import('./components/AdminPanel'));
 
-// Component-based code splitting
-const HeavyChart = lazy(() => import('./components/HeavyChart'));
-
-// Feature-based code splitting
-const AdminPanel = lazy(() => 
-  import('./components/AdminPanel').then(module => ({
-    default: module.AdminPanel
-  }))
-);
-```
-
-### Performance Monitoring
-
-```typescript
-// Performance monitoring hook
-const usePerformanceMonitor = (componentName: string) => {
-  useEffect(() => {
-    const startTime = performance.now();
-    
-    return () => {
-      const endTime = performance.now();
-      const duration = endTime - startTime;
-      
-      if (duration > 100) { // Log slow renders
-        logger.warn(`Slow render detected: ${componentName}`, {
-          duration,
-          component: componentName
-        });
-      }
-    };
-  });
+const App: React.FC = () => {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/admin" element={<AdminPanel />} />
+      </Routes>
+    </Suspense>
+  );
 };
 ```
 
-## Debugging Guide
+### Memoization
 
-### Development Tools
+```typescript
+// ✅ Good - Component memoization
+const ExpensiveComponent = React.memo<Props>(({ data, onUpdate }) => {
+  const processedData = useMemo(() => {
+    return data.map(item => ({
+      ...item,
+      processed: heavyCalculation(item)
+    }));
+  }, [data]);
 
-**1. React Developer Tools**
-- Component tree inspection
-- Props and state debugging
-- Performance profiling
+  const handleUpdate = useCallback((id: string) => {
+    onUpdate(id);
+  }, [onUpdate]);
 
-**2. Browser DevTools**
-- Network tab for API calls
-- Performance tab for render analysis
-- Memory tab for leak detection
-
-**3. VS Code Debugging**
-```json
-// .vscode/launch.json
-{
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Debug React App",
-      "type": "node",
-      "request": "launch",
-      "program": "${workspaceFolder}/node_modules/.bin/vite",
-      "args": ["--mode", "development"],
-      "console": "integratedTerminal"
-    }
-  ]
-}
+  return (
+    <div>
+      {processedData.map(item => (
+        <Item key={item.id} data={item} onUpdate={handleUpdate} />
+      ))}
+    </div>
+  );
+});
 ```
 
-### Common Issues and Solutions
+## 🔒 Security Considerations
 
-**1. Hydration Mismatches**
+### Input Validation
+
 ```typescript
-// Fix: Use useEffect for client-only code
-const [mounted, setMounted] = useState(false);
+// ✅ Good - Input sanitization
+const sanitizeInput = (input: string): string => {
+  return input
+    .trim()
+    .replace(/[<>]/g, '') // Remove potential HTML tags
+    .slice(0, 100); // Limit length
+};
 
-useEffect(() => {
-  setMounted(true);
-}, []);
-
-if (!mounted) {
-  return <div>Loading...</div>;
-}
+const handleUserInput = (input: string) => {
+  const sanitized = sanitizeInput(input);
+  // Process sanitized input
+};
 ```
 
-**2. Memory Leaks**
-```typescript
-// Fix: Cleanup subscriptions and timers
-useEffect(() => {
-  const timer = setInterval(() => {
-    // Timer logic
-  }, 1000);
+### Authentication
 
-  return () => {
-    clearInterval(timer);
+```typescript
+// ✅ Good - Secure token handling
+const useAuth = () => {
+  const [token, setToken] = useState<string | null>(() => {
+    return localStorage.getItem('auth_token');
+  });
+
+  const login = async (credentials: LoginCredentials) => {
+    const response = await authService.signIn(credentials);
+    const { token: newToken } = response;
+    
+    // Store token securely
+    localStorage.setItem('auth_token', newToken);
+    setToken(newToken);
   };
-}, []);
+
+  const logout = () => {
+    localStorage.removeItem('auth_token');
+    setToken(null);
+  };
+
+  return { token, login, logout };
+};
 ```
 
-**3. Infinite Re-renders**
+## 📚 Documentation Standards
+
+### Component Documentation
+
 ```typescript
-// Problem: Missing dependency array
-useEffect(() => {
-  fetchData();
-}); // Missing dependency array
+/**
+ * MetricCard displays key performance indicators with trend information
+ * 
+ * @example
+ * ```tsx
+ * <MetricCard
+ *   title="Total Revenue"
+ *   value={125000}
+ *   change={12.5}
+ *   changeType="increase"
+ * />
+ * ```
+ */
+interface MetricCardProps {
+  /** The title displayed at the top of the card */
+  title: string;
+  /** The main value to display */
+  value: number;
+  /** Optional percentage change from previous period */
+  change?: number;
+  /** Type of change indicator */
+  changeType?: 'increase' | 'decrease';
+}
 
-// Solution: Add proper dependencies
-useEffect(() => {
-  fetchData();
-}, [fetchData]);
+export const MetricCard: React.FC<MetricCardProps> = ({
+  title,
+  value,
+  change,
+  changeType
+}) => {
+  // Component implementation
+};
 ```
 
-### Debugging Checklist
+### API Documentation
 
-- [ ] Check browser console for errors
-- [ ] Verify network requests in Network tab
-- [ ] Check React DevTools for component state
-- [ ] Review TypeScript errors in IDE
-- [ ] Test in different browsers
-- [ ] Check mobile responsiveness
-- [ ] Verify accessibility with axe-core
-- [ ] Test with different user roles
-- [ ] Check performance with Lighthouse
-
-## Contributing Guidelines
-
-### Code Review Process
-
-**1. Self-Review Checklist**
-- [ ] Code follows style guidelines
-- [ ] All tests pass
-- [ ] No TypeScript errors
-- [ ] Performance considerations addressed
-- [ ] Accessibility requirements met
-- [ ] Documentation updated
-
-**2. Pull Request Template**
-```markdown
-## Description
-Brief description of changes
-
-## Type of Change
-- [ ] Bug fix
-- [ ] New feature
-- [ ] Breaking change
-- [ ] Documentation update
-
-## Testing
-- [ ] Unit tests added/updated
-- [ ] Integration tests pass
-- [ ] Manual testing completed
-
-## Screenshots (if applicable)
-Add screenshots for UI changes
-
-## Checklist
-- [ ] Code follows style guidelines
-- [ ] Self-review completed
-- [ ] Documentation updated
+```typescript
+/**
+ * Authentication service for user management
+ */
+class AuthService {
+  /**
+   * Authenticates a user with email and password
+   * 
+   * @param email - User's email address
+   * @param password - User's password
+   * @returns Promise resolving to user data
+   * @throws {AuthError} When credentials are invalid
+   * 
+   * @example
+   * ```typescript
+   * try {
+   *   const user = await authService.signIn('user@example.com', 'password');
+   *   console.log('Logged in:', user.name);
+   * } catch (error) {
+   *   console.error('Login failed:', error.message);
+   * }
+   * ```
+   */
+  async signIn(email: string, password: string): Promise<User> {
+    // Implementation
+  }
+}
 ```
 
-### Git Commit Guidelines
+## 🐛 Common Issues & Solutions
 
-**Commit Message Format**:
-```
-type(scope): description
+### TypeScript Issues
 
-[optional body]
-
-[optional footer]
-```
-
-**Types**:
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation changes
-- `style`: Code style changes
-- `refactor`: Code refactoring
-- `test`: Test changes
-- `chore`: Build/config changes
-
-**Examples**:
+**Issue**: Module not found errors
 ```bash
-git commit -m "feat(dashboard): add hospital comparison feature"
-git commit -m "fix(auth): resolve session timeout issue"
-git commit -m "docs(api): update authentication documentation"
+# Solution: Clear cache and reinstall
+rm -rf node_modules package-lock.json
+npm install
 ```
 
-### Release Process
+**Issue**: Type errors in tests
+```typescript
+// Solution: Add proper type assertions
+const mockUser = { id: '1', name: 'Test User' } as User;
+```
 
-1. **Version Bump**
-   ```bash
-   npm version patch  # Bug fixes
-   npm version minor  # New features
-   npm version major  # Breaking changes
-   ```
+### React Issues
 
-2. **Generate Changelog**
-   ```bash
-   npm run changelog
-   ```
+**Issue**: Infinite re-renders
+```typescript
+// ❌ Problem
+const Component = ({ data }) => {
+  const processedData = data.map(item => ({ ...item, processed: true }));
+  // This creates new array on every render
+};
 
-3. **Create Release**
-   ```bash
-   git tag -a v1.2.0 -m "Release v1.2.0"
-   git push origin v1.2.0
-   ```
+// ✅ Solution
+const Component = ({ data }) => {
+  const processedData = useMemo(
+    () => data.map(item => ({ ...item, processed: true })),
+    [data]
+  );
+};
+```
 
----
+**Issue**: Stale closures
+```typescript
+// ❌ Problem
+const Component = () => {
+  const [count, setCount] = useState(0);
+  
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCount(count + 1); // Always uses initial count value
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  }, []);
+};
 
-This development guide provides comprehensive information for contributing to and maintaining the Hospital Finance Dashboard. For specific implementation details, refer to the component documentation and API reference.
+// ✅ Solution
+const Component = () => {
+  const [count, setCount] = useState(0);
+  
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCount(prevCount => prevCount + 1); // Uses current count
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  }, []);
+};
+```
+
+## 🎯 Best Practices Summary
+
+### Do's ✅
+- Write tests for all components and utilities
+- Use TypeScript for type safety
+- Follow consistent naming conventions
+- Implement proper error handling
+- Use semantic HTML elements
+- Optimize for performance
+- Document complex logic
+- Use meaningful commit messages
+
+### Don'ts ❌
+- Don't commit console.log statements
+- Don't use any types unnecessarily
+- Don't ignore ESLint warnings
+- Don't skip error handling
+- Don't use inline styles
+- Don't commit sensitive data
+- Don't ignore accessibility
+- Don't skip code reviews

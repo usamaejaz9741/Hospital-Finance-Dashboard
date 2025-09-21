@@ -4799,6 +4799,21 @@
     border-color: rgba(239, 68, 68, 0.4);
   }
 
+  .performance-insight-card.purple {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.8), rgba(139, 92, 246, 0.6));
+    border-color: rgba(139, 92, 246, 0.4);
+  }
+
+  .performance-insight-card.pink {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.8), rgba(236, 72, 153, 0.6));
+    border-color: rgba(236, 72, 153, 0.4);
+  }
+
+  .performance-insight-card.teal {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.8), rgba(20, 184, 166, 0.6));
+    border-color: rgba(20, 184, 166, 0.4);
+  }
+
   /* ============================================
      ACCESSIBILITY & FOCUS SYSTEM
      ============================================ */

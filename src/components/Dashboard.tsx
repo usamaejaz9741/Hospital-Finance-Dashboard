@@ -20,6 +20,16 @@ const CashFlowChart = lazy(() => import('./CashFlowChart'));
 const PatientMetricsCard = lazy(() => import('./PatientMetricsCard'));
 const DepartmentTable = lazy(() => import('./DepartmentTable'));
 
+// Enhanced GP Spec components
+const EnhancedRevenueChart = lazy(() => import('./EnhancedRevenueChart'));
+const EBIDACalculator = lazy(() => import('./EBIDACalculator'));
+const ContextualEventsTimeline = lazy(() => import('./ContextualEventsTimeline'));
+const EnhancedExpenseAnalysis = lazy(() => import('./EnhancedExpenseAnalysis'));
+const FinancialAssetsDashboard = lazy(() => import('./FinancialAssetsDashboard'));
+const EnhancedDonationTracking = lazy(() => import('./EnhancedDonationTracking'));
+const PeerComparison = lazy(() => import('./PeerComparison'));
+const DrillDownAnalysis = lazy(() => import('./DrillDownAnalysis'));
+
 /**
  * Main dashboard component providing a comprehensive financial overview for hospitals.
  * Features a modern glassmorphism design with responsive layout and role-based data access.
@@ -287,6 +297,115 @@ const Dashboard: React.FC = () => {
           <section className="section-spacing" aria-labelledby="department-performance-heading">
             <h2 id="department-performance-heading" className="sr-only">Department Performance</h2>
             <DepartmentTable departments={currentData.departmentFinances} />
+          </section>
+
+          {/* Enhanced GP Spec Features Section */}
+          <section className="section-spacing" aria-labelledby="enhanced-features-heading">
+            <h2 
+              id="enhanced-features-heading" 
+              className="heading-2 text-center mb-10"
+            >
+              Enhanced Financial Analysis
+            </h2>
+            
+            {/* Enhanced Revenue Analysis */}
+            <div className="mb-8">
+              <EnhancedRevenueChart 
+                data={[{
+                  year: selectedYear.toString(),
+                  totalRevenue: currentData.financialMetrics[0]?.value || 0,
+                  breakdown: currentData.revenueBreakdown
+                }]}
+              />
+            </div>
+
+            {/* EBIDA Analysis */}
+            <div className="mb-8">
+              <EBIDACalculator 
+                data={currentData.ebidaMetrics}
+                historicalData={[{
+                  ...currentData.ebidaMetrics,
+                  year: selectedYear.toString()
+                }]}
+              />
+            </div>
+
+            {/* Contextual Events Timeline */}
+            <div className="mb-8">
+              <ContextualEventsTimeline 
+                events={currentData.contextualEvents}
+                onEventSelect={(event) => {
+                  logger.info('Event selected', { 
+                    context: 'Dashboard', 
+                    data: { eventId: event.id, eventTitle: event.title } 
+                  });
+                }}
+              />
+            </div>
+
+            {/* Enhanced Expense Analysis */}
+            <div className="mb-8">
+              <EnhancedExpenseAnalysis 
+                data={currentData.enhancedExpenseBreakdown}
+                onCategorySelect={(category) => {
+                  logger.info('Expense category selected', { 
+                    context: 'Dashboard', 
+                    data: { category } 
+                  });
+                }}
+              />
+            </div>
+
+            {/* Financial Assets Dashboard */}
+            <div className="mb-8">
+              <FinancialAssetsDashboard 
+                assets={currentData.financialAssets}
+                bondRatings={currentData.bondRatings}
+                onAssetSelect={(asset) => {
+                  logger.info('Asset category selected', { 
+                    context: 'Dashboard', 
+                    data: { asset } 
+                  });
+                }}
+              />
+            </div>
+
+            {/* Enhanced Donation Tracking */}
+            <div className="mb-8">
+              <EnhancedDonationTracking 
+                data={currentData.donationData}
+                onCategorySelect={(category) => {
+                  logger.info('Donation category selected', { 
+                    context: 'Dashboard', 
+                    data: { category } 
+                  });
+                }}
+              />
+            </div>
+
+            {/* Peer Comparison Analysis */}
+            <div className="mb-8">
+              <PeerComparison 
+                currentHospitalData={currentData}
+                peerHospitalData={hospitals
+                  .filter(h => h.id !== selectedHospitalId)
+                  .map(h => getHospitalData(h.id, selectedYear))
+                  .filter(Boolean) as HospitalData[]}
+              />
+            </div>
+
+            {/* Drill-Down Analysis */}
+            <div className="chart-container mb-8">
+              <DrillDownAnalysis 
+                data={currentData}
+                onDrillDown={(level, category) => {
+                  logger.info('Drill-down navigation', { 
+                    context: 'Dashboard', 
+                    data: { level, category } 
+                  });
+                }}
+              />
+            </div>
           </section>
         </Suspense>
 
